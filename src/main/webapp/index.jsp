@@ -1,29 +1,22 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: 40747
-  Date: 1/9/2020
-  Time: 1:44 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%--<%@ page contentType="text/html;charset=UTF-8" language="java" %>--%>
-<%--<html>--%>
-<%--  <head>--%>
-<%--    <title>$Title$</title>--%>
-<%--  </head>--%>
-<%--  <body>--%>
-<%--  $END$--%>
-<%--  </body>--%>
-<%--</html>--%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-  <title>Hello, I am a Java web app!</title>
+
+  <c:url var="cssUrlHead" value="/resources/style/style.css"/>
+  <link rel="stylesheet" type="text/css" href="${cssUrlHead}">
+
+  <c:url var="bkgURL2" value="/resources/pictures/Background2.jpg"/>
+
+  <title>Nicol Rom Web App</title>
 </head>
-<body>
-<h1>Nicol Rom </h1>
-
-<p>We will invoke all app users to a meeting</p>
-
+<body style="background-image: url('${bkgURL2}'); background-size: 100%">
+<jsp:include page="WEB-INF/views/homePageHeader.jsp"/>
+<div class="col-md-4 col-md-offset-4">
+  <h1>Nicol Rom </h1>
+</div>
+<jsp:include page="WEB-INF/views/homePageFooter.jsp"/>
 </body>
 </html>
