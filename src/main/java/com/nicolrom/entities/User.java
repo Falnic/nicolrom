@@ -1,5 +1,6 @@
 package com.nicolrom.entities;
 
+import com.nicolrom.enums.UserRightsEnum;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -9,29 +10,34 @@ import java.io.Serializable;
 @Table(name = "user")
 public class User implements Serializable {
 
-    final static String ADMIN = "ADMIN";
-    final static String EMPLOYEE = "EMPLOYEE";
-    final static String BASIC = "BASIC";
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
+    private int userId;
 
-    @Id
-    @Column(name = "id")
-    private int id;
-
-    @Column(name = "username")
+    @Column(nullable = false)
     private String username;
 
-    @Column(name = "password")
+    @Column(nullable = false)
     private String password;
 
-    @Column(name = "rights")
-    private String rights;
+    @Column(nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private UserRightsEnum userRightsEnum;
 
-    public int getId() {
-        return id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public UserRightsEnum getUserRightsEnum() {
+        return userRightsEnum;
+    }
+
+    public void setUserRightsEnum(UserRightsEnum userRightsEnum) {
+        this.userRightsEnum = userRightsEnum;
     }
 
     public String getUsername() {
@@ -48,13 +54,5 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getRights() {
-        return rights;
-    }
-
-    public void setRights(String rights) {
-        this.rights = rights;
     }
 }

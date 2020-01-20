@@ -1,5 +1,6 @@
-package com.nicolrom.dao;
+package com.nicolrom.dao.impl;
 
+import com.nicolrom.dao.UserDao;
 import com.nicolrom.entities.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

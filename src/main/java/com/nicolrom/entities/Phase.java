@@ -1,0 +1,85 @@
+package com.nicolrom.entities;
+
+import com.nicolrom.enums.PhaseEnum;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Set;
+
+@Entity
+@Table(name = "phase")
+public class Phase implements Serializable {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
+    private int phaseId;
+
+    @ManyToOne(targetEntity = Hole.class)
+    @JoinColumn(name = "holeId", nullable = false)
+    private Hole hole;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private PhaseEnum phaseType;
+
+    @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
+    private Date phaseDate;
+
+    @OneToMany(targetEntity = Phase_Material.class, mappedBy = "phase", fetch = FetchType.EAGER)
+    @Column(nullable = false)
+    private Set<Phase_Material> phaseMaterialSet;
+
+    @ManyToOne(targetEntity = Team.class)
+    @JoinColumn(name = "teamId", nullable = false)
+    private Team team;
+
+    public int getPhaseId() {
+        return phaseId;
+    }
+
+    public void setPhaseId(int phaseId) {
+        this.phaseId = phaseId;
+    }
+
+    public Hole getHole() {
+        return hole;
+    }
+
+    public void setHole(Hole hole) {
+        this.hole = hole;
+    }
+
+    public PhaseEnum getPhaseType() {
+        return phaseType;
+    }
+
+    public void setPhaseType(PhaseEnum phaseType) {
+        this.phaseType = phaseType;
+    }
+
+    public Date getPhaseDate() {
+        return phaseDate;
+    }
+
+    public void setPhaseDate(Date phaseDate) {
+        this.phaseDate = phaseDate;
+    }
+
+    public Set<Phase_Material> getPhaseMaterialSet() {
+        return phaseMaterialSet;
+    }
+
+    public void setPhaseMaterialSet(Set<Phase_Material> phaseMaterialSet) {
+        this.phaseMaterialSet = phaseMaterialSet;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+}
