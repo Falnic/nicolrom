@@ -1,7 +1,6 @@
 package com.nicolrom.entities;
 
 import com.nicolrom.enums.UserRightsEnum;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,7 +11,7 @@ public class User implements Serializable {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private int userId;
+    private int idUser;
 
     @Column(nullable = false)
     private String username;
@@ -21,15 +20,15 @@ public class User implements Serializable {
     private String password;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private UserRightsEnum userRightsEnum;
 
-    public int getUserId() {
-        return userId;
+    public int getIdUser() {
+        return idUser;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setIdUser(int userId) {
+        this.idUser = userId;
     }
 
     public UserRightsEnum getUserRightsEnum() {

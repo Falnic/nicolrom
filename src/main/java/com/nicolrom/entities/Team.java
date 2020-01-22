@@ -11,7 +11,7 @@ public class Team implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private int teamId;
+    private int idTeam;
 
     @OneToMany(targetEntity = Team_Employee.class, mappedBy = "team", fetch = FetchType.EAGER)
     @Column(nullable = false)
@@ -21,12 +21,12 @@ public class Team implements Serializable {
     @Column(nullable = false)
     private Set<Phase> phases;
 
-    public int getTeamId() {
-        return teamId;
+    public int getIdTeam() {
+        return idTeam;
     }
 
-    public void setTeamId(int teamId) {
-        this.teamId = teamId;
+    public void setIdTeam(int teamId) {
+        this.idTeam = teamId;
     }
 
     public Set<Team_Employee> getTeam_employees() {

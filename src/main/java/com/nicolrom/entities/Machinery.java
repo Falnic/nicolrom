@@ -21,11 +21,11 @@ public class Machinery implements Serializable {
     private String licensePlate;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private MachineryEnum machineryType;
 
-    @Column
-    private int transportCap;
+    @Column(columnDefinition = "integer default 0")
+    private int capacity;
 
     @ManyToOne(targetEntity = Employee.class)
     @JoinColumn(name = "employeeId")
@@ -63,12 +63,12 @@ public class Machinery implements Serializable {
         this.machineryType = machineryType;
     }
 
-    public int getTransportCap() {
-        return transportCap;
+    public int getCapacity() {
+        return capacity;
     }
 
-    public void setTransportCap(int transportCap) {
-        this.transportCap = transportCap;
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     public Employee getEmployee() {

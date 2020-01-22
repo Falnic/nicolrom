@@ -22,9 +22,9 @@
     <tbody>
     <c:forEach var="user" items="${allUsers}">
         <tr>
-            <td>${user.id}</td>
+            <td>${user.idUser}</td>
             <td>${user.username}</td>
-            <td>${user.rights}</td>
+            <td>${user.userRightsEnum.name()}</td>
         </tr>
     </c:forEach>
     </tbody>

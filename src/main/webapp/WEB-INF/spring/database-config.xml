@@ -15,6 +15,14 @@
         <property name="annotatedClasses">
             <list>
                 <value>com.nicolrom.entities.User</value>
+                <value>com.nicolrom.entities.Hole</value>
+                <value>com.nicolrom.entities.Employee</value>
+                <value>com.nicolrom.entities.Machinery</value>
+                <value>com.nicolrom.entities.Material</value>
+                <value>com.nicolrom.entities.Phase</value>
+                <value>com.nicolrom.entities.Phase_Material</value>
+                <value>com.nicolrom.entities.Team_Employee</value>
+                <value>com.nicolrom.entities.Team</value>
             </list>
         </property>
 

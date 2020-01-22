@@ -1,49 +1,30 @@
-package com.nicolrom.entities;
+package com.nicolrom.entities.dto;
 
-
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Column;
 import java.util.Date;
-import java.util.Set;
 
-@Entity
-@Table(name = "hole")
-public class Hole implements Serializable {
+public class HoleDTO {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
     private int holeId;
 
-    @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
     private Date date;
 
-    @Column(nullable = false)
     private String street;
 
-    @Column(nullable = false)
     private String streetNr;
 
-    @Column(nullable = false)
     private String locality;
 
-    @Column(nullable = false)
     private String district;
 
-    @Column(nullable = false)
-    @OneToMany(targetEntity = Phase.class, mappedBy = "hole", fetch = FetchType.EAGER)
-    private Set<Phase> phases;
+    private String phase;
 
-    @Column(nullable = false)
     private double holeLength;
 
-    @Column(nullable = false)
     private double holeWidth;
 
-    @Column(nullable = false)
     private double holeDepth;
 
-    @Column(nullable = false)
     private double holeSurface;
 
     public int getHoleId() {
@@ -52,6 +33,14 @@ public class Hole implements Serializable {
 
     public void setHoleId(int holeId) {
         this.holeId = holeId;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getStreet() {
@@ -86,12 +75,12 @@ public class Hole implements Serializable {
         this.district = district;
     }
 
-    public Set<Phase> getPhases() {
-        return phases;
+    public String getPhase() {
+        return phase;
     }
 
-    public void setPhases(Set<Phase> phases) {
-        this.phases = phases;
+    public void setPhase(String phase) {
+        this.phase = phase;
     }
 
     public double getHoleLength() {
@@ -124,13 +113,5 @@ public class Hole implements Serializable {
 
     public void setHoleSurface(double holeSurface) {
         this.holeSurface = holeSurface;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 }

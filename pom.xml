@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
-      <version>5.2.3.RELEASE</version>
+      <version>${org.springframework-version}</version>
     </dependency>
 
     <!-- for annotations -->

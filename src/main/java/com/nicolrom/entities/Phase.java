@@ -20,7 +20,7 @@ public class Phase implements Serializable {
     private Hole hole;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private PhaseEnum phaseType;
 
     @Column(nullable = false)
