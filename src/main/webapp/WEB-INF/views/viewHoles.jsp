@@ -41,28 +41,30 @@
             <tbody>
             <c:forEach var="hole" items="${allHoles}">
                 <tr>
-                    <td>${hole.holeId}</td>
-                    <td>${hole.date}</td>
-                    <td>${hole.street}</td>
-                    <td>${hole.streetNr}</td>
-                    <td>${hole.locality}</td>
-                    <td>${hole.district}</td>
-                    <td>${hole.phase}</td>
-                    <td>${hole.holeLength}</td>
-                    <td>${hole.holeWidth}</td>
-                    <td>${hole.holeDepth}</td>
-                    <td>${hole.holeSurface}</td>
+                    <td style="text-align: center">${hole.holeId}</td>
+                    <td style="text-align: center">${hole.date}</td>
+                    <td style="text-align: center">${hole.street}</td>
+                    <td style="text-align: center">${hole.streetNr}</td>
+                    <td style="text-align: center">${hole.locality}</td>
+                    <td style="text-align: center">${hole.district}</td>
+                    <td style="text-align: center">${hole.phase}</td>
+                    <td style="text-align: center">${hole.holeLength}</td>
+                    <td style="text-align: center">${hole.holeWidth}</td>
+                    <td style="text-align: center">${hole.holeDepth}</td>
+                    <td style="text-align: center">${hole.holeSurface}</td>
 <%--                    <td><a href="<c:url value='/backoffice/hole/edit/${hole.holeId}' />" ><input type="submit" value="Edit" class="btn btn-primary"></a></td>--%>
 <%--                    <td><a href="<c:url value='/backoffice/hole/delete?holeId=${hole.holeId}'/>" methods="GET"><input type="submit" value="Delete" id="delete"+${hole.holeId} class="btn btn-danger"></a></td>--%>
                 </tr>
-
             </c:forEach>
-
 
             </tbody>
         </table>
-        <br>
 
+        <c:url var="addHole" value="/backoffice/holes/add"/>
+
+        <a href="${addHole}" methods="GET">
+            <input type="submit" value="Adauga groapa" class="btn btn-default">
+        </a>
 <%--        <input type="submit" id="deleteButton" value="Delete selected" class="btn btn-default"/>--%>
 
         </c:if>

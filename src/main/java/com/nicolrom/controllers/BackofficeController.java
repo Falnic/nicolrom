@@ -1,5 +1,7 @@
 package com.nicolrom.controllers;
 
+import com.nicolrom.entities.Hole;
+import com.nicolrom.enums.PhaseEnum;
 import com.nicolrom.services.impl.HoleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,4 +22,10 @@ public class BackofficeController {
         return "viewHoles";
     }
 
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    public String addHole(Model model){
+        model.addAttribute("hole", new Hole());
+        model.addAttribute("allPhases", PhaseEnum.values());
+        return "addHole";
+    }
 }

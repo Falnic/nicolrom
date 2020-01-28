@@ -48,7 +48,7 @@ public class HoleServiceImpl implements HoleService {
         return holeDTO;
     }
 
-    private HoleDTO setHoleDtoPhase(HoleDTO holeDTO, Hole hole){
+    private void setHoleDtoPhase(HoleDTO holeDTO, Hole hole){
         PhaseEnum phaseEnum = PhaseEnum.SAPATURA;
         for (Phase phase: hole.getPhases()){
             if (phase.getPhaseType().ordinal() > phaseEnum.ordinal()){
@@ -56,7 +56,5 @@ public class HoleServiceImpl implements HoleService {
             }
         }
         holeDTO.setPhase(phaseEnum.name());
-
-        return holeDTO;
     }
 }
