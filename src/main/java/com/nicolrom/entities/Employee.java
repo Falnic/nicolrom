@@ -1,5 +1,7 @@
 package com.nicolrom.entities;
 
+import com.nicolrom.enums.EmployeePositionEnum;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
@@ -17,7 +19,8 @@ public class Employee implements Serializable {
     private String name;
 
     @Column(nullable = false)
-    private String position;
+    @Enumerated(EnumType.STRING)
+    private EmployeePositionEnum position;
 
     @OneToMany(targetEntity = Team_Employee.class, mappedBy = "employee", fetch = FetchType.EAGER)
     @Column(nullable = false)
@@ -43,12 +46,12 @@ public class Employee implements Serializable {
         this.name = name;
     }
 
-    public String getPosition() {
+    public EmployeePositionEnum getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    public void setPosition(EmployeePositionEnum positionEnum) {
+        this.position = positionEnum;
     }
 
     public Set<Team_Employee> getTeam_employees() {
