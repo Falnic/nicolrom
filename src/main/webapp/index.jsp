@@ -5,14 +5,18 @@
 <html>
 <head>
 
-  <c:url var="cssUrlHead" value="/resources/style/style.css"/>
-  <link rel="stylesheet" type="text/css" href="${cssUrlHead}">
+<%--  <c:url var="cssUrlHead" value="/resources/style/style.css"/>--%>
+<%--  <link rel="stylesheet" type="text/css" href="${cssUrlHead}">--%>
 
   <title>Nicol Rom Web App</title>
 </head>
 <body>
-<jsp:include page="WEB-INF/views/homePageHeader.jsp"/>
 
-<jsp:include page="WEB-INF/views/homePageFooter.jsp"/>
+  <div class="container">
+    <img src="resources/pictures/underConstruction.png">
+  </div>
+<%--<jsp:include page="WEB-INF/views/homePageHeader.jsp"/>--%>
+
+<%--<jsp:include page="WEB-INF/views/homePageFooter.jsp"/>--%>
 </body>
 </html>

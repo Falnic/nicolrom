@@ -34,5 +34,13 @@ public class EmployeeDaoImpl implements EmployeeDao {
         return query.list();
     }
 
+    @Override
+    public Employee getEmployeeById(Integer id) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("FROM Employee as E where E.id = :id");
+        query.setParameter("id", id);
+        return (Employee) query.getSingleResult();
+    }
+
 
 }

@@ -30,6 +30,17 @@ public class HoleServiceImpl implements HoleService {
         return holeDTOList;
     }
 
+    @Override
+    public Phase getHolePhaseByType(Hole hole, PhaseEnum phaseEnum) {
+
+        for (Phase phase : hole.getPhases()) {
+            if (phase.getPhaseType().equals(phaseEnum)) {
+                return phase;
+            }
+        }
+        return null;
+    }
+
     private HoleDTO populateDTO(Hole hole){
         HoleDTO holeDTO = new HoleDTO();
 

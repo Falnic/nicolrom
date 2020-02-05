@@ -9,4 +9,6 @@ public interface EmployeeDao {
     List<Employee> getAllEmployees();
 
     List<Employee> getEmployeeByPosition(EmployeePositionEnum positionEnum);
+
+    Employee getEmployeeById(Integer id);
 }
