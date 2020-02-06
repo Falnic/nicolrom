@@ -22,4 +22,12 @@ public class HoleDaoImpl implements HoleDao {
         Session session = sessionFactory.getCurrentSession();
         return session.createQuery("FROM Hole as H").list();
     }
+
+    @Override
+    public void saveHole(Hole hole) {
+        Session session = sessionFactory.getCurrentSession();
+        session.save(hole);
+    }
+
+
 }

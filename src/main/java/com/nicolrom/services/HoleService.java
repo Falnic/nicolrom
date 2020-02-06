@@ -12,4 +12,6 @@ public interface HoleService {
     List<HoleDTO> getAllHoles();
 
     Phase getHolePhaseByType(Hole hole, PhaseEnum phaseEnum);
+
+    void saveHole(Hole hole);
 }

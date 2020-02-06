@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface MaterialService {
     List<Material> getAllMaterials();
+
+    Material getMaterialById(Integer id);
 }

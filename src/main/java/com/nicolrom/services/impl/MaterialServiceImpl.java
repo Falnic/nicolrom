@@ -18,4 +18,10 @@ public class MaterialServiceImpl implements MaterialService {
     public List<Material> getAllMaterials() {
         return materialDao.getAllMaterials();
     }
+
+    @Override
+    public Material getMaterialById(Integer id) {
+        return materialDao.getMaterialById(id);
+    }
+
 }

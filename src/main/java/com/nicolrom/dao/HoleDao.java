@@ -7,4 +7,6 @@ import java.util.List;
 public interface HoleDao {
 
     public List<Hole> getAllHoles();
+
+    void saveHole(Hole hole);
 }
