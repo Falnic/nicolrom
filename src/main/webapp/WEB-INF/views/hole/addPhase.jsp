@@ -3,7 +3,7 @@
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-<c:url var="addPhaseToHole" value="/backoffice/holes/addPhaseToHole"/>
+<c:url var="addPhaseToHole" value="/backoffice/holes/add-phase"/>
 
 <%--        Phase Table--%>
 <form:form commandName="phase" method="post" action="${addPhaseToHole}">
@@ -26,7 +26,6 @@
         </table>
         <button type="submit" class="btn-lg btn-primary pull-right">Next</button>
     </div>
-
 </form:form>
 
 

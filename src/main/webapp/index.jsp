@@ -2,19 +2,18 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<c:url var="indexCSS" value="/resources/style/style.css"/>
+
 <html>
 <head>
 
-<%--  <c:url var="cssUrlHead" value="/resources/style/style.css"/>--%>
-<%--  <link rel="stylesheet" type="text/css" href="${cssUrlHead}">--%>
+  <link rel="stylesheet" type="text/css" href="${indexCSS}">
 
   <title>Nicol Rom Web App</title>
 </head>
 <body>
 
-  <div class="container">
-    <img src="resources/pictures/underConstruction.png">
-  </div>
 <%--<jsp:include page="WEB-INF/views/homePageHeader.jsp"/>--%>
 
 <%--<jsp:include page="WEB-INF/views/homePageFooter.jsp"/>--%>

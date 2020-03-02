@@ -1,4 +1,4 @@
-package com.nicolrom.controllers;
+package com.nicolrom.controllers.backoffice;
 
 import com.nicolrom.entities.*;
 import com.nicolrom.enums.EmployeePositionEnum;
@@ -10,19 +10,20 @@ import com.nicolrom.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @Controller
 @RequestMapping(value = "/backoffice/holes")
 public class BackofficeController {
+
+    private final static List<EmployeePositionEnum> siteWorkersPositions = new ArrayList<>
+            (Arrays.asList(EmployeePositionEnum.MECANIC,
+                    EmployeePositionEnum.NECALIFICAT,
+                    EmployeePositionEnum.SOFER));
 
     @Autowired
     private HoleService holeService;
@@ -39,38 +40,33 @@ public class BackofficeController {
     @RequestMapping(method = RequestMethod.GET)
     public String getHoles(Model model){
         model.addAttribute("allHoles", holeService.getAllHoles());
-        return "viewHoles";
+        return "hole/viewHoles";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addHole(Model model){
         model.addAttribute("hole", new Hole());
-
-        return "addHole";
+        return "hole/addHole";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addHole(Model model, @ModelAttribute("hole") Hole hole, HttpServletResponse httpServletResponse,
-                          HttpServletRequest httpServletRequest){
+    public String addHole(Model model, @ModelAttribute("hole") Hole hole, HttpServletRequest httpServletRequest){
 
         HttpSession session = httpServletRequest.getSession(true);
         session.setAttribute("hole", hole);
 
         model.addAttribute("phase", new Phase());
         model.addAttribute("allPhaseTypes", PhaseEnum.values());
-        return "addPhaseToHole";
+        return "hole/addPhase";
     }
 
-    @RequestMapping(value = "/addPhaseToHole", method = RequestMethod.POST)
-    public String addPhaseToHole(Model model, @ModelAttribute("phase") Phase phase, HttpServletResponse httpServletResponse,
-                          HttpServletRequest httpServletRequest){
+    @RequestMapping(value = "/add-phase", method = RequestMethod.POST)
+    public String addPhaseToHole(Model model, @ModelAttribute("phase") Phase phase, HttpServletRequest httpServletRequest){
+
         HttpSession session = httpServletRequest.getSession(true);
         Hole hole = (Hole) session.getAttribute("hole");
 
         Team team = new Team();
-
-        Team_Employee team_employee = new Team_Employee();
-        team_employee.setTeam(team);
 
         phase.setTeam(team);
         phase.setHole(hole);
@@ -84,43 +80,24 @@ public class BackofficeController {
         session.setAttribute("hole", hole);
         session.setAttribute("phaseType", phase.getPhaseType());
 
-        model.addAttribute("team_employee", new Team_Employee());
+        model.addAttribute("team", team);
 
-        // Todo: Move all the code in a service
-        List<EmployeePositionEnum> employeePositions = new ArrayList<>();
-        for (EmployeePositionEnum position : EmployeePositionEnum.values()){
-            if(position.ordinal() != EmployeePositionEnum.ALTA_POZITIE.ordinal()){
-                employeePositions.add(position);
-            }
-        }
+//        List<Employee> employees = employeeService.getEmployeesByPosition(employeePositions);
+        Map<EmployeePositionEnum, List<Employee>> employeePositionMap = employeeService.getEmployeesByPositionAsMap(siteWorkersPositions);
 
-        //Only Sofer Mecanic and Necalificat employees are needed
-        List<Employee> employees = new ArrayList<>();
-        for (Employee employee : employeeService.getAllEmployees()){
-            if (employee.getPosition().ordinal() != EmployeePositionEnum.ALTA_POZITIE.ordinal()){
-                employees.add(employee);
-            }
-        }
+        model.addAttribute("employeesMap", employeePositionMap);
 
-        Map<EmployeePositionEnum, List<Employee>> employeesMap = new HashMap<>();
-        for (EmployeePositionEnum position : employeePositions) {
-            List<Employee> employeeListByPosition = new ArrayList<>();
-            for(Employee employee : employees){
-                if (employee.getPosition().ordinal() == position.ordinal()){
-                    employeeListByPosition.add(employee);
-                }
-            }
-            employeesMap.put(position, employeeListByPosition);
-        }
-
-        model.addAttribute("employeesMap", employeesMap);
-
-        return "addTeamToHole";
+//        return "hole/addTeamToHole";
+        return "hole/addTeam";
     }
 
-    @RequestMapping(value = "/addTeamToHole", method = RequestMethod.POST)
-    public  String addTeamToHole(Model model, @RequestParam(value = "employee") List<Integer> employeeArray,
-                                    HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest){
+
+
+
+
+    @RequestMapping(value = "/add-team", method = RequestMethod.POST)
+    public  String addTeamToHole(Model model, @RequestParam(value = "employees") List<Integer> employeeArray,
+                                 HttpServletRequest httpServletRequest){
 
         HttpSession session = httpServletRequest.getSession(true);
         Hole hole = (Hole) session.getAttribute("hole");
@@ -130,41 +107,20 @@ public class BackofficeController {
         // TODO: Create a method in service for this aproach
         Phase phase = holeService.getHolePhaseByType(hole, phaseEnum);
         Team team = phase.getTeam();
-        Set<Team_Employee> team_employeeSet = team.getTeam_employees();
 
-        if(team_employeeSet == null) {
-            team_employeeSet = new HashSet<>();
-        }
         //todo: replace db call with spring form for each employee
         for (Integer integer : employeeArray) {
-            Employee employee = employeeService.getEmployeeById(integer);
-
-            Team_Employee teamEmployee = new Team_Employee();
-            teamEmployee.setEmployee(employee);
-            teamEmployee.setTeam(team);
-
-            team_employeeSet.add(teamEmployee);
+            team.getEmployees().add(employeeService.getEmployeeById(integer));
         }
-        team.setTeam_employees(team_employeeSet);
 
         session.setAttribute("hole", hole);
 
-        //ToDo:Remove all code coments and replace actual functionality with Object transmition
-        //Get All Materials
-//        List<Material> allMaterials = materialService.getAllMaterials();
-//        List<Phase_Material> phase_materialList = new ArrayList<>(allMaterials.size());
-//        for(Material material : allMaterials){
-//            Phase_Material phase_material = new Phase_Material();
-//            phase_material.setMaterial(material);
-//            phase_material.setPhase(phase);
-//        }
-
         model.addAttribute("allMaterials", materialService.getAllMaterials());
 
-        return "addMaterialsToHole";
+        return "hole/addMaterials";
     }
 
-    @RequestMapping(value = "/addMaterialsToHole", method = RequestMethod.POST)
+    @RequestMapping(value = "/add-materials", method = RequestMethod.POST)
     public String addMaterialsToHole(Model model, @RequestParam(value = "materialId") List<Integer> materialIdArray,
                                      @RequestParam(value = "materialQuantity") List<Integer> materialQuantityArray,
                                      HttpServletRequest httpServletRequest){
@@ -181,9 +137,18 @@ public class BackofficeController {
 
         HttpSession session = httpServletRequest.getSession(true);
         Hole hole = (Hole) session.getAttribute("hole");
+
         PhaseEnum phaseEnum = (PhaseEnum) session.getAttribute("phaseType");
         Phase phase = holeService.getHolePhaseByType(hole, phaseEnum);
 
+        phase.setPhaseMaterialSet(prepareMaterialsNotice(materialIntegerMap, phase));
+
+        holeService.saveHole(hole);
+
+        return "redirect:/backoffice/holes";
+    }
+
+    private Set<Phase_Material> prepareMaterialsNotice (Map<Material, Integer> materialIntegerMap, Phase phase){
         Set<Phase_Material> phase_materialList = new HashSet<>();
         for(Map.Entry<Material, Integer> entry : materialIntegerMap.entrySet()){
             Phase_Material phase_material = new Phase_Material();
@@ -194,11 +159,7 @@ public class BackofficeController {
             phase_materialList.add(phase_material);
         }
 
-        phase.setPhaseMaterialSet(phase_materialList);
-
-        holeService.saveHole(hole);
-//redirect:/products
-        return "redirect:/backoffice/holes";
+        return phase_materialList;
     }
 
 }

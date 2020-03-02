@@ -5,6 +5,7 @@ import com.nicolrom.enums.PhaseEnum;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -29,7 +30,7 @@ public class Phase implements Serializable {
 
     @OneToMany(targetEntity = Phase_Material.class, mappedBy = "phase", fetch = FetchType.EAGER)
     @Column(nullable = false)
-    private Set<Phase_Material> phaseMaterialSet;
+    private Set<Phase_Material> phaseMaterialSet = new HashSet<>();
 
     @ManyToOne(targetEntity = Team.class)
     @JoinColumn(name = "teamId", nullable = false)

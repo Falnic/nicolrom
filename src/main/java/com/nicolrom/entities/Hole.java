@@ -4,6 +4,7 @@ package com.nicolrom.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -32,7 +33,7 @@ public class Hole implements Serializable {
 
     @Column(nullable = false)
     @OneToMany(targetEntity = Phase.class, mappedBy = "hole", fetch = FetchType.EAGER)
-    private Set<Phase> phases;
+    private Set<Phase> phases = new HashSet<>();
 
     @Column(nullable = false)
     private double holeLength;

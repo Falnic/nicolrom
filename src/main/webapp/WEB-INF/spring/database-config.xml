@@ -21,7 +21,6 @@
                 <value>com.nicolrom.entities.Material</value>
                 <value>com.nicolrom.entities.Phase</value>
                 <value>com.nicolrom.entities.Phase_Material</value>
-                <value>com.nicolrom.entities.Team_Employee</value>
                 <value>com.nicolrom.entities.Team</value>
             </list>
         </property>

@@ -8,7 +8,9 @@ import java.util.List;
 public interface EmployeeDao {
     List<Employee> getAllEmployees();
 
-    List<Employee> getEmployeeByPosition(EmployeePositionEnum positionEnum);
+    List<Employee> getEmployeesByPosition(EmployeePositionEnum positionEnum);
+
+    List<Employee> getEmployeesByPosition(List<EmployeePositionEnum> positionEnum);
 
     Employee getEmployeeById(Integer id);
 }

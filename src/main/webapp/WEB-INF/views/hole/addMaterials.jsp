@@ -3,8 +3,8 @@
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-<jsp:include page="bootstrapImports.jsp"/>
-<c:url var="addMaterialsToHole" value="/backoffice/holes/addMaterialsToHole"/>
+<jsp:include page="../bootstrapImports.jsp"/>
+<c:url var="addMaterialsToHole" value="/backoffice/holes/add-materials"/>
 
 <%--            Material table--%>
 <div class="container">
@@ -24,7 +24,6 @@
                 <tbody>
                     <c:forEach var="material" items="${allMaterials}">
                         <tr>
-<%--                            <input type="hidden" name="material" value="${material}">--%>
                             <td><input type="hidden" name="materialId" value="${material.materialId}">${material.name}</td>
                             <td><input type="number" name="materialQuantity"></td>
                             <td>mc</td>

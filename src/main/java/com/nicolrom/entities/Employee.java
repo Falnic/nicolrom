@@ -4,6 +4,7 @@ import com.nicolrom.enums.EmployeePositionEnum;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -22,13 +23,17 @@ public class Employee implements Serializable {
     @Enumerated(EnumType.STRING)
     private EmployeePositionEnum position;
 
-    @OneToMany(targetEntity = Team_Employee.class, mappedBy = "employee", fetch = FetchType.EAGER)
-    @Column(nullable = false)
-    private Set<Team_Employee> team_employees;
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "Team_Employee",
+            joinColumns = {@JoinColumn(name = "idEmployee")},
+            inverseJoinColumns = { @JoinColumn(name = "idTeam")}
+    )
+    private Set<Team> teams = new HashSet<>();
 
     @OneToMany(targetEntity = Machinery.class, mappedBy = "employee", fetch = FetchType.EAGER)
     @Column(nullable = false)
-    private Set<Machinery> machines;
+    private Set<Machinery> machines = new HashSet<>();
 
     public int getIdEmployee() {
         return idEmployee;
@@ -54,12 +59,12 @@ public class Employee implements Serializable {
         this.position = positionEnum;
     }
 
-    public Set<Team_Employee> getTeam_employees() {
-        return team_employees;
+    public Set<Team> getTeams() {
+        return teams;
     }
 
-    public void setTeam_employees(Set<Team_Employee> team_employees) {
-        this.team_employees = team_employees;
+    public void setTeams(Set<Team> teams) {
+        this.teams = teams;
     }
 
     public Set<Machinery> getMachines() {
@@ -69,4 +74,6 @@ public class Employee implements Serializable {
     public void setMachines(Set<Machinery> machines) {
         this.machines = machines;
     }
+
+
 }

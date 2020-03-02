@@ -2,6 +2,7 @@ package com.nicolrom.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -18,7 +19,7 @@ public class Material implements Serializable {
 
     @OneToMany(targetEntity = Phase_Material.class, mappedBy = "material")
     @Column(nullable = false)
-    private Set<Phase_Material> phaseMaterialSet;
+    private Set<Phase_Material> phaseMaterialSet = new HashSet<>();
 
     public int getMaterialId() {
         return materialId;

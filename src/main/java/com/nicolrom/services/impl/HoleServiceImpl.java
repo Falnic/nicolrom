@@ -44,6 +44,7 @@ public class HoleServiceImpl implements HoleService {
     @Override
     public void saveHole(Hole hole) {
         holeDao.saveHole(hole);
+        // save related domains
     }
 
 
