@@ -3,10 +3,7 @@ package com.nicolrom.controllers.backoffice;
 import com.nicolrom.entities.*;
 import com.nicolrom.enums.EmployeePositionEnum;
 import com.nicolrom.enums.PhaseEnum;
-import com.nicolrom.services.EmployeeService;
-import com.nicolrom.services.HoleService;
-import com.nicolrom.services.MaterialService;
-import com.nicolrom.services.TeamService;
+import com.nicolrom.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,10 +26,16 @@ public class BackofficeController {
     private HoleService holeService;
 
     @Autowired
+    private PhaseService phaseService;
+
+    @Autowired
     private EmployeeService employeeService;
 
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private MaterialNoticeService materialNoticeService;
 
     @Autowired
     private MaterialService materialService;
@@ -82,18 +85,12 @@ public class BackofficeController {
 
         model.addAttribute("team", team);
 
-//        List<Employee> employees = employeeService.getEmployeesByPosition(employeePositions);
         Map<EmployeePositionEnum, List<Employee>> employeePositionMap = employeeService.getEmployeesByPositionAsMap(siteWorkersPositions);
 
         model.addAttribute("employeesMap", employeePositionMap);
 
-//        return "hole/addTeamToHole";
         return "hole/addTeam";
     }
-
-
-
-
 
     @RequestMapping(value = "/add-team", method = RequestMethod.POST)
     public  String addTeamToHole(Model model, @RequestParam(value = "employees") List<Integer> employeeArray,
@@ -141,25 +138,28 @@ public class BackofficeController {
         PhaseEnum phaseEnum = (PhaseEnum) session.getAttribute("phaseType");
         Phase phase = holeService.getHolePhaseByType(hole, phaseEnum);
 
-        phase.setPhaseMaterialSet(prepareMaterialsNotice(materialIntegerMap, phase));
+        phase.setMaterialNoticeSet(prepareMaterialsNotice(materialIntegerMap, phase));
 
         holeService.saveHole(hole);
+        teamService.saveTeam(phase.getTeam());
+        phaseService.savePhase(phase);
+        materialNoticeService.saveMaterialNotices(phase.getMaterialNoticeSet());
 
         return "redirect:/backoffice/holes";
     }
 
-    private Set<Phase_Material> prepareMaterialsNotice (Map<Material, Integer> materialIntegerMap, Phase phase){
-        Set<Phase_Material> phase_materialList = new HashSet<>();
+    private Set<MaterialNotice> prepareMaterialsNotice (Map<Material, Integer> materialIntegerMap, Phase phase){
+        Set<MaterialNotice> materialNoticeList = new HashSet<>();
         for(Map.Entry<Material, Integer> entry : materialIntegerMap.entrySet()){
-            Phase_Material phase_material = new Phase_Material();
-            phase_material.setMaterial(entry.getKey());
-            phase_material.setQuantity(entry.getValue());
-            phase_material.setPhase(phase);
+            MaterialNotice materialNotice = new MaterialNotice();
+            materialNotice.setMaterial(entry.getKey());
+            materialNotice.setQuantity(entry.getValue());
+            materialNotice.setPhase(phase);
 
-            phase_materialList.add(phase_material);
+            materialNoticeList.add(materialNotice);
         }
 
-        return phase_materialList;
+        return materialNoticeList;
     }
 
 }

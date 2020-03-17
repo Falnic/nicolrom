@@ -3,30 +3,29 @@
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-<form:form commandName="hole" method="post">
+<form:form commandName="hole" method="post" autocomplete="false">
     <div class="container">
         <h1>Adauga Groapa </h1>
-            <%--        hole Table--%>
         <table>
             <tr>
                 <td>Data:</td>
-                <td><form:input path="date" id="holeDatePicker" /></td>
+                <td><form:input path="date" id="holeDatePicker" autocomplete="false"/></td>
             </tr>
             <tr>
                 <td>Strada:</td>
-                <td><form:input path="street" /></td>
+                <td><form:input path="street" autocomplete="false"/></td>
             </tr>
             <tr>
                 <td>Numar:</td>
-                <td><form:input path="streetNr" /></td>
+                <td><form:input path="streetNr" autocomplete="false"/></td>
             </tr>
             <tr>
                 <td>Localitate:</td>
-                <td><form:input path="locality" /></td>
+                <td><form:input path="locality" autocomplete="false"/></td>
             </tr>
             <tr>
                 <td>Judet:</td>
-                <td><form:input path="district" /></td>
+                <td><form:input path="district" autocomplete="false"/></td>
             </tr>
             <tr>
                 <td>Lungime:</td>

@@ -28,11 +28,11 @@ public class Phase implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date phaseDate;
 
-    @OneToMany(targetEntity = Phase_Material.class, mappedBy = "phase", fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = MaterialNotice.class, mappedBy = "phase", fetch = FetchType.EAGER)
     @Column(nullable = false)
-    private Set<Phase_Material> phaseMaterialSet = new HashSet<>();
+    private Set<MaterialNotice> materialNoticeSet = new HashSet<>();
 
-    @ManyToOne(targetEntity = Team.class)
+    @ManyToOne(targetEntity = Team.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "teamId", nullable = false)
     private Team team;
 
@@ -68,12 +68,12 @@ public class Phase implements Serializable {
         this.phaseDate = phaseDate;
     }
 
-    public Set<Phase_Material> getPhaseMaterialSet() {
-        return phaseMaterialSet;
+    public Set<MaterialNotice> getMaterialNoticeSet() {
+        return materialNoticeSet;
     }
 
-    public void setPhaseMaterialSet(Set<Phase_Material> phaseMaterialSet) {
-        this.phaseMaterialSet = phaseMaterialSet;
+    public void setMaterialNoticeSet(Set<MaterialNotice> phaseMaterialSet) {
+        this.materialNoticeSet = phaseMaterialSet;
     }
 
     public Team getTeam() {

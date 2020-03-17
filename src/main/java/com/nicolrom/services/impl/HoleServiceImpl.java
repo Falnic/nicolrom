@@ -43,8 +43,8 @@ public class HoleServiceImpl implements HoleService {
 
     @Override
     public void saveHole(Hole hole) {
+        hole.setHoleSurface(hole.getHoleLength() * hole.getHoleWidth() * hole.getHoleDepth());
         holeDao.saveHole(hole);
-        // save related domains
     }
 
 

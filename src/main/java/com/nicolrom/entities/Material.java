@@ -17,9 +17,9 @@ public class Material implements Serializable {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(targetEntity = Phase_Material.class, mappedBy = "material")
+    @OneToMany(targetEntity = MaterialNotice.class, mappedBy = "material")
     @Column(nullable = false)
-    private Set<Phase_Material> phaseMaterialSet = new HashSet<>();
+    private Set<MaterialNotice> materialNoticeSet = new HashSet<>();
 
     public int getMaterialId() {
         return materialId;
@@ -37,11 +37,11 @@ public class Material implements Serializable {
         this.name = name;
     }
 
-    public Set<Phase_Material> getPhaseMaterialSet() {
-        return phaseMaterialSet;
+    public Set<MaterialNotice> getMaterialNoticeSet() {
+        return materialNoticeSet;
     }
 
-    public void setPhaseMaterialSet(Set<Phase_Material> phaseMaterialSet) {
-        this.phaseMaterialSet = phaseMaterialSet;
+    public void setMaterialNoticeSet(Set<MaterialNotice> phaseMaterialSet) {
+        this.materialNoticeSet = phaseMaterialSet;
     }
 }

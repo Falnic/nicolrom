@@ -23,12 +23,7 @@ public class Employee implements Serializable {
     @Enumerated(EnumType.STRING)
     private EmployeePositionEnum position;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable(
-            name = "Team_Employee",
-            joinColumns = {@JoinColumn(name = "idEmployee")},
-            inverseJoinColumns = { @JoinColumn(name = "idTeam")}
-    )
+    @ManyToMany(mappedBy = "employees", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Team> teams = new HashSet<>();
 
     @OneToMany(targetEntity = Machinery.class, mappedBy = "employee", fetch = FetchType.EAGER)

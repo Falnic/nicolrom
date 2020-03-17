@@ -14,11 +14,12 @@ public class Team implements Serializable {
     @Column(nullable = false)
     private int idTeam;
 
-//    @OneToMany(targetEntity = Team_Employee.class, mappedBy = "team", fetch = FetchType.EAGER)
-//    @Column(nullable = false)
-//    private Set<Team_Employee> team_employees;
-
-    @ManyToMany(mappedBy = "teams")
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "Team_Employee",
+            joinColumns = {@JoinColumn(name = "idTeam")},
+            inverseJoinColumns = { @JoinColumn(name = "idEmployee")}
+    )
     private Set<Employee> employees = new HashSet<>();
 
     @OneToMany(targetEntity = Phase.class, mappedBy = "team")
