@@ -3,6 +3,8 @@
 
 <jsp:include page="../bootstrapImports.jsp"/>
 
+<c:url var="addHole" value="/backoffice/holes/add"/>
+
 <html>
     <head>
         <title>Del Gaz Grid Holes</title>
@@ -11,31 +13,39 @@
         <c:if test="${not empty allHoles}">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-2 col-md-offset-5">
+                    <div class="col-lg-12 text-center">
                         <h1>Gropi</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <a href="${addHole}" methods="GET">
+                            <input type="submit" class="btn-lg btn-primary" value="Adauga Groapa">
+                        </a>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6 col-md-offset-3">
-                        <table id="prodTable" class="table table-striped">
+                    <div class="col-lg-12">
+                        <table class="table table-striped ">
                             <thead>
-                            <tr>
-                                <th>Data </th>
-                                <th>Strada</th>
-                                <th>Numar</th>
-                                <th>Localitate</th>
-                                <th>Judet</th>
-                                <th>Etapa</th>
-                                <th>Lungime</th>
-                                <th>Latime</th>
-                                <th>Adancime</th>
-                                <th>Suprafata</th>
-                            </tr>
+                                <tr>
+                                    <th>Data </th>
+                                    <th>Strada</th>
+                                    <th>Nr</th>
+                                    <th>Localitate</th>
+                                    <th>Judet</th>
+                                    <th>Etapa</th>
+                                    <th>Lungime</th>
+                                    <th>Latime</th>
+                                    <th>Adancime</th>
+                                    <th>Suprafata</th>
+                                </tr>
                             </thead>
+
                             <tbody>
                             <c:forEach var="hole" items="${allHoles}">
-                                <tr>
+                                <tr ondblclick="myFunction(${hole.holeId})">
                                     <td style="text-align: center">${hole.date}</td>
                                     <td style="text-align: center">${hole.street}</td>
                                     <td style="text-align: center">${hole.streetNr}</td>
@@ -46,22 +56,20 @@
                                     <td style="text-align: center">${hole.holeWidth}</td>
                                     <td style="text-align: center">${hole.holeDepth}</td>
                                     <td style="text-align: center">${hole.holeSurface}</td>
-                <%--                    <td><a href="<c:url value='/backoffice/hole/edit/${hole.holeId}' />" ><input type="submit" value="Edit" class="btn btn-primary"></a></td>--%>
                                 </tr>
                             </c:forEach>
 
                             </tbody>
                         </table>
-
-                        <c:url var="addHole" value="/backoffice/holes/add"/>
-
-                        <a href="${addHole}" methods="GET">
-                            <button type="submit" class="btn-lg btn-primary pull-right">Adauga groapa</button>
-                        </a>
-
                     </div>
                 </div>
             </div>
         </c:if>
+
+    <script>
+        function myFunction(holeid) {
+            location.replace("http://localhost:8080/nicolrom/" + holeid);
+        }
+    </script>
     </body>
 </html>

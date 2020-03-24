@@ -27,9 +27,9 @@
                             <c:forEach var="employee" items="${employeesMapItem.value}">
                                 <tr>
                                     <td>
-<%--                                        <form:checkbox path="employees" value="${employee.idEmployee}" label="${employee.name}"/>--%>
-                                        <input type="checkbox" name="employees" id="idEmployee" value="${employee.idEmployee}">
-                                        <label for="idEmployee">${employee.name}</label>
+                                        <form:checkbox name="employees" path="employees" value="${employee.idEmployee}" label="${employee.name}"/>
+<%--                                        <input type="checkbox" name="employees" id="idEmployee" value="${employee.idEmployee}">--%>
+<%--                                        <label for="idEmployee">${employee.name}</label>--%>
                                     </td>
                                 </tr>
                             </c:forEach>

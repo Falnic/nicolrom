@@ -22,7 +22,7 @@ public class Phase implements Serializable {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private PhaseEnum phaseType;
+    private PhaseEnum phaseType = PhaseEnum.SAPATURA;
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)

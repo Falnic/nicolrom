@@ -40,7 +40,8 @@
                 <td><form:input path="holeDepth" /></td>
             </tr>
         </table>
-        <button type="submit" class="btn-lg btn-primary pull-right">Salveaza</button>
+        <input type="submit" class="btn-lg btn-primary pull-right" value="Adauga"/>
+<%--        <button type="submit" class="btn-lg btn-primary pull-right">Salveaza</button>--%>
     </div>
 </form:form>
 

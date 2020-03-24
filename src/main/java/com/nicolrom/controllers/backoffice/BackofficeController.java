@@ -53,40 +53,26 @@ public class BackofficeController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addHole(Model model, @ModelAttribute("hole") Hole hole, HttpServletRequest httpServletRequest){
+    public String addHole(@ModelAttribute("hole") Hole hole, HttpServletRequest httpServletRequest){
+
+        Phase phase = new Phase();
+        phase.setHole(hole);
+        phase.setPhaseDate(hole.getDate());
+
+        hole.getPhases().add(phase);
 
         HttpSession session = httpServletRequest.getSession(true);
         session.setAttribute("hole", hole);
 
-        model.addAttribute("phase", new Phase());
-        model.addAttribute("allPhaseTypes", PhaseEnum.values());
-        return "hole/addPhase";
+        return "redirect:/backoffice/holes/add-team";
     }
 
-    @RequestMapping(value = "/add-phase", method = RequestMethod.POST)
-    public String addPhaseToHole(Model model, @ModelAttribute("phase") Phase phase, HttpServletRequest httpServletRequest){
-
-        HttpSession session = httpServletRequest.getSession(true);
-        Hole hole = (Hole) session.getAttribute("hole");
-
-        Team team = new Team();
-
-        phase.setTeam(team);
-        phase.setHole(hole);
-
-        Set<Phase> phaseSet = new HashSet<>();
-        phaseSet.add(phase);
-
-        hole.setPhases(phaseSet);
-        team.setPhases(phaseSet);
-
-        session.setAttribute("hole", hole);
-        session.setAttribute("phaseType", phase.getPhaseType());
-
-        model.addAttribute("team", team);
+    @RequestMapping(value = "/add-team", method = RequestMethod.GET)
+    public String addTeam(Model model){
 
         Map<EmployeePositionEnum, List<Employee>> employeePositionMap = employeeService.getEmployeesByPositionAsMap(siteWorkersPositions);
 
+        model.addAttribute("team", new Team());
         model.addAttribute("employeesMap", employeePositionMap);
 
         return "hole/addTeam";
@@ -98,23 +84,24 @@ public class BackofficeController {
 
         HttpSession session = httpServletRequest.getSession(true);
         Hole hole = (Hole) session.getAttribute("hole");
+        // todo: team needs to be send via model and not to create a new one
+        Team team = new Team();
 
-        PhaseEnum phaseEnum = (PhaseEnum) session.getAttribute("phaseType");
-
-        // TODO: Create a method in service for this aproach
-        Phase phase = holeService.getHolePhaseByType(hole, phaseEnum);
-        Team team = phase.getTeam();
-
-        //todo: replace db call with spring form for each employee
+        //todo: replace db call with ajax call
         for (Integer integer : employeeArray) {
             team.getEmployees().add(employeeService.getEmployeeById(integer));
         }
 
-        session.setAttribute("hole", hole);
 
-        model.addAttribute("allMaterials", materialService.getAllMaterials());
+        holeService.saveHole(hole);
+        teamService.saveTeam(team);
 
-        return "hole/addMaterials";
+        Phase phase = hole.getPhases().iterator().next();
+        phase.setTeam(team);
+
+        phaseService.savePhase(phase);
+
+        return "redirect:/backoffice/holes";
     }
 
     @RequestMapping(value = "/add-materials", method = RequestMethod.POST)
