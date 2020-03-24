@@ -48,12 +48,17 @@ public class BackofficeController {
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addHole(Model model){
+        Map<EmployeePositionEnum, List<Employee>> employeePositionMap = employeeService.getEmployeesByPositionAsMap(siteWorkersPositions);
+
         model.addAttribute("hole", new Hole());
+        model.addAttribute("employeesMap", employeePositionMap);
+
         return "hole/addHole";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addHole(@ModelAttribute("hole") Hole hole, HttpServletRequest httpServletRequest){
+    public String addHole(@ModelAttribute("hole") Hole hole, @RequestParam(value = "employees") List<Integer> employeeArray,
+                          HttpServletRequest httpServletRequest){
 
         Phase phase = new Phase();
         phase.setHole(hole);
@@ -61,10 +66,21 @@ public class BackofficeController {
 
         hole.getPhases().add(phase);
 
-        HttpSession session = httpServletRequest.getSession(true);
-        session.setAttribute("hole", hole);
+        // todo: team needs to be send via model and not to create a new one
+        Team team = new Team();
 
-        return "redirect:/backoffice/holes/add-team";
+        //todo: replace db call with ajax call
+        for (Integer integer : employeeArray) {
+            team.getEmployees().add(employeeService.getEmployeeById(integer));
+        }
+
+        phase.setTeam(team);
+
+        holeService.saveHole(hole);
+        teamService.saveTeam(team);
+        phaseService.savePhase(phase);
+
+        return "redirect:/backoffice/holes";
     }
 
     @RequestMapping(value = "/add-team", method = RequestMethod.GET)

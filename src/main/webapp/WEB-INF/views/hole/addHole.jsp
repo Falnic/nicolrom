@@ -5,43 +5,67 @@
 
 <form:form commandName="hole" method="post" autocomplete="false">
     <div class="container">
-        <h1>Adauga Groapa </h1>
-        <table>
-            <tr>
-                <td>Data:</td>
-                <td><form:input path="date" id="holeDatePicker" autocomplete="false"/></td>
-            </tr>
-            <tr>
-                <td>Strada:</td>
-                <td><form:input path="street" autocomplete="false"/></td>
-            </tr>
-            <tr>
-                <td>Numar:</td>
-                <td><form:input path="streetNr" autocomplete="false"/></td>
-            </tr>
-            <tr>
-                <td>Localitate:</td>
-                <td><form:input path="locality" autocomplete="false"/></td>
-            </tr>
-            <tr>
-                <td>Judet:</td>
-                <td><form:input path="district" autocomplete="false"/></td>
-            </tr>
-            <tr>
-                <td>Lungime:</td>
-                <td><form:input path="holeLength" /></td>
-            </tr>
-            <tr>
-                <td>Latime:</td>
-                <td><form:input path="holeWidth" /></td>
-            </tr>
-            <tr>
-                <td>Adancime:</td>
-                <td><form:input path="holeDepth" /></td>
-            </tr>
-        </table>
+        <div class="row">
+            <h1>Adauga Groapa </h1>
+        </div>
+        <div class="row">
+            <div class="col-lg-3">
+                <table>
+                    <tr>
+                        <td>Data:</td>
+                        <td><form:input path="date" id="holeDatePicker" autocomplete="false"/>
+                    </tr>
+                    <tr>
+                        <td>Strada:</td>
+                        <td><form:input path="street" autocomplete="false"/>
+                    </tr>
+                    <tr>
+                        <td>Numar:</td>
+                        <td><form:input path="streetNr" autocomplete="false"/>
+                    </tr>
+                    <tr>
+                        <td>Localitate:</td>
+                        <td><form:input path="locality" autocomplete="false"/>
+                    </tr>
+                    <tr>
+                        <td>Judet:</td>
+                        <td><form:input path="district" autocomplete="false"/>
+                    </tr>
+                    <tr>
+                        <td>Lungime:</td>
+                        <td><form:input path="holeLength" />
+                    </tr>
+                    <tr>
+                        <td>Latime:</td>
+                        <td><form:input path="holeWidth" />
+                    </tr>
+                    <tr>
+                        <td>Adancime:</td>
+                        <td><form:input path="holeDepth" />
+                    </tr>
+                </table>
+            </div>
+            <div class="col-lg-9">
+                <div class="row">
+                    <c:forEach items="${employeesMap}" var="employeesMapItem">
+                        <div class="col-lg-3">
+                            <h4>${employeesMapItem.key.name()}</h4>
+                            <table class="table table-striped">
+                                <c:forEach var="employee" items="${employeesMapItem.value}">
+                                    <tr>
+                                        <td>
+                                            <input id="employeeCheck${employee.idEmployee}" type="checkbox" name="employees" value="${employee.idEmployee}">
+                                            <label for="employeeCheck${employee.idEmployee}">${employee.name}</label>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </table>
+                        </div>
+                    </c:forEach>
+                </div>
+            </div>
+        </div>
         <input type="submit" class="btn-lg btn-primary pull-right" value="Adauga"/>
-<%--        <button type="submit" class="btn-lg btn-primary pull-right">Salveaza</button>--%>
     </div>
 </form:form>
 
