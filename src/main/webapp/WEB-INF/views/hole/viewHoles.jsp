@@ -27,7 +27,7 @@
 
                 <div class="row">
                     <div class="col-lg-12">
-                        <table class="table table-striped ">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Data </th>
@@ -68,7 +68,7 @@
 
     <script>
         function myFunction(holeid) {
-            location.replace("http://localhost:8080/nicolrom/" + holeid);
+            location.replace("http://localhost:8080/nicolrom/backoffice/holes/" + holeid);
         }
     </script>
     </body>

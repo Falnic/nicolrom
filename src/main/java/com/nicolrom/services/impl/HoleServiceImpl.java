@@ -18,6 +18,7 @@ public class HoleServiceImpl implements HoleService {
     @Autowired
     private HoleDao holeDao;
 
+    @Override
     public List<HoleDTO> getAllHoles() {
         List<Hole> holes = holeDao.getAllHoles();
         List<HoleDTO> holeDTOList = new ArrayList<>();
@@ -28,6 +29,11 @@ public class HoleServiceImpl implements HoleService {
         }
 
         return holeDTOList;
+    }
+
+    @Override
+    public Hole getHoleById(Integer id) {
+        return holeDao.getHoleById(id);
     }
 
     @Override

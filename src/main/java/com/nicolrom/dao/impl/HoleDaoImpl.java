@@ -4,6 +4,7 @@ import com.nicolrom.dao.HoleDao;
 import com.nicolrom.entities.Hole;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +22,14 @@ public class HoleDaoImpl implements HoleDao {
     public List<Hole> getAllHoles() {
         Session session = sessionFactory.getCurrentSession();
         return session.createQuery("FROM Hole as H").list();
+    }
+
+    @Override
+    public Hole getHoleById(Integer id) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("FROM Hole as H where H.holeId = :id");
+        query.setParameter("id", id);
+        return (Hole) query.getSingleResult();
     }
 
     @Override

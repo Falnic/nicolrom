@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
-<jsp:include page="../bootstrapImports.jsp"/>
+<jsp:include page="../../bootstrapImports.jsp"/>
 
 <c:url var="addTeamToHole" value="/backoffice/holes/add-team"/>
 

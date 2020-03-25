@@ -46,6 +46,15 @@ public class BackofficeController {
         return "hole/viewHoles";
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public String getHole(Model model, @PathVariable(value = "id") Integer id, HttpServletRequest httpServletRequest){
+        Hole hole = holeService.getHoleById(id);
+
+        model.addAttribute("hole", hole);
+        model.addAttribute("positions", EmployeePositionEnum.values());
+        return "hole/viewHole";
+    }
+
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addHole(Model model){
         Map<EmployeePositionEnum, List<Employee>> employeePositionMap = employeeService.getEmployeesByPositionAsMap(siteWorkersPositions);
@@ -53,7 +62,7 @@ public class BackofficeController {
         model.addAttribute("hole", new Hole());
         model.addAttribute("employeesMap", employeePositionMap);
 
-        return "hole/addHole";
+        return "hole/add/addHole";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -91,7 +100,7 @@ public class BackofficeController {
         model.addAttribute("team", new Team());
         model.addAttribute("employeesMap", employeePositionMap);
 
-        return "hole/addTeam";
+        return "hole/add/addTeam";
     }
 
     @RequestMapping(value = "/add-team", method = RequestMethod.POST)
