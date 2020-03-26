@@ -79,16 +79,28 @@
             <c:forEach var="phase" items="${hole.phases}">
                 <div id="tabs-${phase.phaseType.ordinal()}">
                     <div class="row">
-                        <div class="col-lg-6">
-                            <h4>Echipa</h4>
-                            <ul class="list-group">
-                                <c:forEach var="employee" items="${phase.team.employees}">
-                                    <li class="list-group-item">${employee.name}</li>
+                        <div class="col-lg-7">
+                            <div class="row">
+                                <c:forEach items="${allPositionsEnum}" var="position">
+                                    <div class="col-lg-4">
+                                        <table class="table">
+                                            <h4>${position}</h4>
+                                            <tbody>
+                                                <c:forEach items="${phase.team.employees}" var="employee">
+                                                    <c:if test="${employee.position.equals(position)}">
+                                                        <tr>
+                                                            <td>${employee.name}</td>
+                                                        </tr>
+                                                    </c:if>
+                                                </c:forEach>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </c:forEach>
-                            </ul>
+                            </div>
                         </div>
                         <c:if test="${phase.materialNoticeSet.size() != 0}">
-                            <div class="col-lg-6">
+                            <div class="col-lg-5">
                                 <h4>Materiale</h4>
                                 <table class="table">
                                     <c:forEach var="materialNotice" items="${phase.materialNoticeSet}">

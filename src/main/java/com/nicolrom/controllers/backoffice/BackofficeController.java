@@ -51,7 +51,9 @@ public class BackofficeController {
         Hole hole = holeService.getHoleById(id);
 
         model.addAttribute("hole", hole);
-        model.addAttribute("positions", EmployeePositionEnum.values());
+        model.addAttribute("allPhasesEnum",PhaseEnum.values());
+        model.addAttribute("allPositionsEnum", siteWorkersPositions);
+        model.addAttribute("employeesMap", employeeService.getEmployeesByPositionAsMap(siteWorkersPositions));
         return "hole/viewHole";
     }
 
