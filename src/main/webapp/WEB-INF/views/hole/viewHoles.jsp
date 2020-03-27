@@ -18,10 +18,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-2">
-                        <a href="${addHole}" methods="GET">
-                            <input type="submit" class="btn-lg btn-primary" value="Adauga Groapa">
-                        </a>
+                    <div class="col-lg-4">
+                        <a class="btn btn-lg btn-primary" href="${addHole}" role="button">Adauga Groapa</a>
+<%--                        <a href="${addHole}" methods="GET">--%>
+<%--                            <input type="submit" class="btn btn-lg btn-primary" value="Adauga Groapa">--%>
+<%--                        </a>--%>
                     </div>
                 </div>
 

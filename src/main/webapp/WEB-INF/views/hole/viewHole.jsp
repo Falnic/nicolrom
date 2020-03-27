@@ -1,15 +1,16 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<link rel="stylesheet" href="/resources/demos/style.css">
+
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 
 <div class="container">
     <div class="row">
@@ -75,6 +76,9 @@
                 <c:forEach var="phase" items="${hole.phases}">
                     <li><a href="#tabs-${phase.phaseType.ordinal()}">${phase.phaseType.name()}</a></li>
                 </c:forEach>
+                <c:if test="${hole.phases.size() < totalNrOfPhases}">
+                    <li><a href="#tabs-addPhase">Adauga Etapa</a></li>
+                </c:if>
             </ul>
             <c:forEach var="phase" items="${hole.phases}">
                 <div id="tabs-${phase.phaseType.ordinal()}">
@@ -83,8 +87,8 @@
                             <div class="row">
                                 <c:forEach items="${allPositionsEnum}" var="position">
                                     <div class="col-lg-4">
+                                        <h5>${position}</h5>
                                         <table class="table">
-                                            <h4>${position}</h4>
                                             <tbody>
                                                 <c:forEach items="${phase.team.employees}" var="employee">
                                                     <c:if test="${employee.position.equals(position)}">
@@ -116,6 +120,69 @@
                     </div>
                 </div>
             </c:forEach>
+            <c:if test="${hole.phases.size() < totalNrOfPhases}">
+                <div id="tabs-addPhase">
+                    <form method="post" autocomplete="off">
+                        <div class="row form-group">
+                            <div class="col-lg-3">
+                                <label class="control-label" for="phaseDate">Data</label>
+                                <input class="form-control" type="text" id="phaseDate" name="phaseDate" placeholder="dd/mm/yyyy">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-lg-7">
+                                <div class="row">
+                                    <c:forEach items="${employeesMap}" var="employeesMapItem">
+                                        <div class="col-lg-4">
+                                            <h5>${employeesMapItem.key.name()}</h5>
+                                            <table class="table">
+                                                <c:forEach var="employee" items="${employeesMapItem.value}">
+                                                    <tr>
+                                                        <td>
+                                                            <input id="employeeCheck${employee.idEmployee}" type="checkbox" name="employees" value="${employee.idEmployee}">
+                                                            <label for="employeeCheck${employee.idEmployee}">${employee.name}</label>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </table>
+                                        </div>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="row">
+                                    <h5>Materiale</h5>
+                                </div>
+                                <div class="row">
+                                    <table id="materialsTable" class="table">
+                                        <tr>
+                                            <td>
+                                                <select name="materialsNoticeSelect" id="materialNoticeSelect"
+                                                        class="browser-default custom-select">
+                                                    <c:forEach var="material" items="${allMaterials}">
+                                                        <option value="${material.materialId}">${material.name}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="materialNoticeQuantity" class="form-control"
+                                                       id="materialNoticeQuantityInput" >
+                                            </td>
+                                            <td>
+                                                <input id="addMaterialsRowBtn" type="button" value="Adauga"
+                                                       class="btn btn-primary" onclick="addRow()"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <input type="submit" class="btn btn-lg btn-primary" value="Adauga Etapa">
+                        </div>
+                    </form>
+                </div>
+            </c:if>
         </div>
     </div>
 </div>
@@ -124,4 +191,37 @@
     $(function () {
         $("#tabs").tabs();
     });
+
+    $(function() {
+        $( "#phaseDate" ).datepicker({
+            dateFormat: "dd-mm-yyyy"
+        });
+    });
+
+    $(function () {
+        $("#materialNoticeSelect").selectmenu();
+    });
+
+    function addRow(){
+        $("#materialsTable").append(
+            '                                        <tr>\n' +
+            '                                            <td>\n' +
+            '                                                <select name="materialsNoticeSelect" id="materialNoticeSelect"\n' +
+            '                                                        class="browser-default custom-select">\n' +
+            '                                                    <c:forEach var="material" items="${allMaterials}">\n' +
+            '                                                        <option value="${material.materialId}">${material.name}</option>\n' +
+            '                                                    </c:forEach>\n' +
+            '                                                </select>\n' +
+            '                                            </td>\n' +
+            '                                            <td>\n' +
+            '                                                <input type="number" name="materialNoticeQuantity" class="form-control"\n' +
+            '                                                       id="materialNoticeQuantityInput" placeholder="Cantitate">\n' +
+            '                                            </td>\n' +
+            '                                            <td>\n' +
+            '                                                <input type="button" value="Adauga" class="btn btn-primary" onclick="addRow()"/>\n' +
+            '                                            </td>\n' +
+            '                                        </tr>'
+        );
+    }
+
 </script>

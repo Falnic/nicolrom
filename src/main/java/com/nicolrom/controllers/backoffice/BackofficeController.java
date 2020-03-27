@@ -51,9 +51,38 @@ public class BackofficeController {
         Hole hole = holeService.getHoleById(id);
 
         model.addAttribute("hole", hole);
-        model.addAttribute("allPhasesEnum",PhaseEnum.values());
+        model.addAttribute("allPhasesEnum", PhaseEnum.values());
+        model.addAttribute("totalNrOfPhases", PhaseEnum.values().length);
         model.addAttribute("allPositionsEnum", siteWorkersPositions);
         model.addAttribute("employeesMap", employeeService.getEmployeesByPositionAsMap(siteWorkersPositions));
+        model.addAttribute("allMaterials", materialService.getAllMaterials());
+        return "hole/viewHole";
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
+    public String addPhase(Model model, @PathVariable(value = "id") Integer id,
+                           @RequestParam(value = "employees") List<Integer> employeeArray,
+                           @RequestParam(value = "phaseDate") Date phaseDate){
+        Phase phase = new Phase();
+        phase.setPhaseDate(phaseDate);
+
+        Hole hole = holeService.getHoleById(id);
+
+        Team team = new Team();
+        //todo: replace db call with ajax call
+        for (Integer integer : employeeArray) {
+            team.getEmployees().add(employeeService.getEmployeeById(integer));
+        }
+
+        phase.setTeam(team);
+        phase.setHole(hole);
+
+        model.addAttribute("hole", hole);
+        model.addAttribute("allPhasesEnum", PhaseEnum.values());
+        model.addAttribute("totalNrOfPhases", PhaseEnum.values().length);
+        model.addAttribute("allPositionsEnum", siteWorkersPositions);
+        model.addAttribute("employeesMap", employeeService.getEmployeesByPositionAsMap(siteWorkersPositions));
+        model.addAttribute("allMaterials", materialService.getAllMaterials());
         return "hole/viewHole";
     }
 

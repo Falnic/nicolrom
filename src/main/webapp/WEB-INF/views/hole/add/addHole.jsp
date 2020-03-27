@@ -13,7 +13,7 @@
                 <table>
                     <tr>
                         <td>Data:</td>
-                        <td><form:input path="date" id="holeDatePicker" autocomplete="false"/>
+                        <td><form:input path="date" id="holeDatePicker" placeholder="dd-mm-yyyy" autocomplete="false"/>
                     </tr>
                     <tr>
                         <td>Strada:</td>
@@ -76,6 +76,8 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
     $( function() {
-        $( "#holeDatePicker" ).datepicker();
+        $( "#holeDatePicker" ).datepicker({
+            dateFormat: "dd-mm-yyyy"
+        });
     } );
 </script>
