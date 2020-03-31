@@ -2,6 +2,7 @@ package com.nicolrom.services.impl;
 
 import com.nicolrom.dao.EmployeeDao;
 import com.nicolrom.entities.Employee;
+import com.nicolrom.entities.Phase;
 import com.nicolrom.enums.EmployeePositionEnum;
 import com.nicolrom.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Map<EmployeePositionEnum, List<Employee>> getEmployeesByPositionAsMap(List<EmployeePositionEnum> positionsEnums) {
+    public Map<EmployeePositionEnum, List<Employee>> getEmployeesByPositionAsMap(List<EmployeePositionEnum> positionEnums) {
         Map<EmployeePositionEnum, List<Employee>> employeePositionMap = new HashMap<>();
 
-        for (EmployeePositionEnum positionEnum : positionsEnums){
+        for (EmployeePositionEnum positionEnum : positionEnums){
             employeePositionMap.put(positionEnum, new ArrayList<Employee>());
         }
 
-        List<Employee> allEmployeesByGivenPositions = getEmployeesByPosition(positionsEnums);
+        List<Employee> allEmployeesByGivenPositions = getEmployeesByPosition(positionEnums);
         for(Employee employee : allEmployeesByGivenPositions){
             if (employeePositionMap.containsKey(employee.getPosition())){
                 employeePositionMap.get(employee.getPosition()).add(employee);
@@ -63,5 +64,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employees;
     }
 
+    @Override
+    public Map<Phase, List<EmployeePositionEnum>> getEmployeePositionsByPhases(List<Phase> phases) {
+        Map<Phase, List<EmployeePositionEnum>> employeePositionsByPhase = new HashMap<>();
 
+        for (Phase phase : phases){
+            List<EmployeePositionEnum> positions = new ArrayList<>();
+            for (Employee employee : phase.getTeam().getEmployees()){
+                if (!positions.contains(employee.getPosition())){
+                    positions.add(employee.getPosition());
+                }
+            }
+            employeePositionsByPhase.put(phase, positions);
+        }
+
+        return employeePositionsByPhase;
+    }
 }

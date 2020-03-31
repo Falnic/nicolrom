@@ -73,20 +73,20 @@
                     <li><a href="#tabs-${phase.phaseType.ordinal()}">${phase.phaseType.name()}</a></li>
                 </c:forEach>
                 <c:if test="${nextPhase != null}">
-                    <li><a href="#tabs-addPhase">${nextPhase.name()}</a></li>
+                    <li><a href="#tabs-addPhase" style="background-color: #FF3E3E; color: white">${nextPhase.name()}</a></li>
                 </c:if>
             </ul>
-            <c:forEach var="phase" items="${hole.phases}">
-                <div id="tabs-${phase.phaseType.ordinal()}">
+            <c:forEach var="phasePositionsEntry" items="${phasePositionsMap}">
+                <div id="tabs-${phasePositionsEntry.key.phaseType.ordinal()}">
                     <div class="row">
                         <div class="col-lg-7">
                             <div class="row">
-                                <c:forEach items="${allPositionsEnum}" var="position">
+                                <c:forEach items="${phasePositionsEntry.value}" var="position">
                                     <div class="col-lg-4">
                                         <h5>${position}</h5>
                                         <table class="table">
                                             <tbody>
-                                                <c:forEach items="${phase.team.employees}" var="employee">
+                                                <c:forEach items="${phasePositionsEntry.key.team.employees}" var="employee">
                                                     <c:if test="${employee.position.equals(position)}">
                                                         <tr>
                                                             <td>${employee.name}</td>
@@ -99,11 +99,11 @@
                                 </c:forEach>
                             </div>
                         </div>
-                        <c:if test="${phase.materialNoticeSet.size() != 0}">
+                        <c:if test="${phasePositionsEntry.key.materialNoticeSet.size() != 0}">
                             <div class="col-lg-5">
                                 <h4>Materiale</h4>
                                 <table class="table">
-                                    <c:forEach var="materialNotice" items="${phase.materialNoticeSet}">
+                                    <c:forEach var="materialNotice" items="${phasePositionsEntry.key.materialNoticeSet}">
                                         <tr>
                                             <td>${materialNotice.material.name}</td>
                                             <td>${materialNotice.quantity}</td>

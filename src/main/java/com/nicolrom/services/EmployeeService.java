@@ -1,6 +1,7 @@
 package com.nicolrom.services;
 
 import com.nicolrom.entities.Employee;
+import com.nicolrom.entities.Phase;
 import com.nicolrom.enums.EmployeePositionEnum;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface EmployeeService {
     Employee getEmployeeById(Integer id);
 
     Set<Employee> getEmployeesById(List<Integer> employeesId);
+
+    Map<Phase, List<EmployeePositionEnum>> getEmployeePositionsByPhases(List<Phase> phases);
 }

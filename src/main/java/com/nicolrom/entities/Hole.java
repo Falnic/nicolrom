@@ -3,9 +3,7 @@ package com.nicolrom.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "hole")
@@ -33,7 +31,7 @@ public class Hole implements Serializable {
 
     @Column(nullable = false)
     @OneToMany(targetEntity = Phase.class, mappedBy = "hole", fetch = FetchType.EAGER)
-    private Set<Phase> phases = new HashSet<>();
+    private List<Phase> phases = new ArrayList<>();
 
     @Column(nullable = false)
     private double holeLength;
@@ -87,11 +85,11 @@ public class Hole implements Serializable {
         this.district = district;
     }
 
-    public Set<Phase> getPhases() {
+    public List<Phase> getPhases() {
         return phases;
     }
 
-    public void setPhases(Set<Phase> phases) {
+    public void setPhases(List<Phase> phases) {
         this.phases = phases;
     }
 

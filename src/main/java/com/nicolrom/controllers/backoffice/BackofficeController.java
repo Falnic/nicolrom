@@ -51,8 +51,7 @@ public class BackofficeController {
         Hole hole = holeService.getHoleById(id);
 
         model.addAttribute("hole", hole);
-        //todo: sort employees by position and send them
-        model.addAttribute("allPositionsEnum", siteWorkersPositions);
+        model.addAttribute("phasePositionsMap", employeeService.getEmployeePositionsByPhases(hole.getPhases()));
         if (hole.getPhases().size() < PhaseEnum.values().length){
             PhaseEnum nextPhase = PhaseEnum.values()[hole.getPhases().size()];
             model.addAttribute("nextPhase", nextPhase);
