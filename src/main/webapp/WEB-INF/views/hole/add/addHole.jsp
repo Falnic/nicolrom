@@ -13,7 +13,7 @@
                 <table>
                     <tr>
                         <td>Data:</td>
-                        <td><form:input path="date" id="holeDatePicker" placeholder="dd-mm-yyyy" autocomplete="false"/>
+                        <td><form:input path="date" id="holeDatePicker" placeholder="mm-dd-yy" autocomplete="false"/>
                     </tr>
                     <tr>
                         <td>Strada:</td>
@@ -50,7 +50,7 @@
                     <c:forEach items="${employeesMap}" var="employeesMapItem">
                         <div class="col-lg-3">
                             <h4>${employeesMapItem.key.name()}</h4>
-                            <table class="table table-striped">
+                            <table class="table">
                                 <c:forEach var="employee" items="${employeesMapItem.value}">
                                     <tr>
                                         <td>
@@ -76,8 +76,6 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
     $( function() {
-        $( "#holeDatePicker" ).datepicker({
-            dateFormat: "dd-mm-yyyy"
-        });
+        $( "#holeDatePicker" ).datepicker();
     } );
 </script>

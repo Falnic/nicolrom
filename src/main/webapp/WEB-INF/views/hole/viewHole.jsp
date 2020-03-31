@@ -20,10 +20,6 @@
         <div class="col-lg-6">
             <table class="table table-striped">
                 <tr>
-                    <td>Id</td>
-                    <td>${hole.holeId}</td>
-                </tr>
-                <tr>
                     <td>Data</td>
                     <td>${hole.date}</td>
                 </tr>
@@ -76,8 +72,8 @@
                 <c:forEach var="phase" items="${hole.phases}">
                     <li><a href="#tabs-${phase.phaseType.ordinal()}">${phase.phaseType.name()}</a></li>
                 </c:forEach>
-                <c:if test="${hole.phases.size() < totalNrOfPhases}">
-                    <li><a href="#tabs-addPhase">Adauga Etapa</a></li>
+                <c:if test="${nextPhase != null}">
+                    <li><a href="#tabs-addPhase">${nextPhase.name()}</a></li>
                 </c:if>
             </ul>
             <c:forEach var="phase" items="${hole.phases}">
@@ -120,13 +116,13 @@
                     </div>
                 </div>
             </c:forEach>
-            <c:if test="${hole.phases.size() < totalNrOfPhases}">
+            <c:if test="${nextPhase != null}">
                 <div id="tabs-addPhase">
                     <form method="post" autocomplete="off">
                         <div class="row form-group">
                             <div class="col-lg-3">
                                 <label class="control-label" for="phaseDate">Data</label>
-                                <input class="form-control" type="text" id="phaseDate" name="phaseDate" placeholder="dd/mm/yyyy">
+                                <input class="form-control" type="text" id="phaseDate" name="phaseDate" placeholder="mm/dd/yy">
                             </div>
                         </div>
                         <div class="row form-group">
@@ -157,7 +153,7 @@
                                     <table id="materialsTable" class="table">
                                         <tr>
                                             <td>
-                                                <select name="materialsNoticeSelect" id="materialNoticeSelect"
+                                                <select name="materials" id="materialNoticeSelect"
                                                         class="browser-default custom-select">
                                                     <c:forEach var="material" items="${allMaterials}">
                                                         <option value="${material.materialId}">${material.name}</option>
@@ -165,11 +161,13 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <input type="number" name="materialNoticeQuantity" class="form-control"
-                                                       id="materialNoticeQuantityInput" >
+                                                <input type="number" name="materialsQuantity" class="form-control"
+                                                       placeholder="Cantitate" id="materialsQuantityInput" >
                                             </td>
+                                        </tr>
+                                        <tr id="addMaterialsTableRow">
                                             <td>
-                                                <input id="addMaterialsRowBtn" type="button" value="Adauga"
+                                                <input id="addMaterialsRowBtn" type="button" value="Adauga Materiale"
                                                        class="btn btn-primary" onclick="addRow()"/>
                                             </td>
                                         </tr>
@@ -178,6 +176,7 @@
                             </div>
                         </div>
                         <div class="row form-group">
+                            <input type="hidden" name="nextPhase" value="${nextPhase}">
                             <input type="submit" class="btn btn-lg btn-primary" value="Adauga Etapa">
                         </div>
                     </form>
@@ -193,9 +192,7 @@
     });
 
     $(function() {
-        $( "#phaseDate" ).datepicker({
-            dateFormat: "dd-mm-yyyy"
-        });
+        $( "#phaseDate" ).datepicker();
     });
 
     $(function () {
@@ -203,10 +200,11 @@
     });
 
     function addRow(){
+        $("#addMaterialsTableRow").remove();
         $("#materialsTable").append(
             '                                        <tr>\n' +
             '                                            <td>\n' +
-            '                                                <select name="materialsNoticeSelect" id="materialNoticeSelect"\n' +
+            '                                                <select name="materials" id="materialNoticeSelect"\n' +
             '                                                        class="browser-default custom-select">\n' +
             '                                                    <c:forEach var="material" items="${allMaterials}">\n' +
             '                                                        <option value="${material.materialId}">${material.name}</option>\n' +
@@ -214,11 +212,14 @@
             '                                                </select>\n' +
             '                                            </td>\n' +
             '                                            <td>\n' +
-            '                                                <input type="number" name="materialNoticeQuantity" class="form-control"\n' +
-            '                                                       id="materialNoticeQuantityInput" placeholder="Cantitate">\n' +
+            '                                                <input type="number" name="materialsQuantity" class="form-control"\n' +
+            '                                                       id="materialsQuantityInput" >\n' +
             '                                            </td>\n' +
+            '                                        </tr>\n' +
+            '                                        <tr id="addMaterialsTableRow">\n' +
             '                                            <td>\n' +
-            '                                                <input type="button" value="Adauga" class="btn btn-primary" onclick="addRow()"/>\n' +
+            '                                                <input id="addMaterialsRowBtn" type="button" value="Adauga Materiale"\n' +
+            '                                                       class="btn btn-primary" onclick="addRow()"/>\n' +
             '                                            </td>\n' +
             '                                        </tr>'
         );

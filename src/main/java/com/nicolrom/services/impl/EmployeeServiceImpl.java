@@ -7,10 +7,7 @@ import com.nicolrom.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -55,6 +52,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee getEmployeeById(Integer id) {
         return employeeDao.getEmployeeById(id);
+    }
+
+    @Override
+    public Set<Employee> getEmployeesById(List<Integer> employeesId) {
+        Set<Employee> employees = new HashSet<>();
+        for (Integer id : employeesId){
+            employees.add(getEmployeeById(id));
+        }
+        return employees;
     }
 
 

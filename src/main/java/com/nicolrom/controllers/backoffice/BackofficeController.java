@@ -51,9 +51,14 @@ public class BackofficeController {
         Hole hole = holeService.getHoleById(id);
 
         model.addAttribute("hole", hole);
-        model.addAttribute("allPhasesEnum", PhaseEnum.values());
-        model.addAttribute("totalNrOfPhases", PhaseEnum.values().length);
+        //todo: sort employees by position and send them
         model.addAttribute("allPositionsEnum", siteWorkersPositions);
+        if (hole.getPhases().size() < PhaseEnum.values().length){
+            PhaseEnum nextPhase = PhaseEnum.values()[hole.getPhases().size()];
+            model.addAttribute("nextPhase", nextPhase);
+        } else {
+            model.addAttribute("nextPhase",  null);
+        }
         model.addAttribute("employeesMap", employeeService.getEmployeesByPositionAsMap(siteWorkersPositions));
         model.addAttribute("allMaterials", materialService.getAllMaterials());
         return "hole/viewHole";
@@ -61,29 +66,29 @@ public class BackofficeController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     public String addPhase(Model model, @PathVariable(value = "id") Integer id,
+                           @RequestParam(value = "phaseDate") Date phaseDate,
                            @RequestParam(value = "employees") List<Integer> employeeArray,
-                           @RequestParam(value = "phaseDate") Date phaseDate){
+                           @RequestParam(value = "materials") List<Integer> materialArray,
+                           @RequestParam(value = "materialsQuantity") List<Integer> materialQuantityArray,
+                           @RequestParam(value = "nextPhase") PhaseEnum nextPhase){
         Phase phase = new Phase();
+        phase.setPhaseType(nextPhase);
         phase.setPhaseDate(phaseDate);
 
         Hole hole = holeService.getHoleById(id);
-
-        Team team = new Team();
-        //todo: replace db call with ajax call
-        for (Integer integer : employeeArray) {
-            team.getEmployees().add(employeeService.getEmployeeById(integer));
-        }
-
-        phase.setTeam(team);
         phase.setHole(hole);
 
-        model.addAttribute("hole", hole);
-        model.addAttribute("allPhasesEnum", PhaseEnum.values());
-        model.addAttribute("totalNrOfPhases", PhaseEnum.values().length);
-        model.addAttribute("allPositionsEnum", siteWorkersPositions);
-        model.addAttribute("employeesMap", employeeService.getEmployeesByPositionAsMap(siteWorkersPositions));
-        model.addAttribute("allMaterials", materialService.getAllMaterials());
-        return "hole/viewHole";
+        Team team = new Team();
+        team.setEmployees(employeeService.getEmployeesById(employeeArray));
+        phase.setTeam(team);
+
+        phase.setMaterialNoticeSet(materialNoticeService.getMaterialNoticeSet(phase, materialArray, materialQuantityArray));
+
+        teamService.saveTeam(team);
+        phaseService.savePhase(phase);
+        materialNoticeService.saveMaterialNotices(phase.getMaterialNoticeSet());
+
+        return "redirect:/backoffice/holes/{id}";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
@@ -113,7 +118,6 @@ public class BackofficeController {
         for (Integer integer : employeeArray) {
             team.getEmployees().add(employeeService.getEmployeeById(integer));
         }
-
         phase.setTeam(team);
 
         holeService.saveHole(hole);
