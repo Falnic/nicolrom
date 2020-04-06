@@ -11,6 +11,23 @@
 
     <beans:import resource="database-config.xml"/>
 
+    <http auto-config="true" use-expressions="true">
+        <intercept-url pattern="/login" access="permitAll" />
+        <intercept-url pattern="/logout" access="permitAll" />
+        <intercept-url pattern="/backoffice/**" access="hasRole('ROLE_ADMIN')"/>
+        <form-login login-page="/login" authentication-failure-url="/login-error" default-target-url="/backoffice/holes" always-use-default-target="true" />
+        <logout logout-success-url="/logout"/>
+    </http>
+
     <beans:bean class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler" />
+
+    <authentication-manager>
+        <authentication-provider>
+<!--            <password-encoder hash="bcrypt"/>-->
+            <jdbc-user-service data-source-ref="nicolromDataSource"
+                               users-by-username-query="select username, password, enabled from user where username=?"
+                               authorities-by-username-query="select u.username, a.authority from authorities a, user u where u.idUser=a.idUser and u.username =?"/>
+        </authentication-provider>
+    </authentication-manager>
 
 </beans:beans>

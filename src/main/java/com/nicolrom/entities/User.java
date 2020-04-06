@@ -1,27 +1,30 @@
 package com.nicolrom.entities;
 
-import com.nicolrom.enums.UserRightsEnum;
-
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
 public class User implements Serializable {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
+    @Column(nullable = false, name = "idUser")
     private int idUser;
 
-    @Column(nullable = false)
+    @Column(name = "username", nullable = false)
     private String username;
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled;
+
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserRightsEnum userRightsEnum;
+    @OneToMany(targetEntity = Authority.class, mappedBy = "user")
+    private Set<Authority> authorities = new HashSet<Authority>();
 
     public int getIdUser() {
         return idUser;
@@ -29,14 +32,6 @@ public class User implements Serializable {
 
     public void setIdUser(int userId) {
         this.idUser = userId;
-    }
-
-    public UserRightsEnum getUserRightsEnum() {
-        return userRightsEnum;
-    }
-
-    public void setUserRightsEnum(UserRightsEnum userRightsEnum) {
-        this.userRightsEnum = userRightsEnum;
     }
 
     public String getUsername() {
@@ -53,5 +48,21 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
     }
 }
