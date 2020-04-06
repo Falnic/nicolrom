@@ -46,13 +46,23 @@
 
                             <tbody>
                             <c:forEach var="hole" items="${allHoles}">
-                                <tr ondblclick="myFunction(${hole.holeId})">
+                                <tr ondblclick="redirectToHDP(${hole.holeId})">
                                     <td style="text-align: center">${hole.date}</td>
                                     <td style="text-align: center">${hole.street}</td>
                                     <td style="text-align: center">${hole.streetNr}</td>
                                     <td style="text-align: center">${hole.locality}</td>
                                     <td style="text-align: center">${hole.district}</td>
-                                    <td style="text-align: center">${hole.phase}</td>
+                                    <c:choose>
+                                        <c:when test="${hole.phase == 'SAPATURA'}">
+                                            <td style="text-align: center; background-color: #FF3E3E; color: white">${hole.phase}</td>
+                                        </c:when>
+                                        <c:when test="${hole.phase == 'ASTUPARE'}">
+                                            <td style="text-align: center; background-color: orange; color: white">${hole.phase}</td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td style="text-align: center">${hole.phase}</td>
+                                        </c:otherwise>
+                                    </c:choose>
                                     <td style="text-align: center">${hole.holeLength}</td>
                                     <td style="text-align: center">${hole.holeWidth}</td>
                                     <td style="text-align: center">${hole.holeDepth}</td>
@@ -68,8 +78,8 @@
         </c:if>
 
     <script>
-        function myFunction(holeid) {
-            location.replace("http://localhost:8080/nicolrom/backoffice/holes/" + holeid);
+        function redirectToHDP(holeid) {
+            window.location.href = "http://localhost:8080/nicolrom/backoffice/holes/" + holeid;
         }
     </script>
     </body>

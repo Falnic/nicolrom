@@ -1,10 +1,12 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="<c:url value="/resources/style/viewHole.css"/>">
 
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -73,11 +75,24 @@
                     <li><a href="#tabs-${phase.phaseType.ordinal()}">${phase.phaseType.name()}</a></li>
                 </c:forEach>
                 <c:if test="${nextPhase != null}">
-                    <li><a href="#tabs-addPhase" style="background-color: #FF3E3E; color: white">${nextPhase.name()}</a></li>
+                    <li><a href="#tabs-addPhase" id="a-addPhase">${nextPhase.name()}</a></li>
                 </c:if>
             </ul>
             <c:forEach var="phasePositionsEntry" items="${phasePositionsMap}">
-                <div id="tabs-${phasePositionsEntry.key.phaseType.ordinal()}">
+                <c:set var="phase" value="${phasePositionsEntry.key}"/>
+                <div id="tabs-${phase.phaseType.ordinal()}">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><h5>Data:</h5></td>
+                                        <td><h5><fmt:formatDate  value="${phase.phaseDate}" pattern="dd/MM/yyyy"/></h5></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-lg-7">
                             <div class="row">
@@ -86,7 +101,7 @@
                                         <h5>${position}</h5>
                                         <table class="table">
                                             <tbody>
-                                                <c:forEach items="${phasePositionsEntry.key.team.employees}" var="employee">
+                                                <c:forEach items="${phase.team.employees}" var="employee">
                                                     <c:if test="${employee.position.equals(position)}">
                                                         <tr>
                                                             <td>${employee.name}</td>
@@ -99,11 +114,11 @@
                                 </c:forEach>
                             </div>
                         </div>
-                        <c:if test="${phasePositionsEntry.key.materialNoticeSet.size() != 0}">
+                        <c:if test="${phase.materialNoticeSet.size() != 0}">
                             <div class="col-lg-5">
                                 <h4>Materiale</h4>
                                 <table class="table">
-                                    <c:forEach var="materialNotice" items="${phasePositionsEntry.key.materialNoticeSet}">
+                                    <c:forEach var="materialNotice" items="${phase.materialNoticeSet}">
                                         <tr>
                                             <td>${materialNotice.material.name}</td>
                                             <td>${materialNotice.quantity}</td>
