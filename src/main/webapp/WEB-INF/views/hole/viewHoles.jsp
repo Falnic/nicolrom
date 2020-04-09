@@ -2,6 +2,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <jsp:include page="../bootstrapImports.jsp"/>
+<jsp:include page="../backofficeHeader.jsp"/>
 
 <c:url var="addHole" value="/backoffice/holes/add"/>
 

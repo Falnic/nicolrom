@@ -23,7 +23,7 @@
 
     <authentication-manager>
         <authentication-provider>
-<!--            <password-encoder hash="bcrypt"/>-->
+            <password-encoder hash="bcrypt"/>
             <jdbc-user-service data-source-ref="nicolromDataSource"
                                users-by-username-query="select username, password, enabled from user where username=?"
                                authorities-by-username-query="select u.username, a.authority from authorities a, user u where u.idUser=a.idUser and u.username =?"/>
