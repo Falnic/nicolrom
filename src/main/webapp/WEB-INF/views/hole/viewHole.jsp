@@ -22,10 +22,6 @@
         <div class="col-lg-6">
             <table class="table table-striped">
                 <tr>
-                    <td>Data</td>
-                    <td>${hole.date}</td>
-                </tr>
-                <tr>
                     <td>Strada</td>
                     <td>${hole.street}</td>
                 </tr>
