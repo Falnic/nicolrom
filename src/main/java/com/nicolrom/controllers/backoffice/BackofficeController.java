@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @Controller
@@ -41,8 +40,13 @@ public class BackofficeController {
     private MaterialService materialService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String getHoles(Model model){
-        model.addAttribute("allHoles", holeService.getAllHoles());
+    public String getHoles(Model model, @RequestParam(name = "pgNr", defaultValue = "0") Integer pgNr,
+                           @RequestParam(name = "pgSize", defaultValue = "15") Integer pgSize,
+                           @RequestParam(name = "sortBy", defaultValue = "holeId") String sortBy){
+
+        model.addAttribute("allHoles", holeService.getAllHoles(pgNr, pgSize, sortBy));
+        model.addAttribute("pgNr", pgNr);
+        model.addAttribute("lastPg", (int) holeService.getLastPageNr(pgSize));
         return "hole/viewHoles";
     }
 
@@ -110,10 +114,8 @@ public class BackofficeController {
 
         hole.getPhases().add(phase);
 
-        // todo: team needs to be send via model and not to create a new one
         Team team = new Team();
 
-        //todo: replace db call with ajax call
         for (Integer integer : employeeArray) {
             team.getEmployees().add(employeeService.getEmployeeById(integer));
         }
@@ -124,88 +126,6 @@ public class BackofficeController {
         phaseService.savePhase(phase);
 
         return "redirect:/backoffice/holes";
-    }
-
-    @RequestMapping(value = "/add-team", method = RequestMethod.GET)
-    public String addTeam(Model model){
-
-        Map<EmployeePositionEnum, List<Employee>> employeePositionMap = employeeService.getEmployeesByPositionAsMap(siteWorkersPositions);
-
-        model.addAttribute("team", new Team());
-        model.addAttribute("employeesMap", employeePositionMap);
-
-        return "hole/add/addTeam";
-    }
-
-    @RequestMapping(value = "/add-team", method = RequestMethod.POST)
-    public  String addTeamToHole(Model model, @RequestParam(value = "employees") List<Integer> employeeArray,
-                                 HttpServletRequest httpServletRequest){
-
-        HttpSession session = httpServletRequest.getSession(true);
-        Hole hole = (Hole) session.getAttribute("hole");
-        // todo: team needs to be send via model and not to create a new one
-        Team team = new Team();
-
-        //todo: replace db call with ajax call
-        for (Integer integer : employeeArray) {
-            team.getEmployees().add(employeeService.getEmployeeById(integer));
-        }
-
-
-        holeService.saveHole(hole);
-        teamService.saveTeam(team);
-
-        Phase phase = hole.getPhases().iterator().next();
-        phase.setTeam(team);
-
-        phaseService.savePhase(phase);
-
-        return "redirect:/backoffice/holes";
-    }
-
-    @RequestMapping(value = "/add-materials", method = RequestMethod.POST)
-    public String addMaterialsToHole(Model model, @RequestParam(value = "materialId") List<Integer> materialIdArray,
-                                     @RequestParam(value = "materialQuantity") List<Integer> materialQuantityArray,
-                                     HttpServletRequest httpServletRequest){
-
-        //get all Materials By Id
-        Map<Material, Integer> materialIntegerMap = new HashMap<>();
-        for (int i = 0; i < materialQuantityArray.size(); i++){
-            int quantity = materialQuantityArray.get(i);
-            if(quantity != 0){
-                Material material = materialService.getMaterialById(materialIdArray.get(i));
-                materialIntegerMap.put(material, quantity);
-            }
-        }
-
-        HttpSession session = httpServletRequest.getSession(true);
-        Hole hole = (Hole) session.getAttribute("hole");
-
-        PhaseEnum phaseEnum = (PhaseEnum) session.getAttribute("phaseType");
-        Phase phase = holeService.getHolePhaseByType(hole, phaseEnum);
-
-        phase.setMaterialNoticeSet(prepareMaterialsNotice(materialIntegerMap, phase));
-
-        holeService.saveHole(hole);
-        teamService.saveTeam(phase.getTeam());
-        phaseService.savePhase(phase);
-        materialNoticeService.saveMaterialNotices(phase.getMaterialNoticeSet());
-
-        return "redirect:/backoffice/holes";
-    }
-
-    private Set<MaterialNotice> prepareMaterialsNotice (Map<Material, Integer> materialIntegerMap, Phase phase){
-        Set<MaterialNotice> materialNoticeList = new HashSet<>();
-        for(Map.Entry<Material, Integer> entry : materialIntegerMap.entrySet()){
-            MaterialNotice materialNotice = new MaterialNotice();
-            materialNotice.setMaterial(entry.getKey());
-            materialNotice.setQuantity(entry.getValue());
-            materialNotice.setPhase(phase);
-
-            materialNoticeList.add(materialNotice);
-        }
-
-        return materialNoticeList;
     }
 
 }

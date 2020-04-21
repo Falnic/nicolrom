@@ -20,15 +20,24 @@ public class HoleServiceImpl implements HoleService {
 
     @Override
     public List<HoleDTO> getAllHoles() {
-        List<Hole> holes = holeDao.getAllHoles();
-        List<HoleDTO> holeDTOList = new ArrayList<>();
+        return populateDTO(holeDao.getAllHoles());
+    }
 
-        for (Hole hole : holes) {
-            HoleDTO holeDTO = populateDTO(hole);
-            holeDTOList.add(holeDTO);
+    @Override
+    public List<HoleDTO> getAllHoles(Integer pageNo, Integer pageSize, String sortBy) {
+
+        List<Hole> pagedResult = holeDao.getAllHoles(pageNo, pageSize, sortBy);
+        if (!pagedResult.isEmpty()){
+            return populateDTO(pagedResult);
+        } else {
+            return new ArrayList<HoleDTO>();
         }
+    }
 
-        return holeDTOList;
+    @Override
+    public double getLastPageNr(Integer pageSize) {
+        double holesNr = holeDao.countHoles();
+        return Math.ceil(holesNr / pageSize);
     }
 
     @Override
@@ -37,22 +46,21 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
-    public Phase getHolePhaseByType(Hole hole, PhaseEnum phaseEnum) {
-
-        for (Phase phase : hole.getPhases()) {
-            if (phase.getPhaseType().equals(phaseEnum)) {
-                return phase;
-            }
-        }
-        return null;
-    }
-
-    @Override
     public void saveHole(Hole hole) {
-        hole.setHoleSurface(hole.getHoleLength() * hole.getHoleWidth() * hole.getHoleDepth());
+        hole.setHoleVolume(hole.getHoleLength() * hole.getHoleWidth() * hole.getHoleDepth());
         holeDao.saveHole(hole);
     }
 
+
+    private List<HoleDTO> populateDTO(List<Hole> holes){
+
+        List<HoleDTO> holeDTOList = new ArrayList<>();
+        for (Hole hole : holes) {
+            HoleDTO holeDTO = populateDTO(hole);
+            holeDTOList.add(holeDTO);
+        }
+        return holeDTOList;
+    }
 
     private HoleDTO populateDTO(Hole hole){
         HoleDTO holeDTO = new HoleDTO();
@@ -67,7 +75,7 @@ public class HoleServiceImpl implements HoleService {
         holeDTO.setHoleLength(hole.getHoleLength());
         holeDTO.setHoleWidth(hole.getHoleWidth());
         holeDTO.setHoleDepth(hole.getHoleDepth());
-        holeDTO.setHoleSurface(hole.getHoleSurface());
+        holeDTO.setHoleVolume(hole.getHoleVolume());
 
         return holeDTO;
     }

@@ -24,7 +24,7 @@ public class HoleDTO {
 
     private double holeDepth;
 
-    private double holeSurface;
+    private double holeVolume;
 
     public int getHoleId() {
         return holeId;
@@ -106,11 +106,11 @@ public class HoleDTO {
         this.holeDepth = holeDepth;
     }
 
-    public double getHoleSurface() {
-        return holeSurface;
+    public double getHoleVolume() {
+        return holeVolume;
     }
 
-    public void setHoleSurface(double holeSurface) {
-        this.holeSurface = holeSurface;
+    public void setHoleVolume(double holeVolume) {
+        this.holeVolume = holeVolume;
     }
 }

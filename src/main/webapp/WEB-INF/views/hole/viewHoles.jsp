@@ -21,9 +21,6 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <a class="btn btn-lg btn-primary" href="${addHole}" role="button">Adauga Groapa</a>
-<%--                        <a href="${addHole}" methods="GET">--%>
-<%--                            <input type="submit" class="btn btn-lg btn-primary" value="Adauga Groapa">--%>
-<%--                        </a>--%>
                     </div>
                 </div>
 
@@ -41,7 +38,7 @@
                                     <th>Lungime</th>
                                     <th>Latime</th>
                                     <th>Adancime</th>
-                                    <th>Suprafata</th>
+                                    <th>Volum</th>
                                 </tr>
                             </thead>
 
@@ -57,7 +54,7 @@
                                         <c:when test="${hole.phase == 'SAPATURA'}">
                                             <td style="text-align: center; background-color: #FF3E3E; color: white">${hole.phase}</td>
                                         </c:when>
-                                        <c:when test="${hole.phase == 'ASTUPARE'}">
+                                        <c:when test="${hole.phase == 'UMPLERE'}">
                                             <td style="text-align: center; background-color: orange; color: white">${hole.phase}</td>
                                         </c:when>
                                         <c:otherwise>
@@ -67,12 +64,64 @@
                                     <td style="text-align: center">${hole.holeLength}</td>
                                     <td style="text-align: center">${hole.holeWidth}</td>
                                     <td style="text-align: center">${hole.holeDepth}</td>
-                                    <td style="text-align: center">${hole.holeSurface}</td>
+                                    <td style="text-align: center">${hole.holeVolume}</td>
                                 </tr>
                             </c:forEach>
 
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <nav aria-label="Search results pages">
+                            <ul class="pagination justify-content-center">
+                                <c:choose>
+                                    <c:when test="${pgNr == 0}">
+                                        <li class="page-item disabled"><a class="page-link">Pagina Anterioara</a></li>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                               href="<c:url value='/backoffice/holes?pgNr=${pgNr - 1}'/>">Pagina Anterioara
+                                            </a>
+                                        </li>
+                                    </c:otherwise>
+                                </c:choose>
+
+                                <c:forEach var="pageItem" begin="0" end="${lastPg - 1}">
+                                    <c:choose>
+                                        <c:when test="${pageItem == pgNr}">
+                                            <li class="page-item active">
+                                                <a class="page-link"
+                                                   href="<c:url value='/backoffice/holes?pgNr=${pageItem}'/>">${pageItem + 1}
+                                                </a>
+                                            </li>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li class="page-item">
+                                                <a class="page-link"
+                                                   href="<c:url value='/backoffice/holes?pgNr=${pageItem}'/>">${pageItem + 1}
+                                                </a>
+                                            </li>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+
+                                <c:choose>
+                                    <c:when test="${(pgNr + 1) == lastPg}">
+                                        <li class="page-item disabled"><a class="page-link">Urmatoarea Pagina</a></li>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                               href="<c:url value='/backoffice/holes?pgNr=${pgNr + 1}'/>">Urmatoarea Pagina
+                                            </a>
+                                        </li>
+                                    </c:otherwise>
+                                </c:choose>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

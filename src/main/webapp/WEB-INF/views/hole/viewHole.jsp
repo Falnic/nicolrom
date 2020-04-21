@@ -61,8 +61,8 @@
                     <td>m</td>
                 </tr>
                 <tr>
-                    <td>Suprafata</td>
-                    <td>${hole.holeSurface}</td>
+                    <td>Volum</td>
+                    <td>${hole.holeVolume}</td>
                     <td>mc</td>
                 </tr>
             </table>

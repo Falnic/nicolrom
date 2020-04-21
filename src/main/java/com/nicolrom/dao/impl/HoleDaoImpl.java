@@ -38,5 +38,21 @@ public class HoleDaoImpl implements HoleDao {
         session.save(hole);
     }
 
+    @Override
+    public List<Hole> getAllHoles(Integer pageNo, Integer pageSize, String sortBy) {
+        Integer startValue = pageNo * pageSize;
+        Session session = sessionFactory.getCurrentSession();
 
+        Query query = session.createQuery("FROM Hole as H");
+        query.setFirstResult(startValue);
+        query.setMaxResults(pageSize);
+        return query.list();
+    }
+
+    @Override
+    public double countHoles() {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("SELECT COUNT (H.holeId) from Hole H");
+        return (long) query.uniqueResult();
+    }
 }

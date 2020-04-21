@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `nicolrom`.`hole` (
   `holeLength` DOUBLE NOT NULL,
   `holeWidth` DOUBLE NOT NULL,
   `holeDepth` DOUBLE NOT NULL,
-  `holeSurface` DOUBLE NOT NULL,
+  `holeVolume` DOUBLE NOT NULL,
   PRIMARY KEY (`holeId`),
   UNIQUE INDEX `holeId_UNIQUE` (`holeId` ASC) VISIBLE)
 ENGINE = InnoDB
@@ -105,7 +105,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `nicolrom`.`phase` (
   `phaseId` INT(10) NOT NULL AUTO_INCREMENT,
   `holeId` INT(11) NOT NULL,
-  `phaseType` ENUM('SAPATURA', 'ASTUPARE', 'ASFALTARE') NOT NULL,
+  `phaseType` ENUM('SAPATURA', 'UMPLERE', 'ASFALTARE') NOT NULL,
   `phaseDate` DATE NOT NULL,
   `teamId` INT(11) NOT NULL,
   PRIMARY KEY (`phaseId`),
