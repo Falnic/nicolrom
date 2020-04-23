@@ -23,6 +23,7 @@
                 <value>com.nicolrom.entities.MaterialNotice</value>
                 <value>com.nicolrom.entities.Team</value>
                 <value>com.nicolrom.entities.Authority</value>
+                <value>com.nicolrom.entities.Pipe</value>
             </list>
         </property>
 

@@ -39,6 +39,9 @@ public class BackofficeController {
     @Autowired
     private MaterialService materialService;
 
+    @Autowired
+    private PipeService pipeService;
+
     @RequestMapping(method = RequestMethod.GET)
     public String getHoles(Model model, @RequestParam(name = "pgNr", defaultValue = "0") Integer pgNr,
                            @RequestParam(name = "pgSize", defaultValue = "15") Integer pgSize,
@@ -63,7 +66,8 @@ public class BackofficeController {
             model.addAttribute("nextPhase",  null);
         }
         model.addAttribute("employeesMap", employeeService.getEmployeesByPositionAsMap(siteWorkersPositions));
-        model.addAttribute("allMaterials", materialService.getAllMaterials());
+        model.addAttribute("allPipes", pipeService.getAllPipes());
+        //        model.addAttribute("allMaterials", materialService.getAllMaterials());
         return "hole/viewHole";
     }
 
@@ -71,25 +75,28 @@ public class BackofficeController {
     public String addPhase(Model model, @PathVariable(value = "id") Integer id,
                            @RequestParam(value = "phaseDate") Date phaseDate,
                            @RequestParam(value = "employees") List<Integer> employeeArray,
-                           @RequestParam(value = "materials") List<Integer> materialArray,
-                           @RequestParam(value = "materialsQuantity") List<Integer> materialQuantityArray,
-                           @RequestParam(value = "nextPhase") PhaseEnum nextPhase){
+                           @RequestParam(value = "nextPhase") PhaseEnum nextPhase,
+                           @RequestParam(value = "pipe") String pipeDiameter){
         Phase phase = new Phase();
         phase.setPhaseType(nextPhase);
         phase.setPhaseDate(phaseDate);
 
         Hole hole = holeService.getHoleById(id);
+        hole.setPipe(pipeService.getPipeByDiameter(pipeDiameter));
+        holeService.updateHole(hole);
+
         phase.setHole(hole);
 
         Team team = new Team();
         team.setEmployees(employeeService.getEmployeesById(employeeArray));
         phase.setTeam(team);
 
-        phase.setMaterialNoticeSet(materialNoticeService.getMaterialNoticeSet(phase, materialArray, materialQuantityArray));
+        //todo: Materialele se vor calcula automat
+//        phase.setMaterialNoticeSet(materialNoticeService.getMaterialNoticeSet(phase, materialArray, materialQuantityArray));
 
         teamService.saveTeam(team);
         phaseService.savePhase(phase);
-        materialNoticeService.saveMaterialNotices(phase.getMaterialNoticeSet());
+//        materialNoticeService.saveMaterialNotices(phase.getMaterialNoticeSet());
 
         return "redirect:/backoffice/holes/{id}";
     }

@@ -39,6 +39,12 @@ public class HoleDaoImpl implements HoleDao {
     }
 
     @Override
+    public void updateHole(Hole hole) {
+        Session session = sessionFactory.getCurrentSession();
+        session.update(hole);
+    }
+
+    @Override
     public List<Hole> getAllHoles(Integer pageNo, Integer pageSize, String sortBy) {
         Integer startValue = pageNo * pageSize;
         Session session = sessionFactory.getCurrentSession();

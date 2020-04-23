@@ -45,6 +45,10 @@ public class Hole implements Serializable {
     @Column(nullable = false)
     private double holeVolume;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "pipeId", referencedColumnName = "idpipe")
+    private Pipe pipe;
+
     public int getHoleId() {
         return holeId;
     }
@@ -131,5 +135,13 @@ public class Hole implements Serializable {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Pipe getPipe() {
+        return pipe;
+    }
+
+    public void setPipe(Pipe pipe) {
+        this.pipe = pipe;
     }
 }

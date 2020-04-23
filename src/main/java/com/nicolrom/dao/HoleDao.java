@@ -17,4 +17,6 @@ public interface HoleDao {
     Hole getHoleById(Integer id);
 
     void saveHole(Hole hole);
+
+    void updateHole(Hole hole);
 }

@@ -51,6 +51,10 @@ public class HoleServiceImpl implements HoleService {
         holeDao.saveHole(hole);
     }
 
+    @Override
+    public void updateHole(Hole hole) {
+        holeDao.updateHole(hole);
+    }
 
     private List<HoleDTO> populateDTO(List<Hole> holes){
 
