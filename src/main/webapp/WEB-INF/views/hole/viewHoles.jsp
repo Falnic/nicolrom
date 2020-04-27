@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <jsp:include page="../bootstrapImports.jsp"/>
 <jsp:include page="../backofficeHeader.jsp"/>
@@ -8,14 +9,14 @@
 
 <html>
     <head>
-        <title>Del Gaz Grid Holes</title>
+        <title>DELGAZ Grid Holes</title>
     </head>
     <body>
         <c:if test="${not empty allHoles}">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 text-center">
-                        <h1>Gropi</h1>
+                        <h1>Situatie gropi DELGAZ grid</h1>
                     </div>
                 </div>
                 <div class="row">
@@ -64,7 +65,7 @@
                                     <td style="text-align: center">${hole.holeLength}</td>
                                     <td style="text-align: center">${hole.holeWidth}</td>
                                     <td style="text-align: center">${hole.holeDepth}</td>
-                                    <td style="text-align: center">${hole.holeVolume}</td>
+                                    <td style="text-align: center"><fmt:formatNumber type = "number" maxFractionDigits="2" value="${hole.holeVolume}"/></td>
                                 </tr>
                             </c:forEach>
 

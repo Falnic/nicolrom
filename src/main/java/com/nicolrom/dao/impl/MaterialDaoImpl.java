@@ -30,4 +30,12 @@ public class MaterialDaoImpl implements MaterialDao {
         query.setParameter("id", id);
         return (Material) query.getSingleResult();
     }
+
+    @Override
+    public Material getMaterialByName(String name) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("FROM Material as M where M.name = :name");
+        query.setParameter("name", name);
+        return (Material) query.getSingleResult();
+    }
 }

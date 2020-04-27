@@ -49,7 +49,7 @@
                 </tr>
                 <tr>
                     <td>Volum</td>
-                    <td>${hole.holeVolume}</td>
+                    <td><fmt:formatNumber type = "number" maxFractionDigits="2" value="${hole.holeVolume}"/></td>
                     <td>mc</td>
                 </tr>
             </table>
@@ -84,8 +84,8 @@
                                 <table class="table">
                                     <tbody>
                                     <tr>
-                                        <td><h5>Conducta:</h5></td>
-                                        <td><h5> &straightphi; ${hole.pipe.diameter} </h5></td>
+                                        <td>Conducta:</td>
+                                        <td>&straightphi; ${hole.pipe.diameter}</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -120,7 +120,7 @@
                                     <c:forEach var="materialNotice" items="${phase.materialNoticeSet}">
                                         <tr>
                                             <td>${materialNotice.material.name}</td>
-                                            <td>${materialNotice.quantity}</td>
+                                            <td><fmt:formatNumber type = "number" maxFractionDigits = "2" value = "${materialNotice.quantity}"/></td>
                                             <td>mc</td>
                                         </tr>
                                     </c:forEach>

@@ -91,12 +91,11 @@ public class BackofficeController {
         team.setEmployees(employeeService.getEmployeesById(employeeArray));
         phase.setTeam(team);
 
-        //todo: Materialele se vor calcula automat
-//        phase.setMaterialNoticeSet(materialNoticeService.getMaterialNoticeSet(phase, materialArray, materialQuantityArray));
+        phase.setMaterialNoticeSet(materialNoticeService.calculateMaterialsForPhase(hole, phase));
 
         teamService.saveTeam(team);
         phaseService.savePhase(phase);
-//        materialNoticeService.saveMaterialNotices(phase.getMaterialNoticeSet());
+        materialNoticeService.saveMaterialNotices(phase.getMaterialNoticeSet());
 
         return "redirect:/backoffice/holes/{id}";
     }

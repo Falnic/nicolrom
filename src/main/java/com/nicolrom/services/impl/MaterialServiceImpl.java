@@ -24,4 +24,8 @@ public class MaterialServiceImpl implements MaterialService {
         return materialDao.getMaterialById(id);
     }
 
+    @Override
+    public Material getMaterialByName(String name) {
+        return materialDao.getMaterialByName(name);
+    }
 }

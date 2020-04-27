@@ -1,6 +1,7 @@
 package com.nicolrom.services.impl;
 
 import com.nicolrom.dao.MaterialNoticeDao;
+import com.nicolrom.entities.Hole;
 import com.nicolrom.entities.MaterialNotice;
 import com.nicolrom.entities.Phase;
 import com.nicolrom.services.MaterialNoticeService;
@@ -31,6 +32,43 @@ public class MaterialNoticeServiceImpl implements MaterialNoticeService {
         for (MaterialNotice materialNotice : materialNotices){
             saveMaterialNotice(materialNotice);
         }
+    }
+
+    @Override
+    public Set<MaterialNotice> calculateMaterialsForPhase(Hole hole, Phase phase) {
+        switch (phase.getPhaseType()){
+            case UMPLERE:
+                 return calculateMaterialsForPhaseUmplere(hole, phase);
+            default:
+                return null;
+        }
+    }
+
+    public Set<MaterialNotice> calculateMaterialsForPhaseUmplere(Hole hole, Phase phase) {
+        /*
+            Cantitatea materialelor se calculeaza automat cu 2 zecimale
+            Nisip = L*l*(0,30m + ϕteava)
+            Balastru = Volum - Nisip
+         */
+
+        MaterialNotice nisipNotice = new MaterialNotice();
+        nisipNotice.setMaterial(materialService.getMaterialByName("Nisip"));
+        nisipNotice.setPhase(phase);
+
+        double nisipQuantity = hole.getHoleLength() * hole.getHoleWidth() * (0.3 + hole.getPipe().getDiameterValue());
+        nisipNotice.setQuantity(nisipQuantity);
+
+        MaterialNotice balastNotice = new MaterialNotice();
+        balastNotice.setMaterial(materialService.getMaterialByName("Balast"));
+        balastNotice.setPhase(phase);
+
+        double balastQuantity = hole.getHoleVolume() - nisipQuantity;
+        balastNotice.setQuantity(balastQuantity);
+
+        Set<MaterialNotice> materialNotices = new HashSet<>();
+        materialNotices.add(nisipNotice); materialNotices.add(balastNotice);
+
+        return materialNotices;
     }
 
     @Override
