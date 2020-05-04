@@ -49,6 +49,10 @@ public class Hole implements Serializable {
     @JoinColumn(name = "pipeId", referencedColumnName = "idpipe")
     private Pipe pipe;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "areaId", referencedColumnName = "idArea")
+    private Area area;
+
     public int getHoleId() {
         return holeId;
     }
@@ -143,5 +147,13 @@ public class Hole implements Serializable {
 
     public void setPipe(Pipe pipe) {
         this.pipe = pipe;
+    }
+
+    public Area getArea() {
+        return area;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
     }
 }

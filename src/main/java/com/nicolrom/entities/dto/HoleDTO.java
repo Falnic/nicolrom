@@ -26,6 +26,8 @@ public class HoleDTO {
 
     private double holeVolume;
 
+    private String holeArea;
+
     public int getHoleId() {
         return holeId;
     }
@@ -112,5 +114,13 @@ public class HoleDTO {
 
     public void setHoleVolume(double holeVolume) {
         this.holeVolume = holeVolume;
+    }
+
+    public String getHoleArea() {
+        return holeArea;
+    }
+
+    public void setHoleArea(String holeArea) {
+        this.holeArea = holeArea;
     }
 }

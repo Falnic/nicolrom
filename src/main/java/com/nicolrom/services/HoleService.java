@@ -3,6 +3,7 @@ package com.nicolrom.services;
 import com.nicolrom.entities.Hole;
 import com.nicolrom.entities.dto.HoleDTO;
 
+import java.util.Date;
 import java.util.List;
 
 public interface HoleService {
@@ -18,4 +19,7 @@ public interface HoleService {
     void saveHole(Hole hole);
 
     void updateHole(Hole hole);
+
+    Hole create(Date date, String street, String streetNr, String locality, String district,
+                      Double holeLenght, Double holeWidth, Double holeDepth);
 }

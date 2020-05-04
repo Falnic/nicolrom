@@ -16,7 +16,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 text-center">
-                        <h1>Situatie gropi DELGAZ grid</h1>
+                        <h1>Situatie defecte DELGAZ grid SA</h1>
                     </div>
                 </div>
                 <div class="row">

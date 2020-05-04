@@ -17,7 +17,8 @@ import java.util.*;
 public class BackofficeController {
 
     private final static List<EmployeePositionEnum> siteWorkersPositions = new ArrayList<>
-            (Arrays.asList(EmployeePositionEnum.MECANIC,
+            (Arrays.asList(
+                    EmployeePositionEnum.MECANIC,
                     EmployeePositionEnum.NECALIFICAT,
                     EmployeePositionEnum.SOFER));
 
@@ -41,6 +42,9 @@ public class BackofficeController {
 
     @Autowired
     private PipeService pipeService;
+
+    @Autowired
+    private AreaService areaService;
 
     @RequestMapping(method = RequestMethod.GET)
     public String getHoles(Model model, @RequestParam(name = "pgNr", defaultValue = "0") Integer pgNr,
@@ -67,12 +71,11 @@ public class BackofficeController {
         }
         model.addAttribute("employeesMap", employeeService.getEmployeesByPositionAsMap(siteWorkersPositions));
         model.addAttribute("allPipes", pipeService.getAllPipes());
-        //        model.addAttribute("allMaterials", materialService.getAllMaterials());
         return "hole/viewHole";
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    public String addPhase(Model model, @PathVariable(value = "id") Integer id,
+    public String addPhase(@PathVariable(value = "id") Integer id,
                            @RequestParam(value = "phaseDate") Date phaseDate,
                            @RequestParam(value = "employees") List<Integer> employeeArray,
                            @RequestParam(value = "nextPhase") PhaseEnum nextPhase,
@@ -106,13 +109,25 @@ public class BackofficeController {
 
         model.addAttribute("hole", new Hole());
         model.addAttribute("employeesMap", employeePositionMap);
+        model.addAttribute("areas", areaService.getAllAreas());
 
         return "hole/add/addHole";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addHole(@ModelAttribute("hole") Hole hole, @RequestParam(value = "employees") List<Integer> employeeArray,
-                          HttpServletRequest httpServletRequest){
+    public String addHole(@RequestParam(value = "holeDate") Date holeDate,
+                          @RequestParam(value = "street") String street,
+                          @RequestParam(value = "streetNr") String streetNr,
+                          @RequestParam(value = "locality") String locality,
+                          @RequestParam(value = "district") String district,
+                          @RequestParam(value = "holeLenght") Double holeLenght,
+                          @RequestParam(value = "holeWidth") Double holeWidth,
+                          @RequestParam(value = "holeDepth") Double holeDepth,
+                          @RequestParam(value = "area") Integer areaId,
+                          @RequestParam(value = "employees") List<Integer> employeeArray){
+
+        Hole hole = holeService.create(holeDate, street, streetNr, locality, district, holeLenght, holeWidth, holeDepth);
+        hole.setArea(areaService.getArea(areaId));
 
         Phase phase = new Phase();
         phase.setHole(hole);
@@ -121,7 +136,6 @@ public class BackofficeController {
         hole.getPhases().add(phase);
 
         Team team = new Team();
-
         for (Integer integer : employeeArray) {
             team.getEmployees().add(employeeService.getEmployeeById(integer));
         }
@@ -131,7 +145,7 @@ public class BackofficeController {
         teamService.saveTeam(team);
         phaseService.savePhase(phase);
 
-        return "redirect:/backoffice/holes";
+        return "redirect:/backoffice/holes/" + hole.getHoleId();
     }
 
 }

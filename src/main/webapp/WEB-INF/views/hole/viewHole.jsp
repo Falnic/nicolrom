@@ -4,6 +4,7 @@
 
 <jsp:include page="../bootstrapImports.jsp"/>
 <link rel="stylesheet" type="text/css" href="<c:url value="/resources/style/viewHole.css"/>">
+<jsp:include page="../backofficeHeader.jsp"/>
 
 <div class="container">
     <div class="row">
@@ -28,6 +29,12 @@
                     <td>Judet</td>
                     <td>${hole.district}</td>
                 </tr>
+                <c:if test="${hole.area != null && hole.area != ''}">
+                    <tr>
+                        <td>Zona</td>
+                        <td>${hole.area.type}</td>
+                    </tr>
+                </c:if>
             </table>
         </div>
         <div class="col-lg-6">

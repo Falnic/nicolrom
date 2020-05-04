@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -56,6 +57,25 @@ public class HoleServiceImpl implements HoleService {
         holeDao.updateHole(hole);
     }
 
+    @Override
+    public Hole create(Date date, String street, String streetNr, String locality, String district,
+                             Double holeLenght, Double holeWidth, Double holeDepth) {
+        Hole hole = new Hole();
+
+        //todo: Validari pt input-uri
+
+        hole.setDate(date);
+        hole.setStreet(street);
+        hole.setStreetNr(streetNr);
+        hole.setLocality(locality);
+        hole.setDistrict(district);
+        hole.setHoleLength(holeLenght);
+        hole.setHoleWidth(holeWidth);
+        hole.setHoleDepth(holeDepth);
+
+        return hole;
+    }
+
     private List<HoleDTO> populateDTO(List<Hole> holes){
 
         List<HoleDTO> holeDTOList = new ArrayList<>();
@@ -80,6 +100,10 @@ public class HoleServiceImpl implements HoleService {
         holeDTO.setHoleWidth(hole.getHoleWidth());
         holeDTO.setHoleDepth(hole.getHoleDepth());
         holeDTO.setHoleVolume(hole.getHoleVolume());
+
+        if (hole.getArea() != null){
+            holeDTO.setHoleArea(hole.getArea().getType());
+        }
 
         return holeDTO;
     }
