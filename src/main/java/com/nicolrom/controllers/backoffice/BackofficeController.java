@@ -105,13 +105,12 @@ public class BackofficeController {
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addHole(Model model){
-        Map<EmployeePositionEnum, List<Employee>> employeePositionMap = employeeService.getEmployeesByPositionAsMap(siteWorkersPositions);
-
-        model.addAttribute("hole", new Hole());
-        model.addAttribute("employeesMap", employeePositionMap);
+        model.addAttribute("positionEmployeesMap_SOFER", employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER));
+        model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
+        model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
         model.addAttribute("areas", areaService.getAllAreas());
 
-        return "hole/add/addHole";
+        return "hole/addHole";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -136,8 +135,12 @@ public class BackofficeController {
         hole.getPhases().add(phase);
 
         Team team = new Team();
-        for (Integer integer : employeeArray) {
-            team.getEmployees().add(employeeService.getEmployeeById(integer));
+
+        Set<Integer> employees = new HashSet<>(employeeArray);
+        for (Integer employee : employees) {
+            if (employee != null){
+                team.getEmployees().add(employeeService.getEmployeeById(employee));
+            }
         }
         phase.setTeam(team);
 

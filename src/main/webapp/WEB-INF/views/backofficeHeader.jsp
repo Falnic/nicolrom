@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:url var="logout" value="/logout"/>
+<c:url var="backofficeHome" value="/backoffice/holes"/>
 
 <%@ page session="false" %>
 <html>
@@ -15,7 +16,7 @@
                 <div class="col-lg-12">
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
                         <div class="col-lg-9">
-                            <a class="navbar-brand" href="#">Nicol Rom Backoffice</a>
+                            <a class="navbar-brand" href="${backofficeHome}">Nicol Rom Backoffice</a>
                             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                                 <span class="navbar-toggler-icon"></span>
