@@ -59,7 +59,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Set<Employee> getEmployeesById(List<Integer> employeesId) {
         Set<Employee> employees = new HashSet<>();
         for (Integer id : employeesId){
-            employees.add(getEmployeeById(id));
+            if (id != null){
+                employees.add(getEmployeeById(id));
+            }
         }
         return employees;
     }

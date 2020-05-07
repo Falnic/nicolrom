@@ -158,21 +158,72 @@
                             </c:if>
                         </div>
                         <div class="row form-group">
-                            <c:forEach items="${employeesMap}" var="employeesMapItem">
-                                <div class="col-lg-4">
-                                    <h5>${employeesMapItem.key.name()}</h5>
-                                    <table class="table">
-                                        <c:forEach var="employee" items="${employeesMapItem.value}">
-                                            <tr>
-                                                <td>
-                                                    <input id="employeeCheck${employee.idEmployee}" type="checkbox" name="employees" value="${employee.idEmployee}">
-                                                    <label for="employeeCheck${employee.idEmployee}">${employee.name}</label>
-                                                </td>
-                                            </tr>
-                                        </c:forEach>
-                                    </table>
-                                </div>
-                            </c:forEach>
+                            <div class="col-lg-4">
+                                <h4><label class="control-label" for="selectEmployees-SOFER">SOFER</label></h4>
+                                <table class="table" id="SOFER-table">
+                                    <tr>
+                                        <td>
+                                            <select name="employees" id="selectEmployees-SOFER" class="browser-default custom-select"
+                                                    onchange="addRowSOFER()">
+                                                <option value="${null}" selected>Alege Sofer</option>
+                                                <c:forEach var="employee" items="${positionEmployeesMap_SOFER}">
+                                                    <option value="${employee.idEmployee}">${employee.name}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-lg-4">
+                                <h4><label class="control-label" for="selectEmployees-MECANIC">MECANIC</label></h4>
+                                <table class="table" id="MECANIC-table">
+                                    <tr>
+                                        <td>
+                                            <select name="employees" id="selectEmployees-MECANIC" class="browser-default custom-select"
+                                                    onchange="addRowMECANIC()">
+                                                <option value="${null}" selected>Alege Mecanic</option>
+                                                <c:forEach var="employee" items="${positionEmployeesMap_MECANIC}">
+                                                    <option value="${employee.idEmployee}">${employee.name}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-lg-4">
+                                <h4><label class="control-label" for="selectEmployees-NECALIFICAT">NECALIFICAT</label></h4>
+                                <table class="table" id="NECALIFICAT-table">
+                                    <tr>
+                                        <td>
+                                            <select name="employees" id="selectEmployees-NECALIFICAT" class="browser-default custom-select"
+                                                    onchange="addRowNECALIFICAT()">
+                                                <option value="${null}" selected>Alege Necalificat</option>
+                                                <c:forEach var="employee" items="${positionEmployeesMap_NECALIFICAT}">
+                                                    <option value="${employee.idEmployee}">${employee.name}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+
+
+<%--                            <c:forEach items="${employeesMap}" var="employeesMapItem">--%>
+<%--                                <div class="col-lg-4">--%>
+<%--                                    <h5>${employeesMapItem.key.name()}</h5>--%>
+<%--                                    <table class="table">--%>
+<%--                                        <c:forEach var="employee" items="${employeesMapItem.value}">--%>
+<%--                                            <tr>--%>
+<%--                                                <td>--%>
+<%--                                                    <input id="employeeCheck${employee.idEmployee}" type="checkbox" name="employees" value="${employee.idEmployee}">--%>
+<%--                                                    <label for="employeeCheck${employee.idEmployee}">${employee.name}</label>--%>
+<%--                                                </td>--%>
+<%--                                            </tr>--%>
+<%--                                        </c:forEach>--%>
+<%--                                    </table>--%>
+<%--                                </div>--%>
+<%--                            </c:forEach>--%>
                         </div>
                         <div class="row form-group">
                             <input type="hidden" name="nextPhase" value="${nextPhase}">
@@ -198,30 +249,46 @@
         $("#materialNoticeSelect").selectmenu();
     });
 
-    function addRow(){
-        $("#addMaterialsTableRow").remove();
-        $("#materialsTable").append(
-            '                                        <tr>\n' +
-            '                                            <td>\n' +
-            '                                                <select name="materials" id="materialNoticeSelect"\n' +
-            '                                                        class="browser-default custom-select">\n' +
-            '                                                    <c:forEach var="material" items="${allMaterials}">\n' +
-            '                                                        <option value="${material.materialId}">${material.name}</option>\n' +
-            '                                                    </c:forEach>\n' +
-            '                                                </select>\n' +
-            '                                            </td>\n' +
-            '                                            <td>\n' +
-            '                                                <input type="number" name="materialsQuantity" class="form-control"\n' +
-            '                                                       id="materialsQuantityInput" >\n' +
-            '                                            </td>\n' +
-            '                                        </tr>\n' +
-            '                                        <tr id="addMaterialsTableRow">\n' +
-            '                                            <td>\n' +
-            '                                                <input id="addMaterialsRowBtn" type="button" value="Adauga Materiale"\n' +
-            '                                                       class="btn btn-primary" onclick="addRow()"/>\n' +
-            '                                            </td>\n' +
-            '                                        </tr>'
-        );
+    function addRowSOFER() {
+        $("#SOFER-table").append('<tr>\n' +
+            '                                <td>\n' +
+            '                                    <select name="employees" id="selectEmployees-SOFER" class="browser-default custom-select"\n' +
+            '                                            onchange="addRowSOFER()">\n' +
+            '                                        <option value="${null}" selected>Alege Sofer</option>\n' +
+            '                                        <c:forEach var="employee" items="${positionEmployeesMap_SOFER}">\n' +
+            '                                            <option value="${employee.idEmployee}">${employee.name}</option>\n' +
+            '                                        </c:forEach>\n' +
+            '                                    </select>\n' +
+            '                                </td>\n' +
+            '                            </tr>')
+    }
+
+    function addRowMECANIC() {
+        $("#MECANIC-table").append('<tr>\n' +
+            '                                <td>\n' +
+            '                                    <select name="employees" id="selectEmployees-MECANIC" class="browser-default custom-select"\n' +
+            '                                            onchange="addRowMECANIC()">\n' +
+            '                                        <option value="${null}" selected>Alege Mecanic</option>\n' +
+            '                                        <c:forEach var="employee" items="${positionEmployeesMap_MECANIC}">\n' +
+            '                                            <option value="${employee.idEmployee}">${employee.name}</option>\n' +
+            '                                        </c:forEach>\n' +
+            '                                    </select>\n' +
+            '                                </td>\n' +
+            '                            </tr>')
+    }
+
+    function addRowNECALIFICAT() {
+        $("#NECALIFICAT-table").append('<tr>\n' +
+            '                                <td>\n' +
+            '                                    <select name="employees" id="selectEmployees-NECALIFICAT" class="browser-default custom-select"\n' +
+            '                                            onchange="addRowNECALIFICAT()">\n' +
+            '                                        <option value="${null}" selected>Alege Necalificat</option>\n' +
+            '                                        <c:forEach var="employee" items="${positionEmployeesMap_NECALIFICAT}">\n' +
+            '                                            <option value="${employee.idEmployee}">${employee.name}</option>\n' +
+            '                                        </c:forEach>\n' +
+            '                                    </select>\n' +
+            '                                </td>\n' +
+            '                            </tr>')
     }
 
 </script>
