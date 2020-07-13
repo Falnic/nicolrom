@@ -5,6 +5,7 @@ import com.nicolrom.entities.Hole;
 import com.nicolrom.entities.Phase;
 import com.nicolrom.entities.dto.HoleDTO;
 import com.nicolrom.enums.PhaseEnum;
+import com.nicolrom.services.AreaService;
 import com.nicolrom.services.HoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ import java.util.List;
 
 @Service
 public class HoleServiceImpl implements HoleService {
+
+    @Autowired
+    private AreaService areaService;
 
     @Autowired
     private HoleDao holeDao;
@@ -58,8 +62,8 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
-    public Hole create(Date date, String street, String streetNr, String locality, String district,
-                             Double holeLenght, Double holeWidth, Double holeDepth) {
+    public Hole create(Date date, String street, String streetNr, String locality, String district, Integer areaId,
+                       Double holeLenght, Double holeWidth, Double holeDepth, String executor, Integer autoRouteDistance, Integer autoStationaryTime) {
         Hole hole = new Hole();
 
         //todo: Validari pt input-uri
@@ -69,9 +73,13 @@ public class HoleServiceImpl implements HoleService {
         hole.setStreetNr(streetNr);
         hole.setLocality(locality);
         hole.setDistrict(district);
+        hole.setArea(areaService.getArea(areaId));
         hole.setHoleLength(holeLenght);
         hole.setHoleWidth(holeWidth);
         hole.setHoleDepth(holeDepth);
+        hole.setExecutor(executor);
+        hole.setAutoRouteDistance(autoRouteDistance);
+        hole.setAutoStationaryTime(autoStationaryTime);
 
         return hole;
     }

@@ -53,17 +53,17 @@
                     <tr>
                         <td><label class="control-label" for="holeLenght">Lungime</label></td>
                         <td><input type="number" step="0.01" min="0" class="form-control" name="holeLenght"
-                                   id="holeLenght" autocomplete="false" placeholder="metru"/>
+                                   id="holeLenght" autocomplete="false" placeholder="m"/>
                     </tr>
                     <tr>
                         <td><label class="control-label" for="holeWidth">Latime</label></td>
                         <td><input type="number" step="0.01" min="0" class="form-control" name="holeWidth"
-                                   id="holeWidth" autocomplete="false" placeholder="metru"/>
+                                   id="holeWidth" autocomplete="false" placeholder="m"/>
                     </tr>
                     <tr>
                         <td><label class="control-label" for="holeDepth">Adancime</label></td>
                         <td><input type="number" step="0.01" min="0" class="form-control" name="holeDepth"
-                                   id="holeDepth" autocomplete="false" placeholder="metru"/>
+                                   id="holeDepth" autocomplete="false" placeholder="m"/>
                     </tr>
                 </table>
             </div>
@@ -72,8 +72,26 @@
         <div class="row">
             <div class="col-lg-2"></div>
             <div class="col-lg-8">
+                <b>Sapatura executata de:</b>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input class="custom-control-input" type="radio" name="executor" id="executorNicolRom"
+                           value="Nicol Rom" checked onclick="removeAutoFields()">
+                    <label class="custom-control-label" for="executorNicolRom">Nicol Rom</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input class="custom-control-input" type="radio" name="executor" id="executorDelGaz"
+                           value="Delgaz Grid" onclick="addAutoFields()">
+                    <label class="custom-control-label" for="executorDelGaz">Delgaz Grid</label>
+                </div>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
                 <div class="row">
-                    <div class="col-lg-4">
+                    <div class="col-lg-4" id="soferDiv">
                         <h4><label class="control-label" for="selectEmployees-SOFER">SOFER</label></h4>
                         <table class="table" id="SOFER-table">
                             <tr>
@@ -89,7 +107,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-4" id="mecanicDiv">
                         <h4><label class="control-label" for="selectEmployees-MECANIC">MECANIC</label></h4>
                         <table class="table" id="MECANIC-table">
                             <tr>
@@ -105,7 +123,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-4" id="necalificatDiv">
                         <h4><label class="control-label" for="selectEmployees-NECALIFICAT">NECALIFICAT</label></h4>
                         <table class="table" id="NECALIFICAT-table">
                             <tr>
@@ -125,6 +143,21 @@
             </div>
             <div class="col-lg-2"></div>
         </div>
+        <div class="row" id="newRouteFields" style="display: none">
+            <div class="col-lg-2"></div>
+                <div class="form-group col-lg-4">
+                    <label class="control-label" for="autoRouteDistance">Distanta parcursa de bascula</label>
+                    <input type="number" class="form-control" name="autoRouteDistance" id="autoRouteDistance" autocomplete="false"/>
+                    <small id="emailHelp" class="form-text text-muted">Distanta parcursa de bascula de la locul sapaturii pana la groapa de gunoi</small>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label class="control-label" for="autoStationaryTime">Ore de stationare bascula</label>
+                    <input type="number" class="form-control" name="autoStationaryTime" id="autoStationaryTime" autocomplete="false"/>
+                </div>
+            <div class="col-lg-2"></div>
+        </div>
+
+
         <div class="row">
             <div class="col-lg-5"></div>
             <div class="col-lg-2">
@@ -181,5 +214,17 @@
             '                                    </select>\n' +
             '                                </td>\n' +
             '                            </tr>')
+    }
+
+    function removeAutoFields() {
+        $("#newRouteFields").hide("slow");
+        $("#mecanicDiv").show("slow");
+        $("#necalificatDiv").show("slow");
+    }
+
+    function addAutoFields() {
+        $("#newRouteFields").show("slow");
+        $("#mecanicDiv").hide("slow");
+        $("#necalificatDiv").hide("slow");
     }
 </script>

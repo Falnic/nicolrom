@@ -98,6 +98,16 @@
                                 </table>
                             </div>
                         </c:if>
+                        <div class="col-lg-3">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td>Executant:</td>
+                                    <td>${hole.executor}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-7">
@@ -135,6 +145,30 @@
                             </div>
                         </c:if>
                     </div>
+                    <c:if test="${hole.autoRouteDistance != null || hole.autoStationaryTime != null}">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <table class="table">
+                                    <tbody>
+                                    <tr>
+                                        <td>Distanta parcursa:</td>
+                                        <td>${hole.autoRouteDistance}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-3">
+                                <table class="table">
+                                    <tbody>
+                                    <tr>
+                                        <td>Timp de stationare:</td>
+                                        <td>${hole.autoStationaryTime}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </c:if>
                 </div>
             </c:forEach>
             <c:if test="${nextPhase != null}">
@@ -206,24 +240,22 @@
                                     </tr>
                                 </table>
                             </div>
-
-
-
-<%--                            <c:forEach items="${employeesMap}" var="employeesMapItem">--%>
-<%--                                <div class="col-lg-4">--%>
-<%--                                    <h5>${employeesMapItem.key.name()}</h5>--%>
-<%--                                    <table class="table">--%>
-<%--                                        <c:forEach var="employee" items="${employeesMapItem.value}">--%>
-<%--                                            <tr>--%>
-<%--                                                <td>--%>
-<%--                                                    <input id="employeeCheck${employee.idEmployee}" type="checkbox" name="employees" value="${employee.idEmployee}">--%>
-<%--                                                    <label for="employeeCheck${employee.idEmployee}">${employee.name}</label>--%>
-<%--                                                </td>--%>
-<%--                                            </tr>--%>
-<%--                                        </c:forEach>--%>
-<%--                                    </table>--%>
-<%--                                </div>--%>
-<%--                            </c:forEach>--%>
+                            <div class="col-lg-4">
+                                <h4><label class="control-label" for="selectEmployees-MECANIC">MECANIC</label></h4>
+                                <table class="table" id="MECANIC-table">
+                                    <tr>
+                                        <td>
+                                            <select name="employees" id="selectEmployees-MECANIC" class="browser-default custom-select"
+                                                    onchange="addRowMECANIC()">
+                                                <option value="${null}" selected>Alege Mecanic</option>
+                                                <c:forEach var="employee" items="${positionEmployeesMap_MECANIC}">
+                                                    <option value="${employee.idEmployee}">${employee.name}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                         <div class="row form-group">
                             <input type="hidden" name="nextPhase" value="${nextPhase}">

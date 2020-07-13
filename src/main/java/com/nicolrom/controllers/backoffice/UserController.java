@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class UserController {
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
-    public String getLoginPage(Model model){
+    public String getLoginPage(){
         return "login";
     }
 
@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public String logout(Model model){
+    public String logout(){
         return "logout";
     }
 }

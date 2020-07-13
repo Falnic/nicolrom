@@ -53,6 +53,15 @@ public class Hole implements Serializable {
     @JoinColumn(name = "areaId", referencedColumnName = "idArea")
     private Area area;
 
+    @Column
+    private Integer autoRouteDistance;
+
+    @Column
+    private Integer autoStationaryTime;
+
+    @Column(nullable = false)
+    private String executor;
+
     public int getHoleId() {
         return holeId;
     }
@@ -155,5 +164,29 @@ public class Hole implements Serializable {
 
     public void setArea(Area area) {
         this.area = area;
+    }
+
+    public Integer getAutoRouteDistance() {
+        return autoRouteDistance;
+    }
+
+    public void setAutoRouteDistance(Integer autoRouteDistance) {
+        this.autoRouteDistance = autoRouteDistance;
+    }
+
+    public Integer getAutoStationaryTime() {
+        return autoStationaryTime;
+    }
+
+    public void setAutoStationaryTime(Integer autoStationaryTime) {
+        this.autoStationaryTime = autoStationaryTime;
+    }
+
+    public String getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(String executor) {
+        this.executor = executor;
     }
 }

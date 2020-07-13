@@ -20,6 +20,6 @@ public interface HoleService {
 
     void updateHole(Hole hole);
 
-    Hole create(Date date, String street, String streetNr, String locality, String district,
-                      Double holeLenght, Double holeWidth, Double holeDepth);
+    Hole create(Date date, String street, String streetNr, String locality, String district, Integer areaId,
+                      Double holeLenght, Double holeWidth, Double holeDepth, String executor, Integer autoRouteDistance, Integer autoStationaryTime);
 }

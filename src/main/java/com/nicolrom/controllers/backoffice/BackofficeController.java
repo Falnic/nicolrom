@@ -125,10 +125,13 @@ public class BackofficeController {
                           @RequestParam(value = "holeWidth") Double holeWidth,
                           @RequestParam(value = "holeDepth") Double holeDepth,
                           @RequestParam(value = "area") Integer areaId,
-                          @RequestParam(value = "employees") List<Integer> employeeArray){
+                          @RequestParam(value = "executor") String executor,
+                          @RequestParam(value = "employees") List<Integer> employeeArray,
+                          @RequestParam(value = "autoRouteDistance") Integer autoRouteDistance,
+                          @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime){
 
-        Hole hole = holeService.create(holeDate, street, streetNr, locality, district, holeLenght, holeWidth, holeDepth);
-        hole.setArea(areaService.getArea(areaId));
+        Hole hole = holeService.create(holeDate, street, streetNr, locality, district, areaId, holeLenght,
+                                        holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime);
 
         Phase phase = new Phase();
         phase.setHole(hole);
