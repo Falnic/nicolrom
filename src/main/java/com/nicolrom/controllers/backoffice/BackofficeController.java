@@ -16,12 +16,6 @@ import java.util.*;
 @RequestMapping(value = "/backoffice/holes")
 public class BackofficeController {
 
-    private final static List<EmployeePositionEnum> siteWorkersPositions = new ArrayList<>
-            (Arrays.asList(
-                    EmployeePositionEnum.MECANIC,
-                    EmployeePositionEnum.NECALIFICAT,
-                    EmployeePositionEnum.SOFER));
-
     @Autowired
     private HoleService holeService;
 

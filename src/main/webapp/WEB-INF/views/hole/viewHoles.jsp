@@ -1,5 +1,5 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <jsp:include page="../bootstrapImports.jsp"/>
@@ -42,7 +42,6 @@
                                     <th>Volum</th>
                                 </tr>
                             </thead>
-
                             <tbody>
                             <c:forEach var="hole" items="${allHoles}">
                                 <tr ondblclick="redirectToHDP(${hole.holeId})">
@@ -130,7 +129,7 @@
 
     <script>
         function redirectToHDP(holeid) {
-            window.location.href = "http://localhost:8080/nicolrom/backoffice/holes/" + holeid;
+            window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes/" + holeid;
         }
     </script>
     </body>

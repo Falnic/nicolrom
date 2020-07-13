@@ -209,22 +209,6 @@
                                 </table>
                             </div>
                             <div class="col-lg-4">
-                                <h4><label class="control-label" for="selectEmployees-MECANIC">MECANIC</label></h4>
-                                <table class="table" id="MECANIC-table">
-                                    <tr>
-                                        <td>
-                                            <select name="employees" id="selectEmployees-MECANIC" class="browser-default custom-select"
-                                                    onchange="addRowMECANIC()">
-                                                <option value="${null}" selected>Alege Mecanic</option>
-                                                <c:forEach var="employee" items="${positionEmployeesMap_MECANIC}">
-                                                    <option value="${employee.idEmployee}">${employee.name}</option>
-                                                </c:forEach>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-lg-4">
                                 <h4><label class="control-label" for="selectEmployees-NECALIFICAT">NECALIFICAT</label></h4>
                                 <table class="table" id="NECALIFICAT-table">
                                     <tr>

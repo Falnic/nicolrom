@@ -7,15 +7,8 @@
 
 <html>
 <head>
-
   <link rel="stylesheet" type="text/css" href="${indexCSS}">
 
   <title>Nicol Rom Web App</title>
 </head>
-<body>
-
-<%--<jsp:include page="WEB-INF/views/homePageHeader.jsp"/>--%>
-
-<%--<jsp:include page="WEB-INF/views/homePageFooter.jsp"/>--%>
-</body>
 </html>
