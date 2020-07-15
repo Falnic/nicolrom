@@ -12,9 +12,13 @@ public interface HoleDao {
 
     List<Hole> getAllHoles(Integer pageNo, Integer pageSize, String sortBy);
 
-    double countHoles();
-
     Hole getHoleById(Integer id);
+
+    List<Hole> findHolesByStreet(String street);
+
+    List<Hole> getDuplicates(Hole hole);
+
+    double countHoles();
 
     void saveHole(Hole hole);
 

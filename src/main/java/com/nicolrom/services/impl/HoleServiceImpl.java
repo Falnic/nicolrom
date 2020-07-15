@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -40,6 +41,11 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
+    public List<Hole> findHolesByStreet(String street) {
+        return holeDao.findHolesByStreet(street);
+    }
+
+    @Override
     public double getLastPageNr(Integer pageSize) {
         double holesNr = holeDao.countHoles();
         return Math.ceil(holesNr / pageSize);
@@ -65,7 +71,6 @@ public class HoleServiceImpl implements HoleService {
     public Hole create(Date date, String street, String streetNr, String locality, String district, Integer areaId,
                        Double holeLenght, Double holeWidth, Double holeDepth, String executor, Integer autoRouteDistance, Integer autoStationaryTime) {
         Hole hole = new Hole();
-
         //todo: Validari pt input-uri
 
         hole.setDate(date);
@@ -82,6 +87,17 @@ public class HoleServiceImpl implements HoleService {
         hole.setAutoStationaryTime(autoStationaryTime);
 
         return hole;
+    }
+
+    @Override
+    public HashMap<Boolean, String> checkHole(Hole hole){
+        List<Hole> duplicates = holeDao.getDuplicates(hole);
+        HashMap<Boolean, String> error = new HashMap<>();
+        if (duplicates != null && duplicates.size() > 0) {
+            error.put(true, "Hole already exists");
+            return error;
+        }
+        return null;
     }
 
     private List<HoleDTO> populateDTO(List<Hole> holes){

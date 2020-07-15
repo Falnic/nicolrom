@@ -32,9 +32,6 @@ public class BackofficeController {
     private MaterialNoticeService materialNoticeService;
 
     @Autowired
-    private MaterialService materialService;
-
-    @Autowired
     private PipeService pipeService;
 
     @Autowired
@@ -110,7 +107,7 @@ public class BackofficeController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addHole(@RequestParam(value = "holeDate") Date holeDate,
+    public String addHole(Model model, @RequestParam(value = "holeDate") Date holeDate,
                           @RequestParam(value = "street") String street,
                           @RequestParam(value = "streetNr") String streetNr,
                           @RequestParam(value = "locality") String locality,
@@ -126,6 +123,15 @@ public class BackofficeController {
 
         Hole hole = holeService.create(holeDate, street, streetNr, locality, district, areaId, holeLenght,
                                         holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime);
+        HashMap<Boolean, String> error = holeService.checkHole(hole);
+        if (error != null){
+            model.addAttribute("error", error.get(true));
+            model.addAttribute("positionEmployeesMap_SOFER", employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER));
+            model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
+            model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
+            model.addAttribute("areas", areaService.getAllAreas());
+            return "hole/addHole";
+        }
 
         Phase phase = new Phase();
         phase.setHole(hole);

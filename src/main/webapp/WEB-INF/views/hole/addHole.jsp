@@ -10,6 +10,11 @@
             <h1>Adauga Sapatura </h1>
         </div>
     </div>
+    <c:if test="${not empty error}">
+        <div class="col-lg-12 text-center">
+            Eroare, sapatura a fost deja adaugata
+        </div>
+    </c:if>
     <form method="post" autocomplete="off">
         <div class="row">
             <div class="col-lg-2"></div>

@@ -31,10 +31,8 @@
                             <thead>
                                 <tr>
                                     <th>Data </th>
-                                    <th>Strada</th>
-                                    <th>Nr</th>
-                                    <th>Localitate</th>
-                                    <th>Judet</th>
+                                    <th>Adresa</th>
+                                    <th>Zona</th>
                                     <th>Etapa</th>
                                     <th>Lungime</th>
                                     <th>Latime</th>
@@ -45,11 +43,9 @@
                             <tbody>
                             <c:forEach var="hole" items="${allHoles}">
                                 <tr ondblclick="redirectToHDP(${hole.holeId})">
-                                    <td style="text-align: center">${hole.date}</td>
-                                    <td style="text-align: center">${hole.street}</td>
-                                    <td style="text-align: center">${hole.streetNr}</td>
-                                    <td style="text-align: center">${hole.locality}</td>
-                                    <td style="text-align: center">${hole.district}</td>
+                                    <td>${hole.date}</td>
+                                    <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.district}</td>
+                                    <td>${hole.holeArea}</td>
                                     <c:choose>
                                         <c:when test="${hole.phase == 'SAPATURA'}">
                                             <td style="text-align: center; background-color: #FF3E3E; color: white">${hole.phase}</td>
@@ -58,16 +54,15 @@
                                             <td style="text-align: center; background-color: orange; color: white">${hole.phase}</td>
                                         </c:when>
                                         <c:otherwise>
-                                            <td style="text-align: center">${hole.phase}</td>
+                                            <td >${hole.phase}</td>
                                         </c:otherwise>
                                     </c:choose>
-                                    <td style="text-align: center">${hole.holeLength}</td>
-                                    <td style="text-align: center">${hole.holeWidth}</td>
-                                    <td style="text-align: center">${hole.holeDepth}</td>
-                                    <td style="text-align: center"><fmt:formatNumber type = "number" maxFractionDigits="2" value="${hole.holeVolume}"/></td>
+                                    <td>${hole.holeLength}</td>
+                                    <td>${hole.holeWidth}</td>
+                                    <td>${hole.holeDepth}</td>
+                                    <td><fmt:formatNumber type = "number" maxFractionDigits="2" value="${hole.holeVolume}"/></td>
                                 </tr>
                             </c:forEach>
-
                             </tbody>
                         </table>
                     </div>
