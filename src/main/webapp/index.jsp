@@ -3,11 +3,11 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<c:url var="indexCSS" value="/resources/style/style.css"/>
+<c:url var="addHoleCSS" value="/resources/style/style.css"/>
 
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="${indexCSS}">
+  <link rel="stylesheet" type="text/css" href="${addHoleCSS}">
 
   <title>Nicol Rom Web App</title>
 </head>

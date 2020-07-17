@@ -22,4 +22,6 @@ public interface EmployeeService {
     Set<Employee> getEmployeesById(List<Integer> employeesId);
 
     Map<Phase, List<EmployeePositionEnum>> getEmployeePositionsByPhases(List<Phase> phases);
+
+    Set<Employee> processEmployeesForExecutor(Set<Employee> employees, String executor);
 }

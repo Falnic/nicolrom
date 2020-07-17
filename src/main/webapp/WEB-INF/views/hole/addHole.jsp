@@ -4,6 +4,9 @@
 <jsp:include page="../bootstrapImports.jsp"/>
 <jsp:include page="../backofficeHeader.jsp"/>
 
+<c:url var="addHoleCSS" value="/resources/style/addHole.css"/>
+<link rel="stylesheet" type="text/css" href="${addHoleCSS}">
+
 <div class="container">
     <div class="row">
         <div class="col-lg-12 text-center">
@@ -15,7 +18,7 @@
             Eroare, sapatura a fost deja adaugata
         </div>
     </c:if>
-    <form method="post" autocomplete="off">
+    <form method="post" autocomplete="off" name="addHoleForm">
         <div class="row">
             <div class="col-lg-2"></div>
             <div class="col-lg-4">
@@ -91,7 +94,6 @@
             </div>
             <div class="col-lg-2"></div>
         </div>
-
         <div class="row">
             <div class="col-lg-2"></div>
             <div class="col-lg-8">
@@ -102,7 +104,7 @@
                             <tr>
                                 <td>
                                     <select name="employees" id="selectEmployees-SOFER" class="browser-default custom-select"
-                                            onchange="addRowSOFER()">
+                                            onchange="insertSOFERAddButton()">
                                         <option value="${null}" selected>Alege Sofer</option>
                                         <c:forEach var="employee" items="${positionEmployeesMap_SOFER}">
                                             <option value="${employee.idEmployee}">${employee.name}</option>
@@ -118,7 +120,7 @@
                             <tr>
                                 <td>
                                     <select name="employees" id="selectEmployees-MECANIC" class="browser-default custom-select"
-                                            onchange="addRowMECANIC()">
+                                            onchange="insertMECANICAddButton()">
                                         <option value="${null}" selected>Alege Mecanic</option>
                                         <c:forEach var="employee" items="${positionEmployeesMap_MECANIC}">
                                             <option value="${employee.idEmployee}">${employee.name}</option>
@@ -134,7 +136,7 @@
                             <tr>
                                 <td>
                                     <select name="employees" id="selectEmployees-NECALIFICAT" class="browser-default custom-select"
-                                            onchange="addRowNECALIFICAT()">
+                                            onchange="insertNECALIFICATAddButton()">
                                         <option value="${null}" selected>Alege Necalificat</option>
                                         <c:forEach var="employee" items="${positionEmployeesMap_NECALIFICAT}">
                                             <option value="${employee.idEmployee}">${employee.name}</option>
@@ -166,24 +168,63 @@
         <div class="row">
             <div class="col-lg-5"></div>
             <div class="col-lg-2">
-                <input type="submit" class="btn btn-primary btn-lg btn-block" value="Adauga"/>
+                <input type="submit" class="btn btn-primary btn-lg btn-block" value="Salveaza"/>
             </div>
             <div class="col-lg-5"></div>
         </div>
     </form>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
 
 <script>
     $( function() {
         $( "#holeDatePicker" ).datepicker();
+
+        $("form[name='addHoleForm']").validate({
+            rules: {
+                holeDate: "required",
+                street: "required",
+                streetNr: "required",
+                locality: "required",
+                district: "required",
+                autoRouteDistance: {
+                    required: "#executorDelGaz:checked",
+                },
+                autoStationaryTime: {
+                    required: "#executorDelGaz:checked",
+                },
+            },
+            messages: {
+                holeDate: "Selectati data",
+                street: "Introduceti strada",
+                streetNr: "Introduceti numarul strazii",
+                locality: "Introduceti localitatea",
+                district: "Introduceti judetul",
+                autoRouteDistance: "Introduceti distanta",
+                autoStationaryTime: "Introduceti timpul de stationare",
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
     } );
+
+
+    function insertSOFERAddButton() {
+        $("#addSOFERButtonTr").remove();
+        $("#SOFER-table").append('        <tr id="addSOFERButtonTr">\n' +
+            '                                <td>\n' +
+            '                                    <button type="button" id="addSOFERButton" class="btn btn-secondary btn-block" onclick="addRowSOFER()">Adauga Sofer</button>\n' +
+            '                                </td>\n' +
+            '                            </tr>')
+    }
 
     function addRowSOFER() {
         $("#SOFER-table").append('<tr>\n' +
             '                                <td>\n' +
             '                                    <select name="employees" id="selectEmployees-SOFER" class="browser-default custom-select"\n' +
-            '                                            onchange="addRowSOFER()">\n' +
+            '                                            onchange="insertSOFERAddButton()">\n' +
             '                                        <option value="${null}" selected>Alege Sofer</option>\n' +
             '                                        <c:forEach var="employee" items="${positionEmployeesMap_SOFER}">\n' +
             '                                            <option value="${employee.idEmployee}">${employee.name}</option>\n' +
@@ -193,11 +234,20 @@
             '                            </tr>')
     }
 
+    function insertMECANICAddButton() {
+        $("#addMECANICButtonTr").remove();
+        $("#MECANIC-table").append('        <tr id="addMECANICButtonTr">\n' +
+            '                                <td>\n' +
+            '                                    <button type="button" id="addMECANICButton" class="btn btn-secondary btn-block" onclick="addRowMECANIC()">Adauga Mecanic</button>\n' +
+            '                                </td>\n' +
+            '                            </tr>')
+    }
+
     function addRowMECANIC() {
         $("#MECANIC-table").append('<tr>\n' +
             '                                <td>\n' +
             '                                    <select name="employees" id="selectEmployees-MECANIC" class="browser-default custom-select"\n' +
-            '                                            onchange="addRowMECANIC()">\n' +
+            '                                            onchange="insertMECANICAddButton()">\n' +
             '                                        <option value="${null}" selected>Alege Mecanic</option>\n' +
             '                                        <c:forEach var="employee" items="${positionEmployeesMap_MECANIC}">\n' +
             '                                            <option value="${employee.idEmployee}">${employee.name}</option>\n' +
@@ -207,11 +257,20 @@
             '                            </tr>')
     }
 
+    function insertNECALIFICATAddButton() {
+        $("#addNECALIFICATButtonTr").remove();
+        $("#NECALIFICAT-table").append('        <tr id="addNECALIFICATButtonTr">\n' +
+            '                                <td>\n' +
+            '                                    <button type="button" id="addNECALIFICATButton" class="btn btn-secondary btn-block" onclick="addRowNECALIFICAT()">Adauga Necalificat</button>\n' +
+            '                                </td>\n' +
+            '                            </tr>')
+    }
+
     function addRowNECALIFICAT() {
         $("#NECALIFICAT-table").append('<tr>\n' +
             '                                <td>\n' +
             '                                    <select name="employees" id="selectEmployees-NECALIFICAT" class="browser-default custom-select"\n' +
-            '                                            onchange="addRowNECALIFICAT()">\n' +
+            '                                            onchange="insertNECALIFICATAddButton()">\n' +
             '                                        <option value="${null}" selected>Alege Necalificat</option>\n' +
             '                                        <c:forEach var="employee" items="${positionEmployeesMap_NECALIFICAT}">\n' +
             '                                            <option value="${employee.idEmployee}">${employee.name}</option>\n' +

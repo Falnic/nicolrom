@@ -140,7 +140,9 @@ public class BackofficeController {
         hole.getPhases().add(phase);
 
         Team team = new Team();
-        team.setEmployees(employeeService.getEmployeesById(employeeArray));
+        Set<Employee> employees = employeeService.getEmployeesById(employeeArray);
+        employees = employeeService.processEmployeesForExecutor(employees, executor);
+        team.setEmployees(employees);
         phase.setTeam(team);
 
         holeService.saveHole(hole);
