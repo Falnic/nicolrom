@@ -82,22 +82,4 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return employeePositionsByPhase;
     }
-
-    @Override
-    public Set<Employee> processEmployeesForExecutor(Set<Employee> employees, String executor) {
-        if ("Delgaz Grid".equals(executor)){
-            HashSet<Employee> newEmployees = new HashSet<>();
-            for (Employee employee : employees){
-                if (checkEmployeesPosition(employee)){
-                    newEmployees.add(employee);
-                }
-            }
-            return newEmployees;
-        }
-        return employees;
-    }
-
-    private Boolean checkEmployeesPosition(Employee employee){
-        return employee.getPosition() != EmployeePositionEnum.MECANIC && employee.getPosition() != EmployeePositionEnum.NECALIFICAT;
-    }
 }

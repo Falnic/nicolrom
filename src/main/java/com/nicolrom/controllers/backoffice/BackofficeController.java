@@ -4,12 +4,16 @@ import com.nicolrom.entities.*;
 import com.nicolrom.enums.EmployeePositionEnum;
 import com.nicolrom.enums.PhaseEnum;
 import com.nicolrom.services.*;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -103,11 +107,15 @@ public class BackofficeController {
         model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
         model.addAttribute("areas", areaService.getAllAreas());
 
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        model.addAttribute("currentDate", dateFormat.format(date));
+
         return "hole/addHole";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addHole(Model model, @RequestParam(value = "holeDate") Date holeDate,
+    public String addHole(Model model, @RequestParam(value = "holeDate") String holeDate,
                           @RequestParam(value = "street") String street,
                           @RequestParam(value = "streetNr") String streetNr,
                           @RequestParam(value = "locality") String locality,
@@ -117,11 +125,14 @@ public class BackofficeController {
                           @RequestParam(value = "holeDepth") Double holeDepth,
                           @RequestParam(value = "area") Integer areaId,
                           @RequestParam(value = "executor") String executor,
-                          @RequestParam(value = "employees") List<Integer> employeeArray,
+                          @RequestParam(value = "employees_SOFER") List<String> employeesSofer,
+                          @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
+                          @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
                           @RequestParam(value = "autoRouteDistance") Integer autoRouteDistance,
-                          @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime){
+                          @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) throws ParseException {
 
-        Hole hole = holeService.create(holeDate, street, streetNr, locality, district, areaId, holeLenght,
+        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(holeDate);
+        Hole hole = holeService.create(date, street, streetNr, locality, district, areaId, holeLenght,
                                         holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime);
         HashMap<Boolean, String> error = holeService.checkHole(hole);
         if (error != null){
@@ -140,9 +151,17 @@ public class BackofficeController {
         hole.getPhases().add(phase);
 
         Team team = new Team();
-        Set<Employee> employees = employeeService.getEmployeesById(employeeArray);
-        employees = employeeService.processEmployeesForExecutor(employees, executor);
-        team.setEmployees(employees);
+        List<String> employeesStringArray = new ArrayList<>();
+
+        if ("Nicol Rom".equals(executor)){
+            employeesStringArray.addAll(employeesSofer);
+            employeesStringArray.addAll(employeesMecanic);
+            employeesStringArray.addAll(employeesNecalificat);
+        } else {
+            employeesStringArray.addAll(employeesSofer);
+        }
+
+        team.setEmployees(employeeService.getEmployeesById(parseEmployeesStringArray(employeesStringArray)));
         phase.setTeam(team);
 
         holeService.saveHole(hole);
@@ -150,6 +169,14 @@ public class BackofficeController {
         phaseService.savePhase(phase);
 
         return "redirect:/backoffice/holes/" + hole.getHoleId();
+    }
+
+    private List<Integer> parseEmployeesStringArray(List<String> employeesStringArray){
+        List<Integer> employees = new ArrayList<>();
+        for (String employeeId : employeesStringArray) {
+            employees.add(Integer.parseInt(employeeId));
+        }
+        return employees;
     }
 
 }
