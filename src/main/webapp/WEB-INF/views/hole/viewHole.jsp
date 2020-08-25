@@ -13,14 +13,20 @@
     <div class="row">
         <div class="col-lg-6">
             <table class="table table-striped">
-                <tr>
-                    <td>Strada</td>
-                    <td>${hole.street}</td>
-                </tr>
-                <tr>
-                    <td>Numar</td>
-                    <td>${hole.streetNr}</td>
-                </tr>
+                <c:choose>
+                    <c:when test="${hole.holeNrAtSameAddress != null && hole.holeNrAtSameAddress != 0}">
+                        <tr>
+                            <td>Adresa</td>
+                            <td>Strada ${hole.street} nr ${hole.streetNr} Groapa ${hole.holeNrAtSameAddress}</td>
+                        </tr>
+                    </c:when>
+                    <c:otherwise>
+                        <tr>
+                            <td>Adresa</td>
+                            <td>Strada ${hole.street} nr ${hole.streetNr}</td>
+                        </tr>
+                    </c:otherwise>
+                </c:choose>
                 <tr>
                     <td>Localitate</td>
                     <td>${hole.locality}</td>

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -90,14 +89,23 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
-    public HashMap<Boolean, String> checkHole(Hole hole){
+    public void checkHole(Hole hole){
         List<Hole> duplicates = holeDao.getDuplicates(hole);
-        HashMap<Boolean, String> error = new HashMap<>();
+        checkHoleForSameAddress(duplicates, hole);
+    }
+
+    private void checkHoleForSameAddress(List<Hole> duplicates, Hole hole){
         if (duplicates != null && duplicates.size() > 0) {
-            error.put(true, "Hole already exists");
-            return error;
+            if (duplicates.size() == 1){
+                Hole duplicate = duplicates.get(0);
+                duplicate.setHoleNrAtSameAddress(1);
+                updateHole(duplicate);
+
+                hole.setHoleNrAtSameAddress(duplicates.size() + 1);
+            } else {
+                hole.setHoleNrAtSameAddress(duplicates.size() + 1);
+            }
         }
-        return null;
     }
 
     private List<HoleDTO> populateDTO(List<Hole> holes){
@@ -119,6 +127,7 @@ public class HoleServiceImpl implements HoleService {
         holeDTO.setStreetNr(hole.getStreetNr());
         holeDTO.setLocality(hole.getLocality());
         holeDTO.setDistrict(hole.getDistrict());
+        holeDTO.setHoleNrAtSameAddress(hole.getHoleNrAtSameAddress());
         setHoleDtoPhase(holeDTO, hole);
         holeDTO.setHoleLength(hole.getHoleLength());
         holeDTO.setHoleWidth(hole.getHoleWidth());

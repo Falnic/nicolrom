@@ -16,6 +16,8 @@ public class HoleDTO {
 
     private String district;
 
+    private Integer holeNrAtSameAddress;
+
     private String phase;
 
     private double holeLength;
@@ -122,5 +124,13 @@ public class HoleDTO {
 
     public void setHoleArea(String holeArea) {
         this.holeArea = holeArea;
+    }
+
+    public Integer getHoleNrAtSameAddress() {
+        return holeNrAtSameAddress;
+    }
+
+    public void setHoleNrAtSameAddress(Integer holeNrAtSameAddress) {
+        this.holeNrAtSameAddress = holeNrAtSameAddress;
     }
 }

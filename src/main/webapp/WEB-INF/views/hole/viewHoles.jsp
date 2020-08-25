@@ -44,7 +44,14 @@
                             <c:forEach var="hole" items="${allHoles}">
                                 <tr ondblclick="redirectToHDP(${hole.holeId})">
                                     <td>${hole.date}</td>
-                                    <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.district}</td>
+                                    <c:choose>
+                                        <c:when test="${hole.holeNrAtSameAddress != null && hole.holeNrAtSameAddress != 0}">
+                                            <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.district} Groapa ${hole.holeNrAtSameAddress}</td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.district}</td>
+                                        </c:otherwise>
+                                    </c:choose>
                                     <td>${hole.holeArea}</td>
                                     <c:choose>
                                         <c:when test="${hole.phase == 'SAPATURA'}">

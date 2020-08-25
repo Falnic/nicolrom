@@ -134,15 +134,7 @@ public class BackofficeController {
         Date date = new SimpleDateFormat("yyyy-MM-dd").parse(holeDate);
         Hole hole = holeService.create(date, street, streetNr, locality, district, areaId, holeLenght,
                                         holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime);
-        HashMap<Boolean, String> error = holeService.checkHole(hole);
-        if (error != null){
-            model.addAttribute("error", error.get(true));
-            model.addAttribute("positionEmployeesMap_SOFER", employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER));
-            model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
-            model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
-            model.addAttribute("areas", areaService.getAllAreas());
-            return "hole/addHole";
-        }
+        holeService.checkHole(hole);
 
         Phase phase = new Phase();
         phase.setHole(hole);

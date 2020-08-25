@@ -27,6 +27,6 @@ public interface HoleService {
                 Double holeLenght, Double holeWidth, Double holeDepth, String executor, Integer autoRouteDistance,
                 Integer autoStationaryTime);
 
-    HashMap<Boolean, String> checkHole(Hole hole);
+    void checkHole(Hole hole);
 
 }
