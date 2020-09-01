@@ -69,6 +69,13 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-lg-9"></div>
+        <div class="col-lg-3">
+            <a class="btn btn-warning" href="<c:url value="/backoffice/holes/update?id=${hole.holeId}"/>" role="button">Modifica</a>
+            <a class="btn btn-danger" href="<c:url value="/backoffice/holes/delete?id=${hole.holeId}"/>" role="button">Sterge</a>
+        </div>
+    </div>
+    <div class="row">
         <div id="tabs" class="col-lg-12">
             <ul>
                 <c:forEach var="phase" items="${hole.phases}">

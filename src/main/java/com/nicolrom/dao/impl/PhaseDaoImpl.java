@@ -21,4 +21,10 @@ public class PhaseDaoImpl implements PhaseDao {
         Session session = sessionFactory.getCurrentSession();
         session.save(phase);
     }
+
+    @Override
+    public void updatePhase(Phase phase) {
+        Session session = sessionFactory.getCurrentSession();
+        session.update(phase);
+    }
 }

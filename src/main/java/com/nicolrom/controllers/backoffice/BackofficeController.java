@@ -4,15 +4,12 @@ import com.nicolrom.entities.*;
 import com.nicolrom.enums.EmployeePositionEnum;
 import com.nicolrom.enums.PhaseEnum;
 import com.nicolrom.services.*;
-import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -43,7 +40,7 @@ public class BackofficeController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String getHoles(Model model, @RequestParam(name = "pgNr", defaultValue = "0") Integer pgNr,
-                           @RequestParam(name = "pgSize", defaultValue = "15") Integer pgSize,
+                           @RequestParam(name = "pgSize", defaultValue = "13") Integer pgSize,
                            @RequestParam(name = "sortBy", defaultValue = "holeId") String sortBy){
 
         model.addAttribute("allHoles", holeService.getAllHoles(pgNr, pgSize, sortBy));
@@ -129,10 +126,9 @@ public class BackofficeController {
                           @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
                           @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
                           @RequestParam(value = "autoRouteDistance") Integer autoRouteDistance,
-                          @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) throws ParseException {
+                          @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) {
 
-        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(holeDate);
-        Hole hole = holeService.create(date, street, streetNr, locality, district, areaId, holeLenght,
+        Hole hole = holeService.create(holeDate, street, streetNr, locality, district, areaId, holeLenght,
                                         holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime);
         holeService.checkHole(hole);
 
@@ -161,6 +157,79 @@ public class BackofficeController {
         phaseService.savePhase(phase);
 
         return "redirect:/backoffice/holes/" + hole.getHoleId();
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.GET)
+    public String updateHoleGet(Model model,  @RequestParam(value = "id") String id){
+        model.addAttribute("positionEmployeesMap_SOFER", employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER));
+        model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
+        model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
+        model.addAttribute("areas", areaService.getAllAreas());
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        model.addAttribute("currentDate", dateFormat.format(date));
+
+        Hole hole = holeService.getHoleById(Integer.parseInt(id));
+        model.addAttribute("hole", hole);
+        if ("Nicol Rom".equals(hole.getExecutor())){
+            model.addAttribute("selectedEmployees_SOFER", prepareHoleEmployeesByPhaseString(employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.SOFER)));
+            model.addAttribute("selectedEmployees_MECANIC", prepareHoleEmployeesByPhaseString(employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.MECANIC)));
+            model.addAttribute("selectedEmployees_NECALIFICAT", prepareHoleEmployeesByPhaseString(employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.NECALIFICAT)));
+        } else {
+            model.addAttribute("selectedEmployees_SOFER", prepareHoleEmployeesByPhaseString(employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.SOFER)));
+        }
+        return "hole/updateHole";
+    }
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public String updateHolePut(Model model,  @RequestParam(value = "id") String id,
+                                @RequestParam(value = "holeDate") String holeDate,
+                                @RequestParam(value = "street") String street,
+                                @RequestParam(value = "streetNr") String streetNr,
+                                @RequestParam(value = "locality") String locality,
+                                @RequestParam(value = "district") String district,
+                                @RequestParam(value = "holeLenght") Double holeLenght,
+                                @RequestParam(value = "holeWidth") Double holeWidth,
+                                @RequestParam(value = "holeDepth") Double holeDepth,
+                                @RequestParam(value = "area") Integer areaId,
+                                @RequestParam(value = "executor") String executor,
+                                @RequestParam(value = "employees_SOFER") List<String> employeesSofer,
+                                @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
+                                @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
+                                @RequestParam(value = "autoRouteDistance") Integer autoRouteDistance,
+                                @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) {
+
+        Hole updatedHole = holeService.create(holeDate, street, streetNr, locality, district, areaId, holeLenght,
+                holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime);
+        Hole hole = holeService.getHoleById(Integer.parseInt(id));
+        updatedHole.setHoleId(hole.getHoleId());
+        holeService.checkHole(hole, updatedHole);
+
+        holeService.updateHole(updatedHole);
+
+        updatedHole.setPhases(phaseService.createPhases(updatedHole, hole.getPhases()));
+
+        Team updatedTeam = teamService.create(employeesSofer, employeesMecanic, employeesNecalificat, executor);
+        updatedTeam.setIdTeam(hole.getPhases().get(0).getTeam().getIdTeam());
+
+        Phase updatedPhase = updatedHole.getPhases().get(0);
+        updatedPhase.setTeam(updatedTeam);
+        updatedTeam.getPhases().add(updatedPhase);
+
+        phaseService.updatePhase(updatedPhase);
+        teamService.updateTeam(updatedTeam);
+
+        return "redirect:/backoffice/holes/" + id;
+    }
+
+    private String prepareHoleEmployeesByPhaseString(List<Employee> employees){
+        StringBuilder employeesString = new StringBuilder("[");
+        for (Employee employee : employees){
+            employeesString.append(employee.getIdEmployee()).append(',');
+        }
+        employeesString.deleteCharAt(employeesString.lastIndexOf(","));
+        employeesString.append("]");
+        return employeesString.toString();
     }
 
     private List<Integer> parseEmployeesStringArray(List<String> employeesStringArray){

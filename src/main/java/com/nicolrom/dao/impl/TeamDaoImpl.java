@@ -21,4 +21,10 @@ public class TeamDaoImpl implements TeamDao {
         Session session = sessionFactory.getCurrentSession();
         session.save(team);
     }
+
+    @Override
+    public void updateTeam(Team team) {
+        Session session = sessionFactory.getCurrentSession();
+        session.update(team);
+    }
 }

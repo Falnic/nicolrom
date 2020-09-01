@@ -2,8 +2,10 @@ package com.nicolrom.services.impl;
 
 import com.nicolrom.dao.EmployeeDao;
 import com.nicolrom.entities.Employee;
+import com.nicolrom.entities.Hole;
 import com.nicolrom.entities.Phase;
 import com.nicolrom.enums.EmployeePositionEnum;
+import com.nicolrom.enums.PhaseEnum;
 import com.nicolrom.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,5 +83,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         return employeePositionsByPhase;
+    }
+
+    @Override
+    public List<Employee> getHoleEmployeesByPhase(Hole hole, PhaseEnum phaseEnum) {
+        for(Phase phase : hole.getPhases()){
+            if (phase.getPhaseType() == phaseEnum){
+                return new ArrayList<>(phase.getTeam().getEmployees());
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<Employee> getHoleEmployeesByPhase(Hole hole, PhaseEnum phaseEnum, EmployeePositionEnum positionEnum) {
+        List<Employee> sortedEmployees = new ArrayList<>();
+        List<Employee> employees = getHoleEmployeesByPhase(hole, phaseEnum);
+        for (Employee employee : employees){
+            if (employee.getPosition().equals(positionEnum)){
+                sortedEmployees.add(employee);
+            }
+        }
+        return sortedEmployees;
     }
 }

@@ -2,13 +2,14 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<jsp:include page="../bootstrapImports.jsp"/>
-<jsp:include page="../backofficeHeader.jsp"/>
-
 <c:url var="addHole" value="/backoffice/holes/add"/>
 
 <html>
     <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <jsp:include page="../bootstrapImports.jsp"/>
+        <jsp:include page="../backofficeHeader.jsp"/>
         <title>DELGAZ Grid Holes</title>
     </head>
     <body>

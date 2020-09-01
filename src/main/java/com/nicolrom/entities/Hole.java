@@ -62,8 +62,8 @@ public class Hole implements Serializable {
     @Column(nullable = false)
     private String executor;
 
-    @Column
-    private Integer holeNrAtSameAddress;
+    @Column(columnDefinition = "integer default 0")
+    private Integer holeNrAtSameAddress = 0;
 
     public int getHoleId() {
         return holeId;

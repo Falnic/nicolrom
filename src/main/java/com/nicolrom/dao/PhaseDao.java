@@ -6,4 +6,5 @@ public interface PhaseDao {
 
     void savePhase(Phase phase);
 
+    void updatePhase(Phase phase);
 }
