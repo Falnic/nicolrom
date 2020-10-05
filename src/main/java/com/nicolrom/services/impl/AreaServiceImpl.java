@@ -28,4 +28,9 @@ public class AreaServiceImpl implements AreaService {
     public List<String> getAllAreaTypes() {
         return areaDao.getAllAreaTypes();
     }
+
+    @Override
+    public void deleteArea(Area area) {
+     areaDao.deleteArea(area);
+    }
 }

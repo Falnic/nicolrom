@@ -23,4 +23,6 @@ public interface HoleDao {
     void saveHole(Hole hole);
 
     void updateHole(Hole hole);
+
+    void deleteHole(Hole hole);
 }

@@ -45,6 +45,14 @@ public class HoleDaoImpl implements HoleDao {
     }
 
     @Override
+    public void deleteHole(Hole hole) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("delete Hole where holeId = :id");
+        query.setParameter("id", hole.getHoleId());
+        query.executeUpdate();
+    }
+
+    @Override
     public List<Hole> getAllHoles(Integer pageNo, Integer pageSize, String sortBy) {
         Integer startValue = pageNo * pageSize;
         Session session = sessionFactory.getCurrentSession();

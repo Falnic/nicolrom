@@ -2,8 +2,10 @@ package com.nicolrom.services.impl;
 
 import com.nicolrom.dao.PhaseDao;
 import com.nicolrom.entities.Hole;
-import com.nicolrom.entities.Phase;
+import com.nicolrom.entities.Phase;;
+import com.nicolrom.services.MaterialNoticeService;
 import com.nicolrom.services.PhaseService;
+import com.nicolrom.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,12 @@ public class PhaseServiceImpl implements PhaseService {
 
     @Autowired
     private PhaseDao phaseDao;
+
+    @Autowired
+    private TeamService teamService;
+
+    @Autowired
+    private MaterialNoticeService materialNoticeService;
 
     @Override
     public List<Phase> createPhases(Hole hole, List<Phase> holePhases) {
@@ -31,6 +39,11 @@ public class PhaseServiceImpl implements PhaseService {
     }
 
     @Override
+    public Phase getPhase(Integer phaseId) {
+        return phaseDao.getPhase(phaseId);
+    }
+
+    @Override
     public void savePhase(Phase phase) {
         phaseDao.savePhase(phase);
     }
@@ -39,4 +52,21 @@ public class PhaseServiceImpl implements PhaseService {
     public void updatePhase(Phase phase) {
         phaseDao.updatePhase(phase);
     }
+
+    @Override
+    public void deletePhase(List<Phase> phases) {
+        for (Phase phase : phases){
+            switch (phase.getPhaseType()){
+                case SAPATURA:
+                    phaseDao.deletePhase(phase);
+                    teamService.deleteTeam(phase.getTeam());
+                case UMPLERE:
+                    materialNoticeService.deleteMaterialNotice(phase.getMaterialNoticeSet());
+                    phaseDao.deletePhase(phase);
+                    teamService.deleteTeam(phase.getTeam());
+            }
+        }
+    }
+
+
 }

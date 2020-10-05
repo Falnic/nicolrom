@@ -44,6 +44,13 @@ public class MaterialNoticeServiceImpl implements MaterialNoticeService {
         }
     }
 
+    @Override
+    public void deleteMaterialNotice(Set<MaterialNotice> materialNotices) {
+        for (MaterialNotice materialNotice : materialNotices){
+            materialNoticeDao.deleteMaterialNotice(materialNotice);
+        }
+    }
+
     public Set<MaterialNotice> calculateMaterialsForPhaseUmplere(Hole hole, Phase phase) {
         /*
             Cantitatea materialelor se calculeaza automat cu 2 zecimale

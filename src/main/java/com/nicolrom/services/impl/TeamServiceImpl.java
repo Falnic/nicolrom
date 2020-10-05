@@ -36,6 +36,11 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public Team getTeam(Integer id) {
+        return teamDao.getTeam(id);
+    }
+
+    @Override
     public void saveTeam(Team team) {
         teamDao.saveTeam(team);
     }
@@ -43,6 +48,11 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public void updateTeam(Team team) {
         teamDao.updateTeam(team);
+    }
+
+    @Override
+    public void deleteTeam(Team team) {
+        teamDao.deleteTeam(team);
     }
 
     private List<Integer> parseEmployeesStringArray(List<String> employeesStringArray){

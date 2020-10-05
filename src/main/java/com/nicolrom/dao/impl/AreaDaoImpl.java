@@ -37,4 +37,10 @@ public class AreaDaoImpl implements AreaDao {
         Session session = sessionFactory.getCurrentSession();
         return session.createQuery("SELECT a.type from Area a").list();
     }
+
+    @Override
+    public void deleteArea(Area area) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(area);
+    }
 }

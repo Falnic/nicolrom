@@ -68,6 +68,11 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
+    public void deleteHole(Hole hole) {
+        holeDao.deleteHole(hole);
+    }
+
+    @Override
     public Hole create(String holeDate, String street, String streetNr, String locality, String district, Integer areaId,
                        Double holeLenght, Double holeWidth, Double holeDepth, String executor, Integer autoRouteDistance, Integer autoStationaryTime) {
         Hole hole = new Hole();

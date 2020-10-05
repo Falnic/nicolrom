@@ -11,4 +11,6 @@ public interface AreaDao {
     List<Area> getAllAreas();
 
     List<String> getAllAreaTypes();
+
+    void deleteArea(Area area);
 }

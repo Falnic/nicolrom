@@ -222,6 +222,14 @@ public class BackofficeController {
         return "redirect:/backoffice/holes/" + id;
     }
 
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    public String deleteHole(Model model,  @RequestParam(value = "id") String id){
+        Hole hole = holeService.getHoleById(Integer.parseInt(id));
+        phaseService.deletePhase(hole.getPhases());
+        holeService.deleteHole(hole);
+        return "redirect:/backoffice/holes";
+    }
+
     private String prepareHoleEmployeesByPhaseString(List<Employee> employees){
         StringBuilder employeesString = new StringBuilder("[");
         for (Employee employee : employees){

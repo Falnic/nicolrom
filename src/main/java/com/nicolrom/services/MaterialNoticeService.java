@@ -15,4 +15,6 @@ public interface MaterialNoticeService {
     Set<MaterialNotice> getMaterialNoticeSet(Phase phase, List<Integer> materialIds, List<Integer> materialsQuantities);
 
     Set<MaterialNotice> calculateMaterialsForPhase(Hole hole, Phase phase);
+
+    void deleteMaterialNotice(Set<MaterialNotice> materialNotices);
 }

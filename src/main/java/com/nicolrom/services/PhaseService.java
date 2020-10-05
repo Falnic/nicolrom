@@ -9,7 +9,11 @@ public interface PhaseService {
 
     List<Phase> createPhases(Hole hole, List<Phase> holePhases);
 
+    Phase getPhase(Integer phaseId);
+
     void savePhase(Phase phase);
 
     void updatePhase(Phase phase);
+
+    void deletePhase(List<Phase> phases);
 }

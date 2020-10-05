@@ -11,4 +11,6 @@ public interface AreaService {
     List<Area> getAllAreas();
 
     List<String> getAllAreaTypes();
+
+    void deleteArea(Area area);
 }
