@@ -231,13 +231,17 @@ public class BackofficeController {
     }
 
     private String prepareHoleEmployeesByPhaseString(List<Employee> employees){
-        StringBuilder employeesString = new StringBuilder("[");
-        for (Employee employee : employees){
-            employeesString.append(employee.getIdEmployee()).append(',');
+        if (employees.size() > 0){
+            StringBuilder employeesString = new StringBuilder("[");
+            for (Employee employee : employees){
+                employeesString.append(employee.getIdEmployee()).append(',');
+            }
+            employeesString.deleteCharAt(employeesString.lastIndexOf(","));
+            employeesString.append("]");
+            return employeesString.toString();
+        } else {
+            return "";
         }
-        employeesString.deleteCharAt(employeesString.lastIndexOf(","));
-        employeesString.append("]");
-        return employeesString.toString();
     }
 
     private List<Integer> parseEmployeesStringArray(List<String> employeesStringArray){
