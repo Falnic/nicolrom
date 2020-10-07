@@ -22,6 +22,19 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-4">
+                        <div class="form-group">
+                            <select name="orderHoles" id="orderHoles" class="browser-default custom-select">
+                                <option value="" disabled selected>Ordoneaza dupa:</option>
+                                <c:forEach var="orderByOption" items="${orderByOptions}">
+                                    <option value="${orderByOption}">${orderByOption}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
                         <a class="btn btn-lg btn-primary" href="${addHole}" role="button">Adauga Groapa</a>
                     </div>
                 </div>
@@ -131,6 +144,18 @@
         </c:if>
 
     <script>
+        $(function() {
+            $('#orderHoles').change(function() {
+                var val = $("#orderHoles option:selected").text();
+
+                if (${pgNr != 0}){
+                    window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes?pgNr=${pgNr}&orderBy=" + val;
+                } else {
+                    window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes?orderBy=" + val;
+                }
+            });
+        });
+
         function redirectToHDP(holeid) {
             window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes/" + holeid;
         }

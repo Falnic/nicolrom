@@ -17,6 +17,8 @@ import java.util.*;
 @RequestMapping(value = "/backoffice/holes")
 public class BackofficeController {
 
+    private final List<String> orderByOptions = new ArrayList<String>() {{ add("Date"); }};
+
     @Autowired
     private HoleService holeService;
 
@@ -41,11 +43,12 @@ public class BackofficeController {
     @RequestMapping(method = RequestMethod.GET)
     public String getHoles(Model model, @RequestParam(name = "pgNr", defaultValue = "0") Integer pgNr,
                            @RequestParam(name = "pgSize", defaultValue = "13") Integer pgSize,
-                           @RequestParam(name = "sortBy", defaultValue = "holeId") String sortBy){
+                           @RequestParam(name = "orderBy", defaultValue = "") String orderBy){
 
-        model.addAttribute("allHoles", holeService.getAllHoles(pgNr, pgSize, sortBy));
+        model.addAttribute("allHoles", holeService.getAllHoles(pgNr, pgSize, orderBy));
         model.addAttribute("pgNr", pgNr);
         model.addAttribute("lastPg", (int) holeService.getLastPageNr(pgSize));
+        model.addAttribute("orderByOptions", orderByOptions);
         return "hole/viewHoles";
     }
 
@@ -251,5 +254,4 @@ public class BackofficeController {
         }
         return employees;
     }
-
 }

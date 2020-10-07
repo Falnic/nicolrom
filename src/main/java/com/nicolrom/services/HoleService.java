@@ -11,7 +11,7 @@ public interface HoleService {
 
     List<HoleDTO> getAllHoles();
 
-    List<HoleDTO> getAllHoles(Integer pageNo, Integer pageSize, String sortBy);
+    List<HoleDTO> getAllHoles(Integer pageNo, Integer pageSize, String orderBy);
 
     List<Hole> findHolesByStreet(String address);
 

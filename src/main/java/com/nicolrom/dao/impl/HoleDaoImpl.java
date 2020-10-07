@@ -53,11 +53,22 @@ public class HoleDaoImpl implements HoleDao {
     }
 
     @Override
-    public List<Hole> getAllHoles(Integer pageNo, Integer pageSize, String sortBy) {
+    public List<Hole> getAllHoles(Integer pageNo, Integer pageSize) {
         Integer startValue = pageNo * pageSize;
         Session session = sessionFactory.getCurrentSession();
 
         Query query = session.createQuery("FROM Hole as H");
+        query.setFirstResult(startValue);
+        query.setMaxResults(pageSize);
+        return query.list();
+    }
+
+    @Override
+    public List<Hole> getHoleByDate(Integer pageNo, Integer pageSize) {
+        Integer startValue = pageNo * pageSize;
+        Session session = sessionFactory.getCurrentSession();
+
+        Query query = session.createQuery("FROM Hole as H order by H.date DESC");
         query.setFirstResult(startValue);
         query.setMaxResults(pageSize);
         return query.list();

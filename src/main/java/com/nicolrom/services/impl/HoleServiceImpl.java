@@ -31,9 +31,17 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
-    public List<HoleDTO> getAllHoles(Integer pageNo, Integer pageSize, String sortBy) {
+    public List<HoleDTO> getAllHoles(Integer pageNo, Integer pageSize, String orderBy) {
 
-        List<Hole> pagedResult = holeDao.getAllHoles(pageNo, pageSize, sortBy);
+        List<Hole> pagedResult = new ArrayList<>();
+        switch (orderBy){
+            case "Date":
+                pagedResult = holeDao.getHoleByDate(pageNo, pageSize);
+                break;
+            default:
+                pagedResult = holeDao.getAllHoles(pageNo, pageSize);
+        }
+
         if (!pagedResult.isEmpty()){
             return populateDTO(pagedResult);
         } else {
