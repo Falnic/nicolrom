@@ -4,6 +4,7 @@ import com.nicolrom.entities.*;
 import com.nicolrom.enums.EmployeePositionEnum;
 import com.nicolrom.enums.PhaseEnum;
 import com.nicolrom.services.*;
+import com.nicolrom.translators.HoleTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,8 +17,6 @@ import java.util.*;
 @Controller
 @RequestMapping(value = "/backoffice/holes")
 public class BackofficeController {
-
-    private final List<String> orderByOptions = new ArrayList<String>() {{ add("Date"); }};
 
     @Autowired
     private HoleService holeService;
@@ -40,15 +39,18 @@ public class BackofficeController {
     @Autowired
     private AreaService areaService;
 
+    @Autowired
+    private HoleTranslator holeTranslator;
+
     @RequestMapping(method = RequestMethod.GET)
     public String getHoles(Model model, @RequestParam(name = "pgNr", defaultValue = "0") Integer pgNr,
                            @RequestParam(name = "pgSize", defaultValue = "13") Integer pgSize,
-                           @RequestParam(name = "orderBy", defaultValue = "") String orderBy){
+                           @RequestParam(name = "orderBy", defaultValue = "Ordinea adaugarii") String orderBy){
 
         model.addAttribute("allHoles", holeService.getAllHoles(pgNr, pgSize, orderBy));
         model.addAttribute("pgNr", pgNr);
         model.addAttribute("lastPg", (int) holeService.getLastPageNr(pgSize));
-        model.addAttribute("orderByOptions", orderByOptions);
+        model.addAttribute("orderByOptions", holeTranslator.translateOrderOptions());
         return "hole/viewHoles";
     }
 

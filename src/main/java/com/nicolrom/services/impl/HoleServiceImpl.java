@@ -4,9 +4,11 @@ import com.nicolrom.dao.HoleDao;
 import com.nicolrom.entities.Hole;
 import com.nicolrom.entities.Phase;
 import com.nicolrom.entities.dto.HoleDTO;
+import com.nicolrom.enums.OrderOptionsEnum;
 import com.nicolrom.enums.PhaseEnum;
 import com.nicolrom.services.AreaService;
 import com.nicolrom.services.HoleService;
+import com.nicolrom.translators.HoleTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,9 @@ public class HoleServiceImpl implements HoleService {
     @Autowired
     private HoleDao holeDao;
 
+    @Autowired
+    private HoleTranslator holeTranslator;
+
     @Override
     public List<HoleDTO> getAllHoles() {
         return populateDTO(holeDao.getAllHoles());
@@ -33,9 +38,11 @@ public class HoleServiceImpl implements HoleService {
     @Override
     public List<HoleDTO> getAllHoles(Integer pageNo, Integer pageSize, String orderBy) {
 
+        OrderOptionsEnum orderOptionEnum = holeTranslator.translateOrderOption(orderBy);
+
         List<Hole> pagedResult = new ArrayList<>();
-        switch (orderBy){
-            case "Date":
+        switch (orderOptionEnum){
+            case DATA_DESCRESCATOR:
                 pagedResult = holeDao.getHoleByDate(pageNo, pageSize);
                 break;
             default:
