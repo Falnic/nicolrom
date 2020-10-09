@@ -20,16 +20,21 @@
                         <h1>Situatie defecte DELGAZ grid SA</h1>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <select name="orderHoles" id="orderHoles" class="browser-default custom-select">
-                                <option value="" disabled selected>Ordoneaza dupa:</option>
-                                <c:forEach var="orderByOption" items="${orderByOptions}">
-                                    <option value="${orderByOption}">${orderByOption}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
+                <div class="row form-group">
+                    <label for="orderHoles" class="col-lg-2 col-form-label">Ordoneaza dupa:</label>
+                    <div class="col-lg-3">
+                        <select name="orderHoles" id="orderHoles" class="browser-default custom-select">
+                            <c:forEach var="orderByOption" items="${orderByOptions}">
+                                <c:choose>
+                                    <c:when test="${orderBy.equals(orderByOption)}">
+                                        <option value="${orderByOption}" selected>${orderByOption}</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="${orderByOption}">${orderByOption}</option>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+                        </select>
                     </div>
                 </div>
 
@@ -99,7 +104,7 @@
                                     <c:otherwise>
                                         <li class="page-item">
                                             <a class="page-link"
-                                               href="<c:url value='/backoffice/holes?pgNr=${pgNr - 1}'/>">Pagina Anterioara
+                                               href="<c:url value='/backoffice/holes?pgNr=${pgNr - 1}&orderBy=${orderBy}'/>">Pagina Anterioara
                                             </a>
                                         </li>
                                     </c:otherwise>
@@ -110,14 +115,14 @@
                                         <c:when test="${pageItem == pgNr}">
                                             <li class="page-item active">
                                                 <a class="page-link"
-                                                   href="<c:url value='/backoffice/holes?pgNr=${pageItem}'/>">${pageItem + 1}
+                                                   href="<c:url value='/backoffice/holes?pgNr=${pageItem}&orderBy=${orderBy}'/>">${pageItem + 1}
                                                 </a>
                                             </li>
                                         </c:when>
                                         <c:otherwise>
                                             <li class="page-item">
                                                 <a class="page-link"
-                                                   href="<c:url value='/backoffice/holes?pgNr=${pageItem}'/>">${pageItem + 1}
+                                                   href="<c:url value='/backoffice/holes?pgNr=${pageItem}&orderBy=${orderBy}'/>">${pageItem + 1}
                                                 </a>
                                             </li>
                                         </c:otherwise>
@@ -131,7 +136,7 @@
                                     <c:otherwise>
                                         <li class="page-item">
                                             <a class="page-link"
-                                               href="<c:url value='/backoffice/holes?pgNr=${pgNr + 1}'/>">Urmatoarea Pagina
+                                               href="<c:url value='/backoffice/holes?pgNr=${pgNr + 1}&orderBy=${orderBy}'/>">Urmatoarea Pagina
                                             </a>
                                         </li>
                                     </c:otherwise>

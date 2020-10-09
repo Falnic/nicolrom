@@ -45,11 +45,12 @@ public class BackofficeController {
     @RequestMapping(method = RequestMethod.GET)
     public String getHoles(Model model, @RequestParam(name = "pgNr", defaultValue = "0") Integer pgNr,
                            @RequestParam(name = "pgSize", defaultValue = "13") Integer pgSize,
-                           @RequestParam(name = "orderBy", defaultValue = "Ordinea adaugarii") String orderBy){
+                           @RequestParam(name = "orderBy", defaultValue = "Ordinea Adaugarii") String orderBy){
 
         model.addAttribute("allHoles", holeService.getAllHoles(pgNr, pgSize, orderBy));
         model.addAttribute("pgNr", pgNr);
         model.addAttribute("lastPg", (int) holeService.getLastPageNr(pgSize));
+        model.addAttribute("orderBy", orderBy);
         model.addAttribute("orderByOptions", holeTranslator.translateOrderOptions());
         return "hole/viewHoles";
     }

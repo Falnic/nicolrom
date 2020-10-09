@@ -43,7 +43,10 @@ public class HoleServiceImpl implements HoleService {
         List<Hole> pagedResult = new ArrayList<>();
         switch (orderOptionEnum){
             case DATA_DESCRESCATOR:
-                pagedResult = holeDao.getHoleByDate(pageNo, pageSize);
+                pagedResult = holeDao.getHolesOrderedByDate(pageNo, pageSize);
+                break;
+            case ADRESA_ALFABETIC:
+                pagedResult = holeDao.getHolesOrderedByAddress(pageNo, pageSize);
                 break;
             default:
                 pagedResult = holeDao.getAllHoles(pageNo, pageSize);

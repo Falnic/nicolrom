@@ -12,7 +12,9 @@ public interface HoleDao {
 
     List<Hole> getAllHoles(Integer pageNo, Integer pageSize);
 
-    List<Hole> getHoleByDate(Integer pageNo, Integer pageSize);
+    List<Hole> getHolesOrderedByDate(Integer pageNo, Integer pageSize);
+
+    List<Hole> getHolesOrderedByAddress(Integer pageNo, Integer pageSize);
 
     Hole getHoleById(Integer id);
 
