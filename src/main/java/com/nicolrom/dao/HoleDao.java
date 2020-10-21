@@ -18,11 +18,13 @@ public interface HoleDao {
 
     Hole getHoleById(Integer id);
 
-    List<Hole> findHolesByStreet(String street);
+    List<Hole> searchHolesByStreet(String street);
 
     List<Hole> getDuplicates(Hole hole);
 
     double countHoles();
+
+    double countHoles(String searchValue);
 
     void saveHole(Hole hole);
 

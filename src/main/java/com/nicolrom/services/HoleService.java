@@ -3,8 +3,6 @@ package com.nicolrom.services;
 import com.nicolrom.entities.Hole;
 import com.nicolrom.entities.dto.HoleDTO;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 public interface HoleService {
@@ -13,9 +11,11 @@ public interface HoleService {
 
     List<HoleDTO> getAllHoles(Integer pageNo, Integer pageSize, String orderBy);
 
-    List<Hole> findHolesByStreet(String address);
+    List<HoleDTO> searchHolesByAddress(String address);
 
     double getLastPageNr(Integer pageSize);
+
+    double getLastPageNr(Integer pageSize, String searchValue);
 
     Hole getHoleById(Integer id);
 

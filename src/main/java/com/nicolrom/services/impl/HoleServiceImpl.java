@@ -60,13 +60,19 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
-    public List<Hole> findHolesByStreet(String street) {
-        return holeDao.findHolesByStreet(street);
+    public List<HoleDTO> searchHolesByAddress(String address) {
+        return populateDTO(holeDao.searchHolesByStreet(address));
     }
 
     @Override
     public double getLastPageNr(Integer pageSize) {
         double holesNr = holeDao.countHoles();
+        return Math.ceil(holesNr / pageSize);
+    }
+
+    @Override
+    public double getLastPageNr(Integer pageSize, String searchValue) {
+        double holesNr = holeDao.countHoles(searchValue);
         return Math.ceil(holesNr / pageSize);
     }
 

@@ -86,10 +86,10 @@ public class HoleDaoImpl implements HoleDao {
     }
 
     @Override
-    public List<Hole> findHolesByStreet(String street) {
+    public List<Hole> searchHolesByStreet(String street) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM Hole as H where H.street = :street");
-        query.setParameter("street", street);
+        Query query = session.createQuery("FROM Hole as H where H.street like :street");
+        query.setParameter("street", "%" + street + "%");
         return query.list();
     }
 
@@ -108,6 +108,14 @@ public class HoleDaoImpl implements HoleDao {
     public double countHoles() {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("SELECT COUNT (H.holeId) from Hole H");
+        return (long) query.uniqueResult();
+    }
+
+    @Override
+    public double countHoles(String searchValue) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("SELECT COUNT (H.holeId) from Hole as H where H.street like :street");
+        query.setParameter("street", "%" + searchValue + "%");
         return (long) query.uniqueResult();
     }
 }

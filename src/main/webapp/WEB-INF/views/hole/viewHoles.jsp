@@ -13,7 +13,6 @@
         <title>DELGAZ Grid Holes</title>
     </head>
     <body>
-        <c:if test="${not empty allHoles}">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 text-center">
@@ -36,6 +35,13 @@
                             </c:forEach>
                         </select>
                     </div>
+                    <div class="col-lg-2"></div>
+                    <div class="input-group col-lg-5">
+                        <input type="text" name="searchValue" id="searchByAddress" class="form-control" placeholder="Cauta dupa adresa" aria-label="Cauta dupa adresa" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="searchButton">Cauta</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row">
@@ -43,7 +49,6 @@
                         <a class="btn btn-lg btn-primary" href="${addHole}" role="button">Adauga Groapa</a>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-lg-12">
                         <table class="table table-hover">
@@ -60,93 +65,101 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            <c:forEach var="hole" items="${allHoles}">
-                                <tr ondblclick="redirectToHDP(${hole.holeId})">
-                                    <td>${hole.date}</td>
-                                    <c:choose>
-                                        <c:when test="${hole.holeNrAtSameAddress != null && hole.holeNrAtSameAddress != 0}">
-                                            <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.district} Groapa ${hole.holeNrAtSameAddress}</td>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.district}</td>
-                                        </c:otherwise>
-                                    </c:choose>
-                                    <td>${hole.holeArea}</td>
-                                    <c:choose>
-                                        <c:when test="${hole.phase == 'SAPATURA'}">
-                                            <td style="text-align: center; background-color: #FF3E3E; color: white">${hole.phase}</td>
-                                        </c:when>
-                                        <c:when test="${hole.phase == 'UMPLERE'}">
-                                            <td style="text-align: center; background-color: orange; color: white">${hole.phase}</td>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <td >${hole.phase}</td>
-                                        </c:otherwise>
-                                    </c:choose>
-                                    <td>${hole.holeLength}</td>
-                                    <td>${hole.holeWidth}</td>
-                                    <td>${hole.holeDepth}</td>
-                                    <td><fmt:formatNumber type = "number" maxFractionDigits="2" value="${hole.holeVolume}"/></td>
-                                </tr>
-                            </c:forEach>
+                                <c:choose>
+                                    <c:when test="${not empty allHoles}">
+                                        <c:forEach var="hole" items="${allHoles}">
+                                            <tr ondblclick="redirectToHDP(${hole.holeId})">
+                                                <td>${hole.date}</td>
+                                                <c:choose>
+                                                    <c:when test="${hole.holeNrAtSameAddress != null && hole.holeNrAtSameAddress != 0}">
+                                                        <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.district} Groapa ${hole.holeNrAtSameAddress}</td>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.district}</td>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                                <td>${hole.holeArea}</td>
+                                                <c:choose>
+                                                    <c:when test="${hole.phase == 'SAPATURA'}">
+                                                        <td style="text-align: center; background-color: #FF3E3E; color: white">${hole.phase}</td>
+                                                    </c:when>
+                                                    <c:when test="${hole.phase == 'UMPLERE'}">
+                                                        <td style="text-align: center; background-color: orange; color: white">${hole.phase}</td>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <td >${hole.phase}</td>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                                <td>${hole.holeLength}</td>
+                                                <td>${hole.holeWidth}</td>
+                                                <td>${hole.holeDepth}</td>
+                                                <td><fmt:formatNumber type = "number" maxFractionDigits="2" value="${hole.holeVolume}"/></td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <tr>
+                                            <td><h3>Nu s-au gasit rezultatele cautarii</h3></td>
+                                        </tr>
+                                    </c:otherwise>
+                                </c:choose>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <nav aria-label="Search results pages">
-                            <ul class="pagination justify-content-center">
-                                <c:choose>
-                                    <c:when test="${pgNr == 0}">
-                                        <li class="page-item disabled"><a class="page-link">Pagina Anterioara</a></li>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <li class="page-item">
-                                            <a class="page-link"
-                                               href="<c:url value='/backoffice/holes?pgNr=${pgNr - 1}&orderBy=${orderBy}'/>">Pagina Anterioara
-                                            </a>
-                                        </li>
-                                    </c:otherwise>
-                                </c:choose>
-
-                                <c:forEach var="pageItem" begin="0" end="${lastPg - 1}">
+                <c:if test="${lastPg != 0}">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <nav aria-label="Search results pages">
+                                <ul class="pagination justify-content-center">
                                     <c:choose>
-                                        <c:when test="${pageItem == pgNr}">
-                                            <li class="page-item active">
-                                                <a class="page-link"
-                                                   href="<c:url value='/backoffice/holes?pgNr=${pageItem}&orderBy=${orderBy}'/>">${pageItem + 1}
-                                                </a>
-                                            </li>
+                                        <c:when test="${pgNr == 0}">
+                                            <li class="page-item disabled"><a class="page-link">Pagina Anterioara</a></li>
                                         </c:when>
                                         <c:otherwise>
                                             <li class="page-item">
                                                 <a class="page-link"
-                                                   href="<c:url value='/backoffice/holes?pgNr=${pageItem}&orderBy=${orderBy}'/>">${pageItem + 1}
+                                                   href="<c:url value='/backoffice/holes?pgNr=${pgNr - 1}&orderBy=${orderBy}'/>">Pagina Anterioara
                                                 </a>
                                             </li>
                                         </c:otherwise>
                                     </c:choose>
-                                </c:forEach>
-
-                                <c:choose>
-                                    <c:when test="${(pgNr + 1) == lastPg}">
-                                        <li class="page-item disabled"><a class="page-link">Urmatoarea Pagina</a></li>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <li class="page-item">
-                                            <a class="page-link"
-                                               href="<c:url value='/backoffice/holes?pgNr=${pgNr + 1}&orderBy=${orderBy}'/>">Urmatoarea Pagina
-                                            </a>
-                                        </li>
-                                    </c:otherwise>
-                                </c:choose>
-                            </ul>
-                        </nav>
+                                    <c:forEach var="pageItem" begin="0" end="${lastPg - 1}">
+                                        <c:choose>
+                                            <c:when test="${pageItem == pgNr}">
+                                                <li class="page-item active">
+                                                    <a class="page-link"
+                                                       href="<c:url value='/backoffice/holes?pgNr=${pageItem}&orderBy=${orderBy}'/>">${pageItem + 1}
+                                                    </a>
+                                                </li>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                       href="<c:url value='/backoffice/holes?pgNr=${pageItem}&orderBy=${orderBy}'/>">${pageItem + 1}
+                                                    </a>
+                                                </li>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:forEach>
+                                    <c:choose>
+                                        <c:when test="${(pgNr + 1) == lastPg}">
+                                            <li class="page-item disabled"><a class="page-link">Urmatoarea Pagina</a></li>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li class="page-item">
+                                                <a class="page-link"
+                                                   href="<c:url value='/backoffice/holes?pgNr=${pgNr + 1}&orderBy=${orderBy}'/>">Urmatoarea Pagina
+                                                </a>
+                                            </li>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
-                </div>
+                </c:if>
             </div>
-        </c:if>
 
     <script>
         $(function() {
@@ -157,6 +170,23 @@
                     window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes?pgNr=${pgNr}&orderBy=" + val;
                 } else {
                     window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes?orderBy=" + val;
+                }
+            });
+
+            $('#searchByAddress').keypress(function(event){
+                var searchValue = $('#searchByAddress').val();
+                if (searchValue && searchValue !== ""){
+                    var keycode = (event.keyCode ? event.keyCode : event.which);
+                    if(keycode == '13'){
+                        window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes?searchValue=" + searchValue;
+                    }
+                }
+            });
+
+            $("#searchButton").click(function (){
+                var searchValue = $('#searchByAddress').val();
+                if (searchValue && searchValue !== ""){
+                    window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes?searchValue=" + searchValue;
                 }
             });
         });
