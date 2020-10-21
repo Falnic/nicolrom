@@ -195,7 +195,11 @@
             <div class="col-lg-2">
                 <input type="submit" class="btn btn-warning btn-lg " value="Modifica"/>
             </div>
-            <div class="col-lg-8"></div>
+            <div class="col-lg-4"></div>
+            <div class="col-lg-2">
+                <a class="btn btn-lg btn-danger" href="<c:url value="/backoffice/holes/${hole.holeId}"/>" role="button">Anuleaza</a>
+            </div>
+            <div class="col-lg-2"></div>
         </div>
         <input type="hidden" value="${hole.holeId}">
     </form>

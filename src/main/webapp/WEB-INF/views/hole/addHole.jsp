@@ -165,7 +165,11 @@
             <div class="col-lg-2">
                 <input type="submit" class="btn btn-primary btn-lg " value="Salveaza"/>
             </div>
-            <div class="col-lg-8"></div>
+            <div class="col-lg-4"></div>
+            <div class="col-lg-2">
+                <a class="btn btn-lg btn-danger" id="cancelBtn" href="<c:url value="/backoffice/holes"/>" role="button">Anuleaza</a>
+            </div>
+            <div class="col-lg-2"></div>
         </div>
     </form>
 </div>
@@ -176,6 +180,9 @@
 
 <script>
     $(function() {
+        $('#cancelBtn').click(function() {
+            return window.confirm("Sunteti sigur?");
+        });
 
         $("form[name='addHoleForm']").validate({
             rules: {
