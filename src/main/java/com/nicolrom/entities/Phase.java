@@ -33,7 +33,7 @@ public class Phase implements Serializable {
     private Set<MaterialNotice> materialNoticeSet = new HashSet<>();
 
     @ManyToOne(targetEntity = Team.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "teamId", nullable = false)
+    @JoinColumn(name = "teamId")
     private Team team;
 
     public int getPhaseId() {

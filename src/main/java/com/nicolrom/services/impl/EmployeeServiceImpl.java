@@ -88,11 +88,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<Employee> getHoleEmployeesByPhase(Hole hole, PhaseEnum phaseEnum) {
         for(Phase phase : hole.getPhases()){
-            if (phase.getPhaseType() == phaseEnum){
+            if ((phase.getPhaseType() == phaseEnum) && (phase.getTeam() != null)){
                 return new ArrayList<>(phase.getTeam().getEmployees());
             }
         }
-        return null;
+        return new ArrayList<Employee>();
     }
 
     @Override

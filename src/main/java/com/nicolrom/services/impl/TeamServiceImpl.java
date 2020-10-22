@@ -20,17 +20,20 @@ public class TeamServiceImpl implements TeamService {
     private EmployeeService employeeService;
 
     @Override
-    public Team create(List<String> employeesSofer, List<String> employeesMecanic, List<String> employeesNecalificat, String executor) {
+    public Team create(List<String> employeesSofer, List<String> employeesMecanic, List<String> employeesNecalificat) {
         Team updatedTeam = new Team();
         List<String> employeesStringArray = new ArrayList<>();
 
-        if ("Nicol Rom".equals(executor)){
-            employeesStringArray.addAll(employeesSofer);
-            employeesStringArray.addAll(employeesMecanic);
-            employeesStringArray.addAll(employeesNecalificat);
-        } else {
+        if (employeesSofer != null && !employeesSofer.isEmpty()){
             employeesStringArray.addAll(employeesSofer);
         }
+        if (employeesMecanic != null && !employeesMecanic.isEmpty()){
+            employeesStringArray.addAll(employeesMecanic);
+        }
+        if (employeesNecalificat != null && !employeesNecalificat.isEmpty()){
+            employeesStringArray.addAll(employeesNecalificat);
+        }
+
         updatedTeam.setEmployees(employeeService.getEmployeesById(parseEmployeesStringArray(employeesStringArray)));
         return updatedTeam;
     }

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface TeamService {
 
-    Team create(List<String> employeesSofer, List<String> employeesMecanic, List<String> employeesNecalificat, String executor);
+    Team create(List<String> employeesSofer, List<String> employeesMecanic, List<String> employeesNecalificat);
 
     Team getTeam(Integer id);
 

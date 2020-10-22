@@ -66,19 +66,7 @@ public class BackofficeController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String getHole(Model model, @PathVariable(value = "id") Integer id){
         Hole hole = holeService.getHoleById(id);
-
         model.addAttribute("hole", hole);
-        model.addAttribute("phasePositionsMap", employeeService.getEmployeePositionsByPhases(hole.getPhases()));
-        if (hole.getPhases().size() < PhaseEnum.values().length){
-            PhaseEnum nextPhase = PhaseEnum.values()[hole.getPhases().size()];
-            model.addAttribute("nextPhase", nextPhase);
-        } else {
-            model.addAttribute("nextPhase",  null);
-        }
-        model.addAttribute("positionEmployeesMap_SOFER", employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER));
-        model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
-        model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
-        model.addAttribute("allPipes", pipeService.getAllPipes());
         return "hole/viewHole";
     }
 
@@ -136,7 +124,7 @@ public class BackofficeController {
                           @RequestParam(value = "holeDepth") Double holeDepth,
                           @RequestParam(value = "area") Integer areaId,
                           @RequestParam(value = "executor") String executor,
-                          @RequestParam(value = "employees_SOFER") List<String> employeesSofer,
+                          @RequestParam(value = "employees_SOFER", required = false) List<String> employeesSofer,
                           @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
                           @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
                           @RequestParam(value = "autoRouteDistance") Integer autoRouteDistance,
@@ -152,22 +140,26 @@ public class BackofficeController {
 
         hole.getPhases().add(phase);
 
-        Team team = new Team();
         List<String> employeesStringArray = new ArrayList<>();
-
-        if ("Nicol Rom".equals(executor)){
-            employeesStringArray.addAll(employeesSofer);
-            employeesStringArray.addAll(employeesMecanic);
-            employeesStringArray.addAll(employeesNecalificat);
-        } else {
+        if (employeesSofer != null && !employeesSofer.isEmpty()) {
             employeesStringArray.addAll(employeesSofer);
         }
 
-        team.setEmployees(employeeService.getEmployeesById(parseEmployeesStringArray(employeesStringArray)));
-        phase.setTeam(team);
+        if (employeesMecanic != null && !employeesMecanic.isEmpty()) {
+            employeesStringArray.addAll(employeesMecanic);
+        }
+
+        if (employeesNecalificat != null && !employeesNecalificat.isEmpty()) {
+            employeesStringArray.addAll(employeesNecalificat);
+        }
+        if(!employeesStringArray.isEmpty()){
+            Team team = new Team();
+            team.setEmployees(employeeService.getEmployeesById(parseEmployeesStringArray(employeesStringArray)));
+            phase.setTeam(team);
+            teamService.saveTeam(team);
+        }
 
         holeService.saveHole(hole);
-        teamService.saveTeam(team);
         phaseService.savePhase(phase);
 
         return "redirect:/backoffice/holes/" + hole.getHoleId();
@@ -186,13 +178,22 @@ public class BackofficeController {
 
         Hole hole = holeService.getHoleById(Integer.parseInt(id));
         model.addAttribute("hole", hole);
-        if ("Nicol Rom".equals(hole.getExecutor())){
-            model.addAttribute("selectedEmployees_SOFER", prepareHoleEmployeesByPhaseString(employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.SOFER)));
-            model.addAttribute("selectedEmployees_MECANIC", prepareHoleEmployeesByPhaseString(employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.MECANIC)));
-            model.addAttribute("selectedEmployees_NECALIFICAT", prepareHoleEmployeesByPhaseString(employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.NECALIFICAT)));
-        } else {
-            model.addAttribute("selectedEmployees_SOFER", prepareHoleEmployeesByPhaseString(employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.SOFER)));
+
+        List<Employee> employeeSofer = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.SOFER);
+        if (employeeSofer != null && !employeeSofer.isEmpty()){
+            model.addAttribute("selectedEmployees_SOFER", prepareHoleEmployeesByPhaseString(employeeSofer));
         }
+
+        List<Employee> employeeMecanic = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.MECANIC);
+        if (employeeMecanic != null && !employeeMecanic.isEmpty()){
+            model.addAttribute("selectedEmployees_MECANIC", prepareHoleEmployeesByPhaseString(employeeMecanic));
+        }
+
+        List<Employee> employeeNecalificat = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.NECALIFICAT);
+        if (employeeNecalificat != null && !employeeNecalificat.isEmpty()){
+            model.addAttribute("selectedEmployees_NECALIFICAT", prepareHoleEmployeesByPhaseString(employeeNecalificat));
+        }
+
         return "hole/updateHole";
     }
     @RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -207,7 +208,7 @@ public class BackofficeController {
                                 @RequestParam(value = "holeDepth") Double holeDepth,
                                 @RequestParam(value = "area") Integer areaId,
                                 @RequestParam(value = "executor") String executor,
-                                @RequestParam(value = "employees_SOFER") List<String> employeesSofer,
+                                @RequestParam(value = "employees_SOFER", required = false) List<String> employeesSofer,
                                 @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
                                 @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
                                 @RequestParam(value = "autoRouteDistance") Integer autoRouteDistance,
@@ -219,19 +220,26 @@ public class BackofficeController {
         updatedHole.setHoleId(hole.getHoleId());
         holeService.checkHole(hole, updatedHole);
 
-        holeService.updateHole(updatedHole);
-
         updatedHole.setPhases(phaseService.createPhases(updatedHole, hole.getPhases()));
 
-        Team updatedTeam = teamService.create(employeesSofer, employeesMecanic, employeesNecalificat, executor);
-        updatedTeam.setIdTeam(hole.getPhases().get(0).getTeam().getIdTeam());
+        Team updatedTeam = teamService.create(employeesSofer, employeesMecanic, employeesNecalificat);
+        if (hole.getPhases().get(0).getTeam() != null){
+            updatedTeam.setIdTeam(hole.getPhases().get(0).getTeam().getIdTeam());
+        }
 
         Phase updatedPhase = updatedHole.getPhases().get(0);
-        updatedPhase.setTeam(updatedTeam);
         updatedTeam.getPhases().add(updatedPhase);
 
-        phaseService.updatePhase(updatedPhase);
-        teamService.updateTeam(updatedTeam);
+        if ((updatedTeam.getEmployees() != null) && (updatedTeam.getEmployees().size() != 0)){
+            updatedPhase.setTeam(updatedTeam);
+            holeService.updateHole(updatedHole);
+            teamService.updateTeam(updatedTeam);
+            phaseService.updatePhase(updatedPhase);
+        } else {
+            holeService.updateHole(updatedHole);
+            phaseService.updatePhase(updatedPhase);
+            teamService.deleteTeam(updatedTeam);
+        }
 
         return "redirect:/backoffice/holes/" + id;
     }

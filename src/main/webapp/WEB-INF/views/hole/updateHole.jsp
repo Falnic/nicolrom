@@ -240,13 +240,6 @@
                 autoStationaryTime: {
                     required: "#executorDelGaz:checked",
                 },
-                employees_SOFER : "required",
-                employees_MECANIC : {
-                    required : "#executorNicolRom:checked"
-                },
-                employees_NECALIFICAT : {
-                    required : "#executorNicolRom:checked"
-                }
             },
             messages: {
                 holeDate: "Selectati data",
@@ -259,9 +252,6 @@
                 holeDepth: "Introduceti adancimea",
                 autoRouteDistance: "Introduceti distanta",
                 autoStationaryTime: "Introduceti timpul de stationare",
-                employees_SOFER : "Alegeti Soferi",
-                employees_MECANIC : "Alegeti Mecanic",
-                employees_NECALIFICAT : "Alegeti Necalificat"
             },
             submitHandler: function(form) {
                 form.submit();
