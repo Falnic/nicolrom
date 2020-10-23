@@ -21,6 +21,11 @@
             <h1>Modifica Groapa</h1>
         </div>
     </div>
+    <c:if test="${not empty error}">
+        <div class="col-lg-12 text-center error">
+            <h5>Eroare, exista in sistem o sapatura cu aceeasi data</h5>
+        </div>
+    </c:if>
     <form method="post" autocomplete="off" name="updateHoleForm">
         <div class="row">
             <div class="col-lg-2"></div>

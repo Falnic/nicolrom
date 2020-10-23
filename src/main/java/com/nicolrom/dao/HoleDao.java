@@ -20,7 +20,7 @@ public interface HoleDao {
 
     List<Hole> searchHolesByStreet(String street);
 
-    List<Hole> getDuplicates(Hole hole);
+    List<Hole> getHolesAtSameAddres(Hole hole);
 
     double countHoles();
 

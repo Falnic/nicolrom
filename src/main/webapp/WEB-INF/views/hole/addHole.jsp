@@ -14,8 +14,8 @@
         </div>
     </div>
     <c:if test="${not empty error}">
-        <div class="col-lg-12 text-center">
-            Eroare, sapatura a fost deja adaugata
+        <div class="col-lg-12 text-center error">
+            <h5>Eroare, exista in sistem o sapatura cu aceeasi data</h5>
         </div>
     </c:if>
     <form method="post" autocomplete="off" name="addHoleForm">

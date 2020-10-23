@@ -94,11 +94,10 @@ public class HoleDaoImpl implements HoleDao {
     }
 
     @Override
-    public List<Hole> getDuplicates(Hole hole) {
+    public List<Hole> getHolesAtSameAddres(Hole hole) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM Hole as H where H.date = :holeDate " +
-                "and lower(H.street) = lower(:street) and lower(H.streetNr) = lower(:streetNr)");
-        query.setParameter("holeDate", hole.getDate());
+        Query query = session.createQuery("FROM Hole as H where lower(H.street) = lower(:street)" +
+                " and lower(H.streetNr) = lower(:streetNr)");
         query.setParameter("street", hole.getStreet());
         query.setParameter("streetNr", hole.getStreetNr());
         return query.getResultList();

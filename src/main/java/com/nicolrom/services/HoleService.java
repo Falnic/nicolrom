@@ -29,8 +29,8 @@ public interface HoleService {
                 Double holeLenght, Double holeWidth, Double holeDepth, String executor, Integer autoRouteDistance,
                 Integer autoStationaryTime);
 
-    void checkHole(Hole hole);
+    String checkHole(Hole hole);
 
-    void checkHole(Hole hole, Hole updatedHole);
+    String checkHole(Hole hole, Hole updatedHole);
 
 }

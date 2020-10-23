@@ -132,7 +132,11 @@ public class BackofficeController {
 
         Hole hole = holeService.create(holeDate, street, streetNr, locality, district, areaId, holeLenght,
                                         holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime);
-        holeService.checkHole(hole);
+        String messaje = holeService.checkHole(hole);
+        if (messaje != null){
+            model.addAttribute("error", messaje);
+            return addHole(model);
+        }
 
         Phase phase = new Phase();
         phase.setHole(hole);
@@ -166,7 +170,7 @@ public class BackofficeController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.GET)
-    public String updateHoleGet(Model model,  @RequestParam(value = "id") String id){
+    public String updateHole(Model model, @RequestParam(value = "id") String id){
         model.addAttribute("positionEmployeesMap_SOFER", employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER));
         model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
         model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
@@ -197,28 +201,32 @@ public class BackofficeController {
         return "hole/updateHole";
     }
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String updateHolePut(Model model,  @RequestParam(value = "id") String id,
-                                @RequestParam(value = "holeDate") String holeDate,
-                                @RequestParam(value = "street") String street,
-                                @RequestParam(value = "streetNr") String streetNr,
-                                @RequestParam(value = "locality") String locality,
-                                @RequestParam(value = "district") String district,
-                                @RequestParam(value = "holeLenght") Double holeLenght,
-                                @RequestParam(value = "holeWidth") Double holeWidth,
-                                @RequestParam(value = "holeDepth") Double holeDepth,
-                                @RequestParam(value = "area") Integer areaId,
-                                @RequestParam(value = "executor") String executor,
-                                @RequestParam(value = "employees_SOFER", required = false) List<String> employeesSofer,
-                                @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
-                                @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
-                                @RequestParam(value = "autoRouteDistance") Integer autoRouteDistance,
-                                @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) {
+    public String updateHole(Model model, @RequestParam(value = "id") String id,
+                             @RequestParam(value = "holeDate") String holeDate,
+                             @RequestParam(value = "street") String street,
+                             @RequestParam(value = "streetNr") String streetNr,
+                             @RequestParam(value = "locality") String locality,
+                             @RequestParam(value = "district") String district,
+                             @RequestParam(value = "holeLenght") Double holeLenght,
+                             @RequestParam(value = "holeWidth") Double holeWidth,
+                             @RequestParam(value = "holeDepth") Double holeDepth,
+                             @RequestParam(value = "area") Integer areaId,
+                             @RequestParam(value = "executor") String executor,
+                             @RequestParam(value = "employees_SOFER", required = false) List<String> employeesSofer,
+                             @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
+                             @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
+                             @RequestParam(value = "autoRouteDistance") Integer autoRouteDistance,
+                             @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) {
 
         Hole updatedHole = holeService.create(holeDate, street, streetNr, locality, district, areaId, holeLenght,
                 holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime);
         Hole hole = holeService.getHoleById(Integer.parseInt(id));
         updatedHole.setHoleId(hole.getHoleId());
-        holeService.checkHole(hole, updatedHole);
+        String messaje =  holeService.checkHole(hole, updatedHole);
+        if (messaje != null){
+            model.addAttribute("error", messaje);
+            return updateHole(model, id);
+        }
 
         updatedHole.setPhases(phaseService.createPhases(updatedHole, hole.getPhases()));
 

@@ -126,56 +126,27 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
-    public void checkHole(Hole hole){
-        List<Hole> duplicates = holeDao.getDuplicates(hole);
-        checkHoleForSameAddress(duplicates, hole);
+    public String checkHole(Hole hole){
+        List<Hole> duplicates = holeDao.getHolesAtSameAddres(hole);
+        return checkHoleForSameDate(duplicates, hole);
     }
 
-    private void checkHoleForSameAddress(List<Hole> duplicates, Hole hole){
-        if (duplicates != null && duplicates.size() > 0) {
-            if (duplicates.size() == 1){
-                Hole duplicate = duplicates.get(0);
-                duplicate.setHoleNrAtSameAddress(1);
-                updateHole(duplicate);
-
-                hole.setHoleNrAtSameAddress(duplicates.size() + 1);
-            } else {
-                hole.setHoleNrAtSameAddress(duplicates.size() + 1);
+    private String checkHoleForSameDate(List<Hole> duplicates, Hole hole){
+        String messaje = "Nu se pot adauga mai multe sapaturi in aceeasi zi";
+        for (Hole duplicate : duplicates){
+            if (hole.getDate().compareTo(duplicate.getDate()) == 0){
+                return messaje;
             }
         }
+        return null;
     }
 
-    @Override // TODO: not working
-    public void checkHole(Hole hole, Hole updatedHole) {
-        // if hole and updatedHole are different remove duplicate lists
-        if (!compareHoles(hole, updatedHole)){
-            List<Hole> holeDuplicates = holeDao.getDuplicates(hole);
-            if (holeDuplicates.size() > 1){
-//                holeDuplicates.remove(hole);
-                for (Hole duplicate : holeDuplicates){
-                    if (duplicate.getDate().compareTo(hole.getDate()) > 0){
-                        duplicate.setHoleNrAtSameAddress(duplicate.getHoleNrAtSameAddress() - 1);
-                    }
-                }
-                List<Hole> updatedHoleDuplicates = holeDao.getDuplicates(updatedHole);
-                if (updatedHoleDuplicates.size() > 0){
-                    updatedHole.setHoleNrAtSameAddress(updatedHoleDuplicates.size() + 1);
-                }
-            } else {
-                List<Hole> updatedHoleDuplicates = holeDao.getDuplicates(updatedHole);
-                if (updatedHoleDuplicates.size() > 0) {
-                    for (Hole duplicate : updatedHoleDuplicates){
-                        if (duplicate.getHoleNrAtSameAddress() > updatedHole.getHoleNrAtSameAddress()){
-                            duplicate.setHoleNrAtSameAddress(duplicate.getHoleNrAtSameAddress() - 1);
-                        }
-                    }
-                } else  {
-                    updatedHole.setHoleNrAtSameAddress(0);
-                }
-            }
-        }
+    @Override
+    public String checkHole(Hole hole, Hole updatedHole) {
+        List<Hole> holeDuplicates = holeDao.getHolesAtSameAddres(updatedHole);
+        return checkHoleForSameDate(holeDuplicates, updatedHole);
+        // TODO: Create the algorithm for duplicate Holes in order to set HoleNrAtSameAddress
     }
-
 
     /**
      * Compares two Holes for differences
@@ -235,5 +206,19 @@ public class HoleServiceImpl implements HoleService {
             }
         }
         holeDTO.setPhase(phaseEnum.name());
+    }
+
+    private void checkHoleForSameAddress(List<Hole> duplicates, Hole hole){
+        if (duplicates != null && duplicates.size() > 0) {
+            if (duplicates.size() == 1){
+                Hole duplicate = duplicates.get(0);
+                duplicate.setHoleNrAtSameAddress(1);
+                updateHole(duplicate);
+
+                hole.setHoleNrAtSameAddress(duplicates.size() + 1);
+            } else {
+                hole.setHoleNrAtSameAddress(duplicates.size() + 1);
+            }
+        }
     }
 }
