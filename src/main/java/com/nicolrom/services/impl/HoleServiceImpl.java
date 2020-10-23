@@ -97,7 +97,7 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
-    public Hole create(String holeDate, String street, String streetNr, String locality, String district, Integer areaId,
+    public Hole create(String holeDate, String street, String streetNr, String locality, String county, String district, Integer areaId,
                        Double holeLenght, Double holeWidth, Double holeDepth, String executor, Integer autoRouteDistance, Integer autoStationaryTime) {
         Hole hole = new Hole();
 
@@ -112,6 +112,7 @@ public class HoleServiceImpl implements HoleService {
         hole.setStreet(street);
         hole.setStreetNr(streetNr);
         hole.setLocality(locality);
+        hole.setCounty(county);
         hole.setDistrict(district);
         hole.setArea(areaService.getArea(areaId));
         hole.setHoleLength(holeLenght);
@@ -143,8 +144,12 @@ public class HoleServiceImpl implements HoleService {
 
     @Override
     public String checkHole(Hole hole, Hole updatedHole) {
-        List<Hole> holeDuplicates = holeDao.getHolesAtSameAddres(updatedHole);
-        return checkHoleForSameDate(holeDuplicates, updatedHole);
+        if (!compareHoles(hole, updatedHole)){
+            List<Hole> holeDuplicates = holeDao.getHolesAtSameAddres(updatedHole);
+            return checkHoleForSameDate(holeDuplicates, updatedHole);
+        } else {
+            return "Nu se pot adauga mai multe sapaturi in aceeasi zi";
+        }
         // TODO: Create the algorithm for duplicate Holes in order to set HoleNrAtSameAddress
     }
 
@@ -183,6 +188,7 @@ public class HoleServiceImpl implements HoleService {
         holeDTO.setStreet(hole.getStreet());
         holeDTO.setStreetNr(hole.getStreetNr());
         holeDTO.setLocality(hole.getLocality());
+        holeDTO.setCounty(hole.getCounty());
         holeDTO.setDistrict(hole.getDistrict());
         holeDTO.setHoleNrAtSameAddress(hole.getHoleNrAtSameAddress());
         setHoleDtoPhase(holeDTO, hole);

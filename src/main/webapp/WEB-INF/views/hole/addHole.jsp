@@ -40,7 +40,11 @@
                         <td><input type="text" class="form-control" name="locality" id="locality" autocomplete="false"/>
                     </tr>
                     <tr>
-                        <td><label class="control-label" for="district">Judet</label></td>
+                        <td><label class="control-label" for="county">Judet</label></td>
+                        <td><input type="text" class="form-control" name="county" id="county" autocomplete="false"/>
+                    </tr>
+                    <tr>
+                        <td><label class="control-label" for="district">District</label></td>
                         <td><input type="text" class="form-control" name="district" id="district" autocomplete="false"/>
                     </tr>
                 </table>
@@ -190,6 +194,7 @@
                 street: "required",
                 streetNr: "required",
                 locality: "required",
+                county: "required",
                 district: "required",
                 holeLenght: "required",
                 holeWidth: "required",
@@ -206,7 +211,8 @@
                 street: "Introduceti strada",
                 streetNr: "Introduceti numarul strazii",
                 locality: "Introduceti localitatea",
-                district: "Introduceti judetul",
+                county: "Introduceti judetul",
+                district: "Introduceti districtul",
                 holeLenght: "Introduceti lungimea",
                 holeWidth: "Introduceti latimea",
                 holeDepth: "Introduceti adancimea",

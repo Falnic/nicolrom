@@ -56,7 +56,7 @@
                                 <tr>
                                     <th>Data </th>
                                     <th>Adresa</th>
-                                    <th>Zona</th>
+                                    <th>District</th>
                                     <th>Etapa</th>
                                     <th>Lungime</th>
                                     <th>Latime</th>
@@ -72,13 +72,13 @@
                                                 <td>${hole.date}</td>
                                                 <c:choose>
                                                     <c:when test="${hole.holeNrAtSameAddress != null && hole.holeNrAtSameAddress != 0}">
-                                                        <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.district} Groapa ${hole.holeNrAtSameAddress}</td>
+                                                        <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.county} Groapa ${hole.holeNrAtSameAddress}</td>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.district}</td>
+                                                        <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.county}</td>
                                                     </c:otherwise>
                                                 </c:choose>
-                                                <td>${hole.holeArea}</td>
+                                                <td style="text-align: center">${hole.district}</td>
                                                 <c:choose>
                                                     <c:when test="${hole.phase == 'SAPATURA'}">
                                                         <td style="text-align: center; background-color: #FF3E3E; color: white">${hole.phase}</td>

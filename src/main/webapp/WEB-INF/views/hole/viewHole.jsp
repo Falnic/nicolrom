@@ -33,18 +33,23 @@
                 </tr>
                 <tr>
                     <td>Judet</td>
+                    <td>${hole.county}</td>
+                </tr>
+                <tr>
+                    <td>District</td>
                     <td>${hole.district}</td>
                 </tr>
-                <c:if test="${hole.area != null && hole.area != ''}">
-                    <tr>
-                        <td>Zona</td>
-                        <td>${hole.area.type}</td>
-                    </tr>
-                </c:if>
             </table>
         </div>
         <div class="col-lg-6">
             <table class="table table-striped">
+                <c:if test="${hole.area != null && hole.area != ''}">
+                <tr>
+                    <td>Zona</td>
+                    <td>${hole.area.type}</td>
+                    <td></td>
+                </tr>
+                </c:if>
                 <tr>
                     <td>Lungime</td>
                     <td>${hole.holeLength}</td>
@@ -308,17 +313,17 @@
 
         if ($("#table-MECANIC tr").size() == 0){
             $("#table-MECANIC").append("                                                    <tr>\n" +
-                "                                                        <td>Nu s-au adaugat</td>\n" +
+                "                                                        <td>Nu s-a adaugat</td>\n" +
                 "                                                    </tr>")
         }
         if ($("#table-SOFER tr").size() == 0){
             $("#table-SOFER").append("                                                    <tr>\n" +
-                "                                                        <td>Nu s-au adaugat</td>\n" +
+                "                                                        <td>Nu s-a adaugat</td>\n" +
                 "                                                    </tr>")
         }
         if ($("#table-NECALIFICAT tr").size() == 0){
             $("#table-NECALIFICAT").append("                                                    <tr>\n" +
-                "                                                        <td>Nu s-au adaugat</td>\n" +
+                "                                                        <td>Nu s-a adaugat</td>\n" +
                 "                                                    </tr>")
         }
     });

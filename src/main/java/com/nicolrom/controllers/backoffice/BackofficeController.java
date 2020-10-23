@@ -118,6 +118,7 @@ public class BackofficeController {
                           @RequestParam(value = "street") String street,
                           @RequestParam(value = "streetNr") String streetNr,
                           @RequestParam(value = "locality") String locality,
+                          @RequestParam(value = "county") String county,
                           @RequestParam(value = "district") String district,
                           @RequestParam(value = "holeLenght") Double holeLenght,
                           @RequestParam(value = "holeWidth") Double holeWidth,
@@ -130,7 +131,7 @@ public class BackofficeController {
                           @RequestParam(value = "autoRouteDistance") Integer autoRouteDistance,
                           @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) {
 
-        Hole hole = holeService.create(holeDate, street, streetNr, locality, district, areaId, holeLenght,
+        Hole hole = holeService.create(holeDate, street, streetNr, locality, county, district, areaId, holeLenght,
                                         holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime);
         String messaje = holeService.checkHole(hole);
         if (messaje != null){
@@ -206,6 +207,7 @@ public class BackofficeController {
                              @RequestParam(value = "street") String street,
                              @RequestParam(value = "streetNr") String streetNr,
                              @RequestParam(value = "locality") String locality,
+                             @RequestParam(value = "county") String county,
                              @RequestParam(value = "district") String district,
                              @RequestParam(value = "holeLenght") Double holeLenght,
                              @RequestParam(value = "holeWidth") Double holeWidth,
@@ -218,7 +220,7 @@ public class BackofficeController {
                              @RequestParam(value = "autoRouteDistance") Integer autoRouteDistance,
                              @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) {
 
-        Hole updatedHole = holeService.create(holeDate, street, streetNr, locality, district, areaId, holeLenght,
+        Hole updatedHole = holeService.create(holeDate, street, streetNr, locality, county, district, areaId, holeLenght,
                 holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime);
         Hole hole = holeService.getHoleById(Integer.parseInt(id));
         updatedHole.setHoleId(hole.getHoleId());

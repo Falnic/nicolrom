@@ -14,6 +14,8 @@ public class HoleDTO {
 
     private String locality;
 
+    private String county;
+
     private String district;
 
     private Integer holeNrAtSameAddress;
@@ -70,12 +72,12 @@ public class HoleDTO {
         this.locality = locality;
     }
 
-    public String getDistrict() {
-        return district;
+    public String getCounty() {
+        return county;
     }
 
-    public void setDistrict(String district) {
-        this.district = district;
+    public void setCounty(String county) {
+        this.county = county;
     }
 
     public String getPhase() {
@@ -132,5 +134,13 @@ public class HoleDTO {
 
     public void setHoleNrAtSameAddress(Integer holeNrAtSameAddress) {
         this.holeNrAtSameAddress = holeNrAtSameAddress;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
     }
 }

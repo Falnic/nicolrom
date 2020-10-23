@@ -27,6 +27,9 @@ public class Hole implements Serializable {
     private String locality;
 
     @Column(nullable = false)
+    private String county;
+
+    @Column(nullable = false)
     private String district;
 
     @Column(nullable = false)
@@ -97,12 +100,12 @@ public class Hole implements Serializable {
         this.locality = locality;
     }
 
-    public String getDistrict() {
-        return district;
+    public String getCounty() {
+        return county;
     }
 
-    public void setDistrict(String district) {
-        this.district = district;
+    public void setCounty(String district) {
+        this.county = district;
     }
 
     public List<Phase> getPhases() {
@@ -199,5 +202,13 @@ public class Hole implements Serializable {
 
     public void setHoleNrAtSameAddress(Integer holeNrAtSameAddress) {
         this.holeNrAtSameAddress = holeNrAtSameAddress;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
     }
 }
