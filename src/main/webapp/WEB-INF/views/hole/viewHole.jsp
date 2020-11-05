@@ -39,17 +39,16 @@
                     <td>District</td>
                     <td>${hole.district}</td>
                 </tr>
-            </table>
-        </div>
-        <div class="col-lg-6">
-            <table class="table table-striped">
                 <c:if test="${hole.area != null && hole.area != ''}">
                 <tr>
                     <td>Zona</td>
                     <td>${hole.area.type}</td>
-                    <td></td>
                 </tr>
                 </c:if>
+            </table>
+        </div>
+        <div class="col-lg-6">
+            <table class="table table-striped">
                 <tr>
                     <td>Lungime</td>
                     <td>${hole.holeLength}</td>

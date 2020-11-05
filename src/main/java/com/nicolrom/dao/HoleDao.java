@@ -16,6 +16,10 @@ public interface HoleDao {
 
     List<Hole> getHolesOrderedByAddress(Integer pageNo, Integer pageSize);
 
+    List<Hole> getHolesByDistricts(String[] districts);
+
+    List<String> getHoleDistricts();
+
     Hole getHoleById(Integer id);
 
     List<Hole> searchHolesByStreet(String street);
@@ -25,6 +29,8 @@ public interface HoleDao {
     double countHoles();
 
     double countHoles(String searchValue);
+
+    double countHoles(String[] districts);
 
     void saveHole(Hole hole);
 

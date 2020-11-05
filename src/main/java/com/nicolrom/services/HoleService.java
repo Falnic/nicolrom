@@ -13,9 +13,19 @@ public interface HoleService {
 
     List<HoleDTO> searchHolesByAddress(String address);
 
+    List<HoleDTO> getHolesByDistricts(String[] districts);
+
+    List<HoleDTO> filterHolesByDistricts(List<HoleDTO> holes, List<String> districts);
+
+    List<HoleDTO> getHolesOrdered(List<HoleDTO> holes, String orderBy);
+
+    List<String> getHoleDistricts();
+
     double getLastPageNr(Integer pageSize);
 
     double getLastPageNr(Integer pageSize, String searchValue);
+
+    double getLastPageNr(Integer pageSize, String[] districts);
 
     Hole getHoleById(Integer id);
 

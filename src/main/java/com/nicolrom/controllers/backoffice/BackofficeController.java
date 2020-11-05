@@ -1,6 +1,7 @@
 package com.nicolrom.controllers.backoffice;
 
 import com.nicolrom.entities.*;
+import com.nicolrom.entities.dto.HoleDTO;
 import com.nicolrom.enums.EmployeePositionEnum;
 import com.nicolrom.enums.PhaseEnum;
 import com.nicolrom.services.*;
@@ -46,19 +47,37 @@ public class BackofficeController {
     public String getHoles(Model model, @RequestParam(name = "pgNr", defaultValue = "0") Integer pgNr,
                            @RequestParam(name = "pgSize", defaultValue = "13") Integer pgSize,
                            @RequestParam(name = "orderBy", defaultValue = "Ordinea Adaugarii") String orderBy,
-                           @RequestParam(value = "searchValue", required = false) String searchValue){
+                           @RequestParam(value = "searchValue", required = false) String searchValue,
+                           @RequestParam(value = "district", required = false) String[] districts){
 
+        List<HoleDTO> holes;
         if (searchValue != null && !searchValue.isEmpty()) {
-            model.addAttribute("allHoles", holeService.searchHolesByAddress(searchValue));
-            model.addAttribute("lastPg", (int) holeService.getLastPageNr(pgSize, searchValue));
+            holes = holeService.searchHolesByAddress(searchValue);
+            holes = holeService.getHolesOrdered(holes, orderBy);
+            if(districts != null){
+                holes = holeService.filterHolesByDistricts(holes, Arrays.asList(districts));
+                model.addAttribute("checkedDistricts", Arrays.asList(districts));
+                model.addAttribute("lastPg", Math.ceil(holes.size() / pgSize));
+            } else {
+                model.addAttribute("lastPg", holeService.getLastPageNr(pgSize, searchValue));
+            }
+            model.addAttribute("searchValue", searchValue);
         } else {
-            model.addAttribute("allHoles", holeService.getAllHoles(pgNr, pgSize, orderBy));
-            model.addAttribute("lastPg", (int) holeService.getLastPageNr(pgSize));
+            if (districts != null){
+                holes = holeService.getHolesByDistricts(districts);
+                model.addAttribute("checkedDistricts", Arrays.asList(districts));
+                model.addAttribute("lastPg",holeService.getLastPageNr(pgSize, districts));
+            } else {
+                holes = holeService.getAllHoles(pgNr, pgSize, orderBy);
+                model.addAttribute("lastPg",holeService.getLastPageNr(pgSize));
+            }
         }
 
+        model.addAttribute("allHoles", holes);
         model.addAttribute("pgNr", pgNr);
         model.addAttribute("orderBy", orderBy);
         model.addAttribute("orderByOptions", holeTranslator.translateOrderOptions());
+        model.addAttribute("districts", holeService.getHoleDistricts());
 
         return "hole/viewHoles";
     }

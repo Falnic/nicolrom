@@ -14,9 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class HoleServiceImpl implements HoleService {
@@ -65,6 +64,39 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
+    public List<HoleDTO> getHolesByDistricts(String[] districts) {
+        return populateDTO(holeDao.getHolesByDistricts(districts));
+    }
+
+    @Override
+    public List<HoleDTO> filterHolesByDistricts(List<HoleDTO> holes, List<String> districts){
+        return holes
+                .stream()
+                .filter(holeDTO -> districts.contains(holeDTO.getDistrict()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getHoleDistricts() {
+        return holeDao.getHoleDistricts();
+    }
+
+    @Override
+    public List<HoleDTO> getHolesOrdered(List<HoleDTO> holes, String orderBy) {
+
+        OrderOptionsEnum orderOptionEnum = holeTranslator.translateOrderOption(orderBy);
+
+        switch (orderOptionEnum){
+            case DATA_DESCRESCATOR:
+                holes.sort(Comparator.comparing(HoleDTO::getDate));
+            case ADRESA_ALFABETIC:
+                holes.sort(Comparator.comparing(HoleDTO::getStreet));
+            default:
+                return holes;
+        }
+    }
+
+    @Override
     public double getLastPageNr(Integer pageSize) {
         double holesNr = holeDao.countHoles();
         return Math.ceil(holesNr / pageSize);
@@ -73,6 +105,12 @@ public class HoleServiceImpl implements HoleService {
     @Override
     public double getLastPageNr(Integer pageSize, String searchValue) {
         double holesNr = holeDao.countHoles(searchValue);
+        return Math.ceil(holesNr / pageSize);
+    }
+
+    @Override
+    public double getLastPageNr(Integer pageSize, String[] districts) {
+        double holesNr = holeDao.countHoles(districts);
         return Math.ceil(holesNr / pageSize);
     }
 
@@ -133,9 +171,9 @@ public class HoleServiceImpl implements HoleService {
     }
 
     private String checkHoleForSameDate(List<Hole> duplicates, Hole hole){
-        String messaje = "Nu se pot adauga mai multe sapaturi in aceeasi zi";
+        String messaje = "Nu se poate adauga aceeasi sapatura in aceeasi zi";
         for (Hole duplicate : duplicates){
-            if (hole.getDate().compareTo(duplicate.getDate()) == 0){
+            if ((hole.getHoleId() != duplicate.getHoleId()) && (hole.getDate().compareTo(duplicate.getDate()) == 0)){
                 return messaje;
             }
         }
@@ -144,12 +182,9 @@ public class HoleServiceImpl implements HoleService {
 
     @Override
     public String checkHole(Hole hole, Hole updatedHole) {
-        if (!compareHoles(hole, updatedHole)){
-            List<Hole> holeDuplicates = holeDao.getHolesAtSameAddres(updatedHole);
-            return checkHoleForSameDate(holeDuplicates, updatedHole);
-        } else {
-            return "Nu se pot adauga mai multe sapaturi in aceeasi zi";
-        }
+        List<Hole> holeDuplicates = holeDao.getHolesAtSameAddres(updatedHole);
+        return checkHoleForSameDate(holeDuplicates, updatedHole);
+
         // TODO: Create the algorithm for duplicate Holes in order to set HoleNrAtSameAddress
     }
 
@@ -184,7 +219,9 @@ public class HoleServiceImpl implements HoleService {
         HoleDTO holeDTO = new HoleDTO();
 
         holeDTO.setHoleId(hole.getHoleId());
+
         holeDTO.setDate(hole.getDate());
+
         holeDTO.setStreet(hole.getStreet());
         holeDTO.setStreetNr(hole.getStreetNr());
         holeDTO.setLocality(hole.getLocality());

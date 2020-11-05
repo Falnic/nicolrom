@@ -55,7 +55,9 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public void deleteTeam(Team team) {
-        teamDao.deleteTeam(team);
+        if (team != null){
+            teamDao.deleteTeam(team);
+        }
     }
 
     private List<Integer> parseEmployeesStringArray(List<String> employeesStringArray){

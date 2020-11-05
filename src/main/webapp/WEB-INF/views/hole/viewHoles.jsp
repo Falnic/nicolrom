@@ -19,7 +19,7 @@
                         <h1>Situatie defecte DELGAZ grid SA</h1>
                     </div>
                 </div>
-                <div class="row form-group">
+                <div class="row form-group" style="margin-top: 2%">
                     <label for="orderHoles" class="col-lg-2 col-form-label">Ordoneaza dupa:</label>
                     <div class="col-lg-3">
                         <select name="orderHoles" id="orderHoles" class="browser-default custom-select">
@@ -37,7 +37,14 @@
                     </div>
                     <div class="col-lg-2"></div>
                     <div class="input-group col-lg-5">
-                        <input type="text" name="searchValue" id="searchByAddress" class="form-control" placeholder="Cauta dupa adresa" aria-label="Cauta dupa adresa" aria-describedby="basic-addon2">
+                        <c:choose>
+                            <c:when test="${searchValue != null}">
+                                <input type="text" name="searchValue" id="searchByAddress" class="form-control" aria-describedby="basic-addon2" value="${searchValue}">
+                            </c:when>
+                            <c:otherwise>
+                                <input type="text" name="searchValue" id="searchByAddress" class="form-control" placeholder="Cauta dupa adresa" aria-label="Cauta dupa adresa" aria-describedby="basic-addon2">
+                            </c:otherwise>
+                        </c:choose>
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button" id="searchButton">Cauta</button>
                         </div>
@@ -49,8 +56,31 @@
                         <a class="btn btn-lg btn-primary" href="${addHole}" role="button">Adauga Groapa</a>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-12">
+                <div class="row" style="margin-top: 2%">
+
+                    <div class="col-lg-2">
+                        <ul class="list-group">
+                            <li class="list-group-item"><h5>District</h5></li>
+                            <c:forEach var="district" items="${districts}">
+                                <c:if test="${district != ''}">
+                                    <li class="list-group-item">
+                                        <c:choose>
+                                            <c:when test="${checkedDistricts.contains(district)}">
+                                                <input type="checkbox" name="district" id="${district}" value="${district}" checked>
+                                                <label for="${district}">${district}</label>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <input type="checkbox" name="district" id="${district}" value="${district}">
+                                                <label for="${district}">${district}</label>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </li>
+                                </c:if>
+                            </c:forEach>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-10">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -58,10 +88,10 @@
                                     <th>Adresa</th>
                                     <th>District</th>
                                     <th>Etapa</th>
-                                    <th>Lungime</th>
-                                    <th>Latime</th>
-                                    <th>Adancime</th>
-                                    <th>Volum</th>
+                                    <th>L</th>
+                                    <th>l</th>
+                                    <th>H</th>
+                                    <th>V</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -69,7 +99,7 @@
                                     <c:when test="${not empty allHoles}">
                                         <c:forEach var="hole" items="${allHoles}">
                                             <tr ondblclick="redirectToHDP(${hole.holeId})">
-                                                <td>${hole.date}</td>
+                                                <td><fmt:formatDate pattern = "dd-MM-yyyy" value = "${hole.date}"/></td>
                                                 <c:choose>
                                                     <c:when test="${hole.holeNrAtSameAddress != null && hole.holeNrAtSameAddress != 0}">
                                                         <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.county} Groapa ${hole.holeNrAtSameAddress}</td>
@@ -175,10 +205,12 @@
 
             $('#searchByAddress').keypress(function(event){
                 var searchValue = $('#searchByAddress').val();
-                if (searchValue && searchValue !== ""){
-                    var keycode = (event.keyCode ? event.keyCode : event.which);
-                    if(keycode == '13'){
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13'){
+                    if(searchValue && searchValue !== ""){
                         window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes?searchValue=" + searchValue;
+                    } else {
+                        window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes";
                     }
                 }
             });
@@ -187,8 +219,31 @@
                 var searchValue = $('#searchByAddress').val();
                 if (searchValue && searchValue !== ""){
                     window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes?searchValue=" + searchValue;
+                } else {
+                    window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes";
                 }
             });
+
+            $('input[type="checkbox"]').change(function () {
+                var districts = [];
+                $('input[type ="checkbox"]:checked').each(function () {
+                    districts.push(this.value);
+                })
+                var pageUrl = window.location.href;
+                var url = "http://localhost:8080/Myapp1_war/backoffice/holes";
+                if (pageUrl.includes("?")){
+                    url = url + "?";
+                }
+                if (pageUrl.includes("searchValue=")){
+                    url = url + "searchValue=" + $("#searchByAddress").val();
+                }
+
+                districts.forEach(function (district) {
+                    url = url + "&district=" + district;
+                })
+                window.location.assign(url);
+            })
+
         });
 
         function redirectToHDP(holeid) {

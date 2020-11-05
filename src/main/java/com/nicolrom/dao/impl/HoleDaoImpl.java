@@ -86,6 +86,32 @@ public class HoleDaoImpl implements HoleDao {
     }
 
     @Override
+    public List<Hole> getHolesByDistricts(String[] districts) {
+        Session session = sessionFactory.getCurrentSession();
+        StringBuilder queryString = new StringBuilder("FROM Hole as H where ");
+        for (int i = 0; i < districts.length; i++) {
+            if (i + 1 != districts.length) {
+                queryString.append(" H.district = :district").append(i).append(" OR");
+            } else {
+                queryString.append(" H.district = :district").append(i);
+            }
+        }
+        Query query = session.createQuery(queryString.toString());
+        for (int i = 0; i < districts.length; i++) {
+            String queryParam = "district" + i;
+            query.setParameter(queryParam, districts[i]);
+        }
+        return query.list();
+    }
+
+    @Override
+    public List<String> getHoleDistricts() {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("SELECT distinct (H.district) FROM Hole as H");
+        return query.getResultList();
+    }
+
+    @Override
     public List<Hole> searchHolesByStreet(String street) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("FROM Hole as H where H.street like :street");
@@ -115,6 +141,25 @@ public class HoleDaoImpl implements HoleDao {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("SELECT COUNT (H.holeId) from Hole as H where H.street like :street");
         query.setParameter("street", "%" + searchValue + "%");
+        return (long) query.uniqueResult();
+    }
+
+    @Override
+    public double countHoles(String[] districts) {
+        Session session = sessionFactory.getCurrentSession();
+        StringBuilder queryString = new StringBuilder("SELECT COUNT (H.holeId) from Hole as H where ");
+        for (int i = 0; i < districts.length; i++) {
+            if (i + 1 != districts.length) {
+                queryString.append(" H.district = :district").append(i).append(" OR");
+            } else {
+                queryString.append(" H.district = :district").append(i);
+            }
+        }
+        Query query = session.createQuery(queryString.toString());
+        for (int i = 0; i < districts.length; i++) {
+            String queryParam = "district" + i;
+            query.setParameter(queryParam, districts[i]);
+        }
         return (long) query.uniqueResult();
     }
 }
