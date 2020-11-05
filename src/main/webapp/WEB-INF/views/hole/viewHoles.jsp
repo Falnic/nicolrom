@@ -229,11 +229,12 @@
                 })
                 var pageUrl = window.location.href;
                 var url = "http://localhost:8080/Myapp1_war/backoffice/holes";
-                if (pageUrl.includes("?")){
+                var searchValue = $("#searchByAddress").val();
+                if ((searchValue != null) || (districts.length > 0)){
                     url = url + "?";
                 }
                 if (pageUrl.includes("searchValue=")){
-                    url = url + "searchValue=" + $("#searchByAddress").val();
+                    url = url + "searchValue=" + searchValue;
                 }
 
                 districts.forEach(function (district) {
