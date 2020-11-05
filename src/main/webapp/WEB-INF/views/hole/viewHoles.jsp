@@ -51,88 +51,86 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-lg-12">
-                        <a class="btn btn-lg btn-primary" href="${addHole}" role="button">Adauga Groapa</a>
-                    </div>
-                </div>
                 <div class="row" style="margin-top: 2%">
-
                     <div class="col-lg-2">
-                        <ul class="list-group">
-                            <li class="list-group-item"><h5>District</h5></li>
-                            <c:forEach var="district" items="${districts}">
-                                <c:if test="${district != ''}">
-                                    <li class="list-group-item">
-                                        <c:choose>
-                                            <c:when test="${checkedDistricts.contains(district)}">
-                                                <input type="checkbox" name="district" id="${district}" value="${district}" checked>
-                                                <label for="${district}">${district}</label>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <input type="checkbox" name="district" id="${district}" value="${district}">
-                                                <label for="${district}">${district}</label>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </li>
-                                </c:if>
-                            </c:forEach>
-                        </ul>
+                        <div>
+                            <a class="btn btn-lg btn-primary btn-block" href="${addHole}" role="button">Adauga</a>
+                        </div>
+                        <div style="margin-top: 5%">
+                            <ul class="list-group">
+                                <li class="list-group-item"><h5>District</h5></li>
+                                <c:forEach var="district" items="${districts}">
+                                    <c:if test="${district != ''}">
+                                        <li class="list-group-item">
+                                            <c:choose>
+                                                <c:when test="${checkedDistricts.contains(district)}">
+                                                    <input type="checkbox" name="district" id="${district}" value="${district}" checked>
+                                                    <label for="${district}">${district}</label>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input type="checkbox" name="district" id="${district}" value="${district}">
+                                                    <label for="${district}">${district}</label>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </li>
+                                    </c:if>
+                                </c:forEach>
+                            </ul>
+                        </div>
                     </div>
-
                     <div class="col-lg-10">
                         <table class="table table-hover">
                             <thead>
-                                <tr>
-                                    <th>Data </th>
-                                    <th>Adresa</th>
-                                    <th>District</th>
-                                    <th>Etapa</th>
-                                    <th>L</th>
-                                    <th>l</th>
-                                    <th>H</th>
-                                    <th>V</th>
-                                </tr>
+                            <tr>
+                                <th>Data </th>
+                                <th>Adresa</th>
+                                <th>District</th>
+                                <th>Etapa</th>
+                                <th>L</th>
+                                <th>l</th>
+                                <th>H</th>
+                                <th>V</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <c:choose>
-                                    <c:when test="${not empty allHoles}">
-                                        <c:forEach var="hole" items="${allHoles}">
-                                            <tr ondblclick="redirectToHDP(${hole.holeId})">
-                                                <td><fmt:formatDate pattern = "dd-MM-yyyy" value = "${hole.date}"/></td>
-                                                <c:choose>
-                                                    <c:when test="${hole.holeNrAtSameAddress != null && hole.holeNrAtSameAddress != 0}">
-                                                        <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.county} Groapa ${hole.holeNrAtSameAddress}</td>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.county}</td>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                                <td style="text-align: center">${hole.district}</td>
-                                                <c:choose>
-                                                    <c:when test="${hole.phase == 'SAPATURA'}">
-                                                        <td style="text-align: center; background-color: #FF3E3E; color: white">${hole.phase}</td>
-                                                    </c:when>
-                                                    <c:when test="${hole.phase == 'UMPLERE'}">
-                                                        <td style="text-align: center; background-color: orange; color: white">${hole.phase}</td>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <td >${hole.phase}</td>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                                <td>${hole.holeLength}</td>
-                                                <td>${hole.holeWidth}</td>
-                                                <td>${hole.holeDepth}</td>
-                                                <td><fmt:formatNumber type = "number" maxFractionDigits="2" value="${hole.holeVolume}"/></td>
-                                            </tr>
-                                        </c:forEach>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <tr>
-                                            <td><h3>Nu s-au gasit rezultatele cautarii</h3></td>
+                            <c:choose>
+                                <c:when test="${not empty allHoles}">
+                                    <c:forEach var="hole" items="${allHoles}">
+                                        <tr ondblclick="redirectToHDP(${hole.holeId})">
+                                            <td><fmt:formatDate pattern = "dd-MM-yyyy" value = "${hole.date}"/></td>
+                                            <c:choose>
+                                                <c:when test="${hole.holeNrAtSameAddress != null && hole.holeNrAtSameAddress != 0}">
+                                                    <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.county} Groapa ${hole.holeNrAtSameAddress}</td>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.county}</td>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <td style="text-align: center">${hole.district}</td>
+                                            <c:choose>
+                                                <c:when test="${hole.phase == 'SAPATURA'}">
+                                                    <td style="text-align: center; background-color: #FF3E3E; color: white">${hole.phase}</td>
+                                                </c:when>
+                                                <c:when test="${hole.phase == 'UMPLERE'}">
+                                                    <td style="text-align: center; background-color: orange; color: white">${hole.phase}</td>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <td >${hole.phase}</td>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <td>${hole.holeLength}</td>
+                                            <td>${hole.holeWidth}</td>
+                                            <td>${hole.holeDepth}</td>
+                                            <td><fmt:formatNumber type = "number" maxFractionDigits="2" value="${hole.holeVolume}"/></td>
                                         </tr>
-                                    </c:otherwise>
-                                </c:choose>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <tr>
+                                        <td><h3>Nu s-au gasit rezultatele cautarii</h3></td>
+                                    </tr>
+                                </c:otherwise>
+                            </c:choose>
                             </tbody>
                         </table>
                     </div>
