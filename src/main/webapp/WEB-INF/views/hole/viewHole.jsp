@@ -1,10 +1,12 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="tag" tagdir="/WEB-INF/tags/hole" %>
 
 <jsp:include page="../bootstrapImports.jsp"/>
-<link rel="stylesheet" type="text/css" href="<c:url value="/resources/style/viewHole.css"/>">
 <jsp:include page="../backofficeHeader.jsp"/>
+
+<link rel="stylesheet" type="text/css" href="<c:url value="/resources/style/viewHole.css"/>">
 
 <div class="container">
     <div class="row">
@@ -83,225 +85,97 @@
         <div class="row">
             <div id="tabs" class="col-lg-12">
                 <ul>
-                    <c:forEach var="phase" items="${hole.phases}">
-                        <li><a href="#tabs-${phase.phaseType.ordinal()}">${phase.phaseType.name()}</a></li>
+                    <c:forEach var="phaseEnum" items="${allPhasesEnum}">
+                        <li><a href="#tabs-${phaseEnum.name()}">${phaseEnum.name()}</a></li>
                     </c:forEach>
-                        <%--                <c:if test="${nextPhase != null}">--%>
-                        <%--                    <li><a href="#tabs-addPhase" id="a-addPhase">${nextPhase.name()}</a></li>--%>
-                        <%--                </c:if>--%>
                 </ul>
-                <c:forEach var="phase" items="${hole.phases}">
-                    <div id="tabs-${phase.phaseType.ordinal()}">
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <table class="table">
-                                    <tbody>
-                                    <tr>
-                                        <td><h5>Data:</h5></td>
-                                        <td><h5><fmt:formatDate  value="${phase.phaseDate}" pattern="dd/MM/yyyy"/></h5></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <c:if test="${phase.phaseType.name().equals('UMPLERE') && hole.pipe != null}">
-                                <div class="col-lg-3">
-                                    <table class="table">
-                                        <tbody>
-                                        <tr>
-                                            <td>Conducta:</td>
-                                            <td>&straightphi; ${hole.pipe.diameter}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </c:if>
-                            <div class="col-lg-3">
-                                <table class="table">
-                                    <tbody>
-                                    <tr>
-                                        <td>Executant:</td>
-                                        <td>${hole.executor}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-7">
-                                <div class="row">
-                                    <div class="col-lg-4" id="div-SOFER">
-                                        <h5>Sofer</h5>
-                                        <table class="table" id="table-SOFER">
-                                            <tbody>
-                                            <c:forEach items="${phase.team.employees}" var="employee">
-                                                <c:if test="${employee.position.name().equals('SOFER')}">
-                                                    <tr>
-                                                        <td>${employee.name}</td>
-                                                    </tr>
-                                                </c:if>
-                                            </c:forEach>
-                                            </tbody>
-                                        </table>
+                <c:forEach var="phaseTab" items="${tabPhases}">
+                    <c:set var="phase" value="${phaseTab.value}"/>
+                    <c:choose>
+                        <c:when test="${nextPhase.compareTo(phaseTab.key) == 0}">
+                            <c:choose>
+                                <c:when test="${(phaseTab.key.name() == 'UMPLERE')}">
+                                        <div id="tabs-UMPLERE">
+                                            <form method="post" autocomplete="off">
+                                                <div class="row form-group">
+                                                    <div class="col-lg-3">
+                                                        <label class="control-label" for="phaseDatePicker">Data</label>
+                                                        <input class="form-control" type="date" id="phaseDatePicker" name="phaseDate" placeholder="dd/MM/yy">
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <label class="control-label" for="selectPipe">Dimensiune Conducta</label>
+                                                        <select name="pipe" id="selectPipe"
+                                                                class="browser-default custom-select">
+                                                            <c:forEach var="pipe" items="${allPipes}">
+                                                                <option value="${pipe.diameter}">&straightphi; ${pipe.diameter}</option>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <tag:addPhaseEmployees positionEmployeesMap_SOFER="${positionEmployeesMap_SOFER}"
+                                                                       positionEmployeesMap_MECANIC="${positionEmployeesMap_MECANIC}"
+                                                                       positionEmployeesMap_NECALIFICAT="${positionEmployeesMap_NECALIFICAT}"
+                                                />
+                                                <div class="row form-group">
+                                                    <input type="hidden" name="nextPhase" value="${nextPhase}">
+                                                    <input type="submit" class="btn btn-lg btn-primary" value="Adauga Etapa">
+                                                </div>
+                                            </form>
+                                        </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div id="tabs-${phaseTab.key.name()}">
+                                        <h3>TO DO</h3>
                                     </div>
-                                    <c:if test="${!hole.executor.equals('Delgaz Grid')}">
-                                        <div class="col-lg-4" id="div-MECANIC">
-                                            <h5>Mecanic</h5>
-                                            <table class="table" id="table-MECANIC">
-                                                <tbody>
-                                                <c:forEach items="${phase.team.employees}" var="employee">
-                                                    <c:if test="${employee.position.name().equals('MECANIC')}">
-                                                        <tr>
-                                                            <td>${employee.name}</td>
-                                                        </tr>
-                                                    </c:if>
-                                                </c:forEach>
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <div class="col-lg-4" id="div-NECALIFICAT">
-                                            <h5>Necalificat</h5>
-                                            <table class="table" id="table-NECALIFICAT">
-                                                <tbody>
-                                                <c:forEach items="${phase.team.employees}" var="employee">
-                                                    <c:if test="${employee.position.name().equals('NECALIFICAT')}">
-                                                        <tr>
-                                                            <td>${employee.name}</td>
-                                                        </tr>
-                                                    </c:if>
-                                                </c:forEach>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </c:if>
-                                </div>
-                            </div>
-                            <c:if test="${phase.materialNoticeSet.size() != 0}">
-                                <div class="col-lg-5">
-                                    <h4>Materiale</h4>
-                                    <table class="table">
-                                        <c:forEach var="materialNotice" items="${phase.materialNoticeSet}">
-                                            <tr>
-                                                <td>${materialNotice.material.name}</td>
-                                                <td><fmt:formatNumber type = "number" maxFractionDigits = "2" value = "${materialNotice.quantity}"/></td>
-                                                <td>mc</td>
-                                            </tr>
-                                        </c:forEach>
-                                    </table>
-                                </div>
-                            </c:if>
-                        </div>
-                        <c:if test="${hole.autoRouteDistance != null || hole.autoStationaryTime != null}">
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <table class="table">
-                                        <tbody>
-                                        <tr>
-                                            <td>Distanta parcursa:</td>
-                                            <td>${hole.autoRouteDistance}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="col-lg-3">
-                                    <table class="table">
-                                        <tbody>
-                                        <tr>
-                                            <td>Timp de stationare:</td>
-                                            <td>${hole.autoStationaryTime}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </c:if>
-                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:when>
+                        <c:otherwise>
+                            <c:choose>
+                                <c:when test="${(phaseTab.key.name() == 'SAPATURA') && (phaseTab.value != null) }">
+                                    <div id="tabs-SAPATURA">
+                                        <dl class="row">
+                                            <dt class="col-lg-1">Data</dt>
+                                            <dd class="col-lg-2"><fmt:formatDate  value="${phase.phaseDate}" pattern="dd/MM/yyyy"/></dd>
+                                            <dt class="col-lg-1">Executant</dt>
+                                            <dd class="col-lg-2">${hole.executor}</dd>
+                                            <c:if test="${hole.autoRouteDistance != null || hole.autoStationaryTime != null}">
+                                                <dt class="col-lg-2">Distanta parcursa</dt>
+                                                <dd class="col-lg-1">${hole.autoRouteDistance}</dd>
+                                                <dt class="col-lg-2">Timp de stationare</dt>
+                                                <dd class="col-lg-1">${hole.autoStationaryTime}</dd>
+                                            </c:if>
+                                        </dl>
+                                        <tag:viewPhaseEmployees phase="${phase}"/>
+                                    </div>
+                                </c:when>
+                                <c:when test="${(phaseTab.key.name() == 'UMPLERE') && (phaseTab.value != null)}">
+                                    <div id="tabs-UMPLERE">
+                                        <dl class="row">
+                                            <dt class="col-lg-1">Data</dt>
+                                            <dd class="col-lg-2"><fmt:formatDate  value="${phase.phaseDate}" pattern="dd/MM/yyyy"/></dd>
+                                            <dt class="col-lg-1">Conducta</dt>
+                                            <dd class="col-lg-2">&straightphi; ${hole.pipe.diameter}</dd>
+                                        </dl>
+                                        <tag:viewPhaseEmployees phase="${phase}"/>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div id="tabs-${phaseTab.key.name()}">
+                                        <h3>Etapa nu a fost introdusa</h3>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:otherwise>
+                    </c:choose>
                 </c:forEach>
-
-                    <%--            <c:if test="${nextPhase != null}">--%>
-                    <%--                <div id="tabs-addPhase">--%>
-                    <%--                    <form method="post" autocomplete="off" id="addPhaseForm">--%>
-                    <%--                        <div class="row form-group">--%>
-                    <%--                            <div class="col-lg-4">--%>
-                    <%--                                <label class="control-label" for="phaseDatePicker">Data</label>--%>
-                    <%--                                <input class="form-control" type="date" id="phaseDatePicker" name="phaseDate" placeholder="mm/dd/yy">--%>
-                    <%--                            </div>--%>
-                    <%--                            <c:if test="${nextPhase.name().equals('UMPLERE')}">--%>
-                    <%--                                <div class="col-lg-4">--%>
-                    <%--                                    <label class="control-label" for="selectPipe">Dimensiune Conducta</label>--%>
-                    <%--                                    <select name="pipe" id="selectPipe"--%>
-                    <%--                                            class="browser-default custom-select">--%>
-                    <%--                                        <c:forEach var="pipe" items="${allPipes}">--%>
-                    <%--                                            <option value="${pipe.diameter}">&straightphi; ${pipe.diameter}</option>--%>
-                    <%--                                        </c:forEach>--%>
-                    <%--                                    </select>--%>
-                    <%--                                </div>--%>
-                    <%--                            </c:if>--%>
-                    <%--                        </div>--%>
-                    <%--                        <div class="row form-group">--%>
-                    <%--                            <div class="col-lg-4">--%>
-                    <%--                                <h4><label class="control-label" for="selectEmployees-SOFER">SOFER</label></h4>--%>
-                    <%--                                <table class="table" id="SOFER-table">--%>
-                    <%--                                    <tr>--%>
-                    <%--                                        <td>--%>
-                    <%--                                            <select name="employees" id="selectEmployees-SOFER" class="browser-default custom-select"--%>
-                    <%--                                                    onchange="insertSOFERAddButton()">--%>
-                    <%--                                                <option value="${null}" selected>Alege Sofer</option>--%>
-                    <%--                                                <c:forEach var="employee" items="${positionEmployeesMap_SOFER}">--%>
-                    <%--                                                    <option value="${employee.idEmployee}">${employee.name}</option>--%>
-                    <%--                                                </c:forEach>--%>
-                    <%--                                            </select>--%>
-                    <%--                                        </td>--%>
-                    <%--                                    </tr>--%>
-                    <%--                                </table>--%>
-                    <%--                            </div>--%>
-                    <%--                            <div class="col-lg-4">--%>
-                    <%--                                <h4><label class="control-label" for="selectEmployees-NECALIFICAT">NECALIFICAT</label></h4>--%>
-                    <%--                                <table class="table" id="NECALIFICAT-table">--%>
-                    <%--                                    <tr>--%>
-                    <%--                                        <td>--%>
-                    <%--                                            <select name="employees" id="selectEmployees-NECALIFICAT" class="browser-default custom-select"--%>
-                    <%--                                                    onchange="insertNECALIFICATAddButton()">--%>
-                    <%--                                                <option value="${null}" selected>Alege Necalificat</option>--%>
-                    <%--                                                <c:forEach var="employee" items="${positionEmployeesMap_NECALIFICAT}">--%>
-                    <%--                                                    <option value="${employee.idEmployee}">${employee.name}</option>--%>
-                    <%--                                                </c:forEach>--%>
-                    <%--                                            </select>--%>
-                    <%--                                        </td>--%>
-                    <%--                                    </tr>--%>
-                    <%--                                </table>--%>
-                    <%--                            </div>--%>
-                    <%--                            <div class="col-lg-4">--%>
-                    <%--                                <h4><label class="control-label" for="selectEmployees-MECANIC">MECANIC</label></h4>--%>
-                    <%--                                <table class="table" id="MECANIC-table">--%>
-                    <%--                                    <tr>--%>
-                    <%--                                        <td>--%>
-                    <%--                                            <select name="employees" id="selectEmployees-MECANIC" class="browser-default custom-select"--%>
-                    <%--                                                    onchange="insertMECANICAddButton()">--%>
-                    <%--                                                <option value="${null}" selected>Alege Mecanic</option>--%>
-                    <%--                                                <c:forEach var="employee" items="${positionEmployeesMap_MECANIC}">--%>
-                    <%--                                                    <option value="${employee.idEmployee}">${employee.name}</option>--%>
-                    <%--                                                </c:forEach>--%>
-                    <%--                                            </select>--%>
-                    <%--                                        </td>--%>
-                    <%--                                    </tr>--%>
-                    <%--                                </table>--%>
-                    <%--                            </div>--%>
-                    <%--                        </div>--%>
-                    <%--                        <div class="row form-group">--%>
-                    <%--                            <input type="hidden" name="nextPhase" value="${nextPhase}">--%>
-                    <%--                            <input type="submit" class="btn btn-lg btn-primary" value="Adauga Etapa" onclick="submitPhase()">--%>
-                    <%--                        </div>--%>
-                    <%--                    </form>--%>
-                    <%--                </div>--%>
-                    <%--            </c:if>--%>
             </div>
         </div>
     </c:if>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 <script>
 
     $(function () {
@@ -309,21 +183,5 @@
         $('#deleteBtn').click(function() {
             return window.confirm("Sunteti sigur?");
         });
-
-        if ($("#table-MECANIC tr").size() == 0){
-            $("#table-MECANIC").append("                                                    <tr>\n" +
-                "                                                        <td>Nu s-a adaugat</td>\n" +
-                "                                                    </tr>")
-        }
-        if ($("#table-SOFER tr").size() == 0){
-            $("#table-SOFER").append("                                                    <tr>\n" +
-                "                                                        <td>Nu s-a adaugat</td>\n" +
-                "                                                    </tr>")
-        }
-        if ($("#table-NECALIFICAT tr").size() == 0){
-            $("#table-NECALIFICAT").append("                                                    <tr>\n" +
-                "                                                        <td>Nu s-a adaugat</td>\n" +
-                "                                                    </tr>")
-        }
     });
 </script>

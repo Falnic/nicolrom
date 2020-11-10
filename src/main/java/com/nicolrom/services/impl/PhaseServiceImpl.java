@@ -3,14 +3,14 @@ package com.nicolrom.services.impl;
 import com.nicolrom.dao.PhaseDao;
 import com.nicolrom.entities.Hole;
 import com.nicolrom.entities.Phase;;
+import com.nicolrom.enums.PhaseEnum;
 import com.nicolrom.services.MaterialNoticeService;
 import com.nicolrom.services.PhaseService;
 import com.nicolrom.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PhaseServiceImpl implements PhaseService {
@@ -68,5 +68,35 @@ public class PhaseServiceImpl implements PhaseService {
         }
     }
 
+    @Override
+    public Map<PhaseEnum, Phase> getPhasesByPhaseTypeMap(List<PhaseEnum> phaseEnums, List<Phase> phases) {
+        Map<PhaseEnum, Phase> phaseEnumPhaseMap = new HashMap<>();
+        for (PhaseEnum phaseEnum : phaseEnums){
+            for (Phase phase : phases){
+                if (phase.getPhaseType().equals(phaseEnum)){
+                    phaseEnumPhaseMap.put(phaseEnum, phase);
+                }
+            }
+            phaseEnumPhaseMap.putIfAbsent(phaseEnum, null);
+        }
+        return phaseEnumPhaseMap;
+    }
 
+    @Override
+    public PhaseEnum getNextPhase(List<Phase> phases) {
+        PhaseEnum[] enums = PhaseEnum.values();
+        for (PhaseEnum phaseEnum : enums){
+            boolean contains = false;
+            for (Phase phase : phases){
+                if (phaseEnum.equals(phase.getPhaseType())) {
+                    contains = true;
+                    break;
+                }
+            }
+            if (!contains){
+                return phaseEnum;
+            }
+        }
+        return null;
+    }
 }

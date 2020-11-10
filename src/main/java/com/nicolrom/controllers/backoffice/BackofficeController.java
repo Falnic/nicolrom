@@ -86,6 +86,17 @@ public class BackofficeController {
     public String getHole(Model model, @PathVariable(value = "id") Integer id){
         Hole hole = holeService.getHoleById(id);
         model.addAttribute("hole", hole);
+        List<PhaseEnum> phaseEnums = Arrays.asList(PhaseEnum.values());
+        model.addAttribute("allPhasesEnum", phaseEnums);
+        model.addAttribute("tabPhases", phaseService.getPhasesByPhaseTypeMap(phaseEnums, hole.getPhases()));
+        PhaseEnum nextPhase = phaseService.getNextPhase(hole.getPhases());
+        if (nextPhase.equals(PhaseEnum.UMPLERE)){
+            model.addAttribute("allPipes", pipeService.getAllPipes());
+        }
+        model.addAttribute("nextPhase", nextPhase);
+        model.addAttribute("positionEmployeesMap_SOFER", employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER));
+        model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
+        model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
         return "hole/viewHole";
     }
 
