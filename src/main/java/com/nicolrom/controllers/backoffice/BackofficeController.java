@@ -35,6 +35,9 @@ public class BackofficeController {
     private MaterialNoticeService materialNoticeService;
 
     @Autowired
+    private MaterialService materialService;
+
+    @Autowired
     private PipeService pipeService;
 
     @Autowired
@@ -97,6 +100,7 @@ public class BackofficeController {
         model.addAttribute("positionEmployeesMap_SOFER", employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER));
         model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
         model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
+        model.addAttribute("materials", materialService.getAllMaterials());
         return "hole/viewHole";
     }
 

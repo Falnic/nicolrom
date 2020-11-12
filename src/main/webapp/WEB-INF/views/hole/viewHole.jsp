@@ -112,10 +112,70 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <tag:addPhaseEmployees positionEmployeesMap_SOFER="${positionEmployeesMap_SOFER}"
-                                                                       positionEmployeesMap_MECANIC="${positionEmployeesMap_MECANIC}"
-                                                                       positionEmployeesMap_NECALIFICAT="${positionEmployeesMap_NECALIFICAT}"
-                                                />
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <h4>Materiale</h4>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" name="materialInsert" id="manualInsertRadio"
+                                                                           checked value="Adaugare Manuala">
+                                                                    <label class="form-check-label" for="manualInsertRadio">Adaugare manuala</label>
+                                                                </div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" name="materialInsert" id="automaticInsertRadio"
+                                                                           value="Adaugare Automata">
+                                                                    <label class="form-check-label" for="automaticInsertRadio">Adaugare Automata</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <table class="table" id="materialsTable">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <td>Material</td>
+                                                                        <td>Cantitate</td>
+                                                                        <td>UM</td>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <table>
+                                                                    <tr>
+                                                                        <td><label class="control-label" for="selectMaterial">Adauga Materiale</label></td>
+                                                                        <td>
+                                                                            <select name="selectMaterial" id="selectMaterial"
+                                                                                    class="selectpicker" data-live-search="true">
+                                                                                <option name="materialOption-null" value="${null}" selected>Alege</option>
+                                                                                <c:forEach var="material" items="${materials}">
+                                                                                    <option name="materialOption-${material.materialId}"
+                                                                                            value="${material.materialId}">${material.name}</option>
+                                                                                </c:forEach>
+                                                                            </select>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-8">
+                                                        <tag:addPhaseEmployees positionEmployeesMap_SOFER="${positionEmployeesMap_SOFER}"
+                                                                               positionEmployeesMap_MECANIC="${positionEmployeesMap_MECANIC}"
+                                                                               positionEmployeesMap_NECALIFICAT="${positionEmployeesMap_NECALIFICAT}"
+                                                        />
+                                                    </div>
+                                                </div>
                                                 <div class="row form-group">
                                                     <input type="hidden" name="nextPhase" value="${nextPhase}">
                                                     <input type="submit" class="btn btn-lg btn-primary" value="Adauga Etapa">
@@ -123,6 +183,7 @@
                                             </form>
                                         </div>
                                 </c:when>
+<%--                                TODO: When all forms for adding new phases will be completed this code will be removed --%>
                                 <c:otherwise>
                                     <div id="tabs-${phaseTab.key.name()}">
                                         <h3>TO DO</h3>
@@ -146,7 +207,11 @@
                                                 <dd class="col-lg-1">${hole.autoStationaryTime}</dd>
                                             </c:if>
                                         </dl>
-                                        <tag:viewPhaseEmployees phase="${phase}"/>
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <tag:viewPhaseEmployees phase="${phase}"/>
+                                            </div>
+                                        </div>
                                     </div>
                                 </c:when>
                                 <c:when test="${(phaseTab.key.name() == 'UMPLERE') && (phaseTab.value != null)}">
@@ -157,7 +222,14 @@
                                             <dt class="col-lg-1">Conducta</dt>
                                             <dd class="col-lg-2">&straightphi; ${hole.pipe.diameter}</dd>
                                         </dl>
-                                        <tag:viewPhaseEmployees phase="${phase}"/>
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <tag:viewPhaseEmployees phase="${phase}"/>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <tag:viewHoleMaterials phase="${phase}"/>
+                                            </div>
+                                        </div>
                                     </div>
                                 </c:when>
                                 <c:otherwise>
@@ -182,6 +254,19 @@
         $("#tabs").tabs();
         $('#deleteBtn').click(function() {
             return window.confirm("Sunteti sigur?");
+        });
+        $("#selectMaterial").change(function (){
+            var value = $(this).val();
+            var materialName = $(this).find(":selected").text();
+            $(this).find("option:selected").remove();
+            $(this).selectpicker('refresh');
+            $("#materialsTable").append('                                   <tr>\n' +
+                '                                                               <td><label class="control-label" for="material-' + value + '">' + materialName + '</label></td>\n' +
+                '                                                               <td><input type="number" step="0.01" min="0" class="form-control" name="material"\n' +
+                '                                                                                   id="material-' + value +'" autocomplete="false"/>\n' +
+                '                                                               <td>MC</td>' +
+                '                                                                 </tr>');
+
         });
     });
 </script>

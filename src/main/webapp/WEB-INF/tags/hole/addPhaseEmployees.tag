@@ -5,8 +5,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="row">
-    <div class="col-lg-8">
-        <div class="row">
             <div class="col-lg-4" id="soferDiv">
                 <h4><label class="control-label" for="selectEmployees-SOFER">SOFER</label></h4>
                 <table class="table" id="SOFER-table">
@@ -53,5 +51,3 @@
                 </table>
             </div>
         </div>
-    </div>
-</div>
