@@ -107,7 +107,7 @@
                                                         <select name="pipe" id="selectPipe"
                                                                 class="browser-default custom-select">
                                                             <c:forEach var="pipe" items="${allPipes}">
-                                                                <option value="${pipe.diameter}">&straightphi; ${pipe.diameter}</option>
+                                                                <option value="${pipe.diameterValue}">&straightphi; ${pipe.diameter}</option>
                                                             </c:forEach>
                                                         </select>
                                                     </div>
@@ -120,21 +120,25 @@
                                                             </div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-lg-12">
-                                                                <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" name="materialInsert" id="manualInsertRadio"
-                                                                           checked value="Adaugare Manuala">
-                                                                    <label class="form-check-label" for="manualInsertRadio">Adaugare manuala</label>
-                                                                </div>
-                                                                <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" name="materialInsert" id="automaticInsertRadio"
-                                                                           value="Adaugare Automata">
-                                                                    <label class="form-check-label" for="automaticInsertRadio">Adaugare Automata</label>
-                                                                </div>
+                                                            <div class="col-lg-1">
+                                                                <label class="control-label" for="selectMaterial">Adauga</label>
+                                                            </div>
+                                                            <div class="col-lg-3">
+                                                                <select name="selectMaterial" id="selectMaterial"
+                                                                        class="selectpicker" data-live-search="true">
+                                                                    <option name="materialOption-null" value="${null}" selected>Nothing selected</option>
+                                                                    <c:forEach var="material" items="${materials}">
+                                                                        <option name="materialOption-${material.materialId}"
+                                                                                value="${material.materialId}">${material.name}</option>
+                                                                    </c:forEach>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-lg-3">
+                                                                <button type="button" class="btn btn-secondary" id="calculateMaterialsBtn">Adaugare Automata</button>
                                                             </div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-lg-6">
+                                                            <div class="col-lg-7">
                                                                 <table class="table" id="materialsTable">
                                                                     <thead>
                                                                     <tr>
@@ -146,23 +150,6 @@
                                                                     <tbody>
 
                                                                     </tbody>
-                                                                </table>
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <table>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="selectMaterial">Adauga Materiale</label></td>
-                                                                        <td>
-                                                                            <select name="selectMaterial" id="selectMaterial"
-                                                                                    class="selectpicker" data-live-search="true">
-                                                                                <option name="materialOption-null" value="${null}" selected>Alege</option>
-                                                                                <c:forEach var="material" items="${materials}">
-                                                                                    <option name="materialOption-${material.materialId}"
-                                                                                            value="${material.materialId}">${material.name}</option>
-                                                                                </c:forEach>
-                                                                            </select>
-                                                                        </td>
-                                                                    </tr>
                                                                 </table>
                                                             </div>
                                                         </div>
@@ -268,5 +255,28 @@
                 '                                                                 </tr>');
 
         });
+
+        $('#calculateMaterialsBtn').click(function () {
+            // double nisipQuantity = hole.getHoleLength() * hole.getHoleWidth() * (0.3 + hole.getPipe().getDiameterValue());
+            var sandQuantity; var balast;
+            var holeLength = ${hole.holeLength}; var holeWidth = ${hole.holeWidth};
+            var pipeDiameterValue = parseFloat($("#selectPipe :selected").val());
+
+            sandQuantity = (holeLength * holeWidth * (0.3 + pipeDiameterValue)).toFixed(2);
+            balast = (${hole.holeVolume} - sandQuantity).toFixed(2);
+
+            $("#materialsTable").append('                                                                    <tr>\n' +
+                '                                                                        <td><label class="control-label" for="material-1" id="labelMaterial-1">Nisip</label></td>\n' +
+                '                                                                        <td><input type="number" step="0.01" min="0" class="form-control" name="material"\n' +
+                '                                                                                   id="material-1" autocomplete="false" value="' + sandQuantity + '"/>\n' +
+                '                                                                          <td>MC</td>'+
+                '                                                                    </tr>\n' +
+                '                                                                    <tr>\n' +
+                '                                                                        <td><label class="control-label" for="material-2">Balast</label></td>\n' +
+                '                                                                        <td><input type="number" step="0.01" min="0" class="form-control" name="material"\n' +
+                '                                                                                   id="material-2" autocomplete="false" value="' + balast + '"/>\n' +
+                '                                                                          <td>MC</td>'+
+                '                                                                    </tr>');
+        })
     });
 </script>
