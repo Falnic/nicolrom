@@ -253,30 +253,56 @@
                 '                                                                                   id="material-' + value +'" autocomplete="false"/>\n' +
                 '                                                               <td>MC</td>' +
                 '                                                                 </tr>');
-
         });
 
+        $("#selectPipe").change(function () {
+            var values = calculateMaterials();
+            var sandQuantity = values[0]; var balast = values[1];
+
+            if (typeof ($("#material-1").val()) !== "undefined"){
+                $("#material-1").val(sandQuantity);
+            }
+            if (typeof ($("#material-2").val()) !== "undefined"){
+                $("#material-2").val(balast);
+            }
+        })
+
         $('#calculateMaterialsBtn').click(function () {
-            // double nisipQuantity = hole.getHoleLength() * hole.getHoleWidth() * (0.3 + hole.getPipe().getDiameterValue());
-            var sandQuantity; var balast;
-            var holeLength = ${hole.holeLength}; var holeWidth = ${hole.holeWidth};
-            var pipeDiameterValue = parseFloat($("#selectPipe :selected").val());
+            var values = calculateMaterials();
+            var sandQuantity = values[0]; var balast = values[1];
 
-            sandQuantity = (holeLength * holeWidth * (0.3 + pipeDiameterValue)).toFixed(2);
-            balast = (${hole.holeVolume} - sandQuantity).toFixed(2);
-
-            $("#materialsTable").append('                                                                    <tr>\n' +
-                '                                                                        <td><label class="control-label" for="material-1" id="labelMaterial-1">Nisip</label></td>\n' +
-                '                                                                        <td><input type="number" step="0.01" min="0" class="form-control" name="material"\n' +
-                '                                                                                   id="material-1" autocomplete="false" value="' + sandQuantity + '"/>\n' +
-                '                                                                          <td>MC</td>'+
-                '                                                                    </tr>\n' +
-                '                                                                    <tr>\n' +
-                '                                                                        <td><label class="control-label" for="material-2">Balast</label></td>\n' +
-                '                                                                        <td><input type="number" step="0.01" min="0" class="form-control" name="material"\n' +
-                '                                                                                   id="material-2" autocomplete="false" value="' + balast + '"/>\n' +
-                '                                                                          <td>MC</td>'+
-                '                                                                    </tr>');
+            if (typeof ($("#material-1").val()) === "undefined"){
+                $("#selectMaterial option[name = 'materialOption-1']").remove();
+                $("#selectMaterial").selectpicker('refresh');
+                $("#materialsTable").append('                                                                    <tr>\n' +
+                    '                                                                        <td><label class="control-label" for="material-1" id="labelMaterial-1">Nisip</label></td>\n' +
+                    '                                                                        <td><input type="number" step="0.01" min="0" class="form-control" name="material"\n' +
+                    '                                                                                   id="material-1" autocomplete="false" value="' + sandQuantity + '"/>\n' +
+                    '                                                                          <td>MC</td>'+
+                    '                                                                    </tr>\n');
+            }
+            if (typeof ($("#material-2").val()) === "undefined"){
+                $("#selectMaterial option[name = 'materialOption-2']").remove();
+                $("#selectMaterial").selectpicker('refresh');
+                $("#materialsTable").append('               <tr>\n' +
+                    '                                                                        <td><label class="control-label" for="material-2">Balast</label></td>\n' +
+                    '                                                                        <td><input type="number" step="0.01" min="0" class="form-control" name="material"\n' +
+                    '                                                                                   id="material-2" autocomplete="false" value="' + balast + '"/>\n' +
+                    '                                                                          <td>MC</td>'+
+                    '                                                                    </tr>');
+            }
         })
     });
+
+    function calculateMaterials(){
+        // double nisipQuantity = hole.getHoleLength() * hole.getHoleWidth() * (0.3 + hole.getPipe().getDiameterValue());
+        var sandQuantity; var balast;
+        var holeLength = ${hole.holeLength}; var holeWidth = ${hole.holeWidth};
+        var pipeDiameterValue = parseFloat($("#selectPipe :selected").val());
+
+        sandQuantity = (holeLength * holeWidth * (0.3 + pipeDiameterValue)).toFixed(2);
+        balast = (${hole.holeVolume} - sandQuantity).toFixed(2);
+
+        return [sandQuantity, balast];
+    }
 </script>
