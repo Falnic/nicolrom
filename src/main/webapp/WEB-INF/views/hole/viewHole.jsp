@@ -96,11 +96,11 @@
                             <c:choose>
                                 <c:when test="${(phaseTab.key.name() == 'UMPLERE')}">
                                         <div id="tabs-UMPLERE">
-                                            <form method="post" autocomplete="off">
+                                            <form method="post" autocomplete="off" name="addPhase-UMPLERE">
                                                 <div class="row form-group">
                                                     <div class="col-lg-3">
                                                         <label class="control-label" for="phaseDatePicker">Data</label>
-                                                        <input class="form-control" type="date" id="phaseDatePicker" name="phaseDate" placeholder="dd/MM/yy">
+                                                        <input class="form-control" type="date" id="phaseDatePicker" name="phaseDate" placeholder="dd/MM/yy" max="${currentDate}">
                                                     </div>
                                                     <div class="col-lg-3">
                                                         <label class="control-label" for="selectPipe">Dimensiune Conducta</label>
@@ -145,6 +145,7 @@
                                                                         <td>Material</td>
                                                                         <td>Cantitate</td>
                                                                         <td>UM</td>
+                                                                        <td></td>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -247,11 +248,12 @@
             var materialName = $(this).find(":selected").text();
             $(this).find("option:selected").remove();
             $(this).selectpicker('refresh');
-            $("#materialsTable").append('                                   <tr>\n' +
+            $("#materialsTable").append('                                   <tr id="materialTr-' + value + '">\n' +
                 '                                                               <td><label class="control-label" for="material-' + value + '">' + materialName + '</label></td>\n' +
                 '                                                               <td><input type="number" step="0.01" min="0" class="form-control" name="material"\n' +
                 '                                                                                   id="material-' + value +'" autocomplete="false"/>\n' +
                 '                                                               <td>MC</td>' +
+                '                                                               <td><button type="button" class="btn btn-outline-danger" onclick="removeMaterialTr(' + value +',\'' + materialName +' \')">X</button></td>' +
                 '                                                                 </tr>');
         });
 
@@ -274,24 +276,38 @@
             if (typeof ($("#material-1").val()) === "undefined"){
                 $("#selectMaterial option[name = 'materialOption-1']").remove();
                 $("#selectMaterial").selectpicker('refresh');
-                $("#materialsTable").append('                                                                    <tr>\n' +
+                $("#materialsTable").append('                                                                    <tr id="materialTr-1">\n' +
                     '                                                                        <td><label class="control-label" for="material-1" id="labelMaterial-1">Nisip</label></td>\n' +
                     '                                                                        <td><input type="number" step="0.01" min="0" class="form-control" name="material"\n' +
                     '                                                                                   id="material-1" autocomplete="false" value="' + sandQuantity + '"/>\n' +
                     '                                                                          <td>MC</td>'+
+                    '                                                               <td><button type="button" class="btn btn-outline-danger" onclick="removeMaterialTr(1,\'Nisip\')">X</button></td>' +
                     '                                                                    </tr>\n');
             }
             if (typeof ($("#material-2").val()) === "undefined"){
                 $("#selectMaterial option[name = 'materialOption-2']").remove();
                 $("#selectMaterial").selectpicker('refresh');
-                $("#materialsTable").append('               <tr>\n' +
+                $("#materialsTable").append('               <tr id="materialTr-2">\n' +
                     '                                                                        <td><label class="control-label" for="material-2">Balast</label></td>\n' +
                     '                                                                        <td><input type="number" step="0.01" min="0" class="form-control" name="material"\n' +
                     '                                                                                   id="material-2" autocomplete="false" value="' + balast + '"/>\n' +
                     '                                                                          <td>MC</td>'+
+                    '                                                               <td><button type="button" class="btn btn-outline-danger" onclick="removeMaterialTr(2,\'Balast\')">X</button></td>' +
                     '                                                                    </tr>');
             }
         })
+
+        $("form[name='addPhase-UMPLERE']").validate({
+            rules: {
+                phaseDate:"required",
+            },
+            messages: {
+                phaseDate: "Selectati data",
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
     });
 
     function calculateMaterials(){
@@ -304,5 +320,14 @@
         balast = (${hole.holeVolume} - sandQuantity).toFixed(2);
 
         return [sandQuantity, balast];
+    }
+
+    function removeMaterialTr(materialValue, materialName) {
+        $("#selectMaterial").append($('<option>', {
+            value: materialValue,
+            name: "materialOption-" + materialValue,
+            text: materialName,
+        })).selectpicker('refresh');
+        $("#materialTr-" + materialValue).remove();
     }
 </script>

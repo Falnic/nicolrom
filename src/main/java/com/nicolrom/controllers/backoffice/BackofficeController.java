@@ -101,13 +101,18 @@ public class BackofficeController {
         model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
         model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
         model.addAttribute("materials", materialService.getAllMaterials());
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        model.addAttribute("currentDate", dateFormat.format(date));
+
         return "hole/viewHole";
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     public String addPhase(@PathVariable(value = "id") Integer id,
                            @RequestParam(value = "phaseDate") Date phaseDate,
-                           @RequestParam(value = "employees") List<Integer> employeeArray,
+                           @RequestParam(value = "employees", required = false) List<Integer> employeeArray,
                            @RequestParam(value = "nextPhase") PhaseEnum nextPhase,
                            @RequestParam(value = "pipe") String pipeDiameter){
         Phase phase = new Phase();
