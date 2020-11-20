@@ -28,4 +28,6 @@ public interface EmployeeService {
     List<Employee> getHoleEmployeesByPhase(Hole hole, PhaseEnum phaseEnum);
 
     List<Employee> getHoleEmployeesByPhase(Hole hole, PhaseEnum phaseEnum, EmployeePositionEnum positionEnum);
+
+    List<String> parseEmployees(List<String> employeesSofer, List<String> employeesMecanic, List<String> employeesNecalificat);
 }

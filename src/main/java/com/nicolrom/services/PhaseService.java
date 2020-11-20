@@ -9,6 +9,8 @@ import java.util.Map;
 
 public interface PhaseService {
 
+    Phase createHolePhase(Hole hole, String phaseDate, String pipeDiameter, PhaseEnum nextPhase);
+
     List<Phase> createPhases(Hole hole, List<Phase> holePhases);
 
     Phase getPhase(Integer phaseId);

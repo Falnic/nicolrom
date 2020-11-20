@@ -107,7 +107,7 @@
                                                         <select name="pipe" id="selectPipe"
                                                                 class="browser-default custom-select">
                                                             <c:forEach var="pipe" items="${allPipes}">
-                                                                <option value="${pipe.diameterValue}">&straightphi; ${pipe.diameter}</option>
+                                                                <option value="${pipe.diameter}">&straightphi; ${pipe.diameter}</option>
                                                             </c:forEach>
                                                         </select>
                                                     </div>
@@ -254,6 +254,7 @@
                 '                                                                                   id="material-' + value +'" autocomplete="false"/>\n' +
                 '                                                               <td>MC</td>' +
                 '                                                               <td><button type="button" class="btn btn-outline-danger" onclick="removeMaterialTr(' + value +',\'' + materialName +' \')">X</button></td>' +
+                '                                                               <input type="hidden" name="materialId" value="' + value + '" '+
                 '                                                                 </tr>');
         });
 
@@ -282,6 +283,7 @@
                     '                                                                                   id="material-1" autocomplete="false" value="' + sandQuantity + '"/>\n' +
                     '                                                                          <td>MC</td>'+
                     '                                                               <td><button type="button" class="btn btn-outline-danger" onclick="removeMaterialTr(1,\'Nisip\')">X</button></td>' +
+                    '                                                               <input type="hidden" name="materialId" value="1" '+
                     '                                                                    </tr>\n');
             }
             if (typeof ($("#material-2").val()) === "undefined"){
@@ -293,6 +295,7 @@
                     '                                                                                   id="material-2" autocomplete="false" value="' + balast + '"/>\n' +
                     '                                                                          <td>MC</td>'+
                     '                                                               <td><button type="button" class="btn btn-outline-danger" onclick="removeMaterialTr(2,\'Balast\')">X</button></td>' +
+                    '                                                               <input type="hidden" name="materialId" value="2" '+
                     '                                                                    </tr>');
             }
         })
@@ -300,9 +303,11 @@
         $("form[name='addPhase-UMPLERE']").validate({
             rules: {
                 phaseDate:"required",
+                material : "required",
             },
             messages: {
                 phaseDate: "Selectati data",
+                material: "Introduceti cantitatea"
             },
             submitHandler: function(form) {
                 form.submit();
@@ -314,7 +319,7 @@
         // double nisipQuantity = hole.getHoleLength() * hole.getHoleWidth() * (0.3 + hole.getPipe().getDiameterValue());
         var sandQuantity; var balast;
         var holeLength = ${hole.holeLength}; var holeWidth = ${hole.holeWidth};
-        var pipeDiameterValue = parseFloat($("#selectPipe :selected").val());
+        var pipeDiameterValue = parseFloat($("#selectPipe :selected").val())/1000;
 
         sandQuantity = (holeLength * holeWidth * (0.3 + pipeDiameterValue)).toFixed(2);
         balast = (${hole.holeVolume} - sandQuantity).toFixed(2);

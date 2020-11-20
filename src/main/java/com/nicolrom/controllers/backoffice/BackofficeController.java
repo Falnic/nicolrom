@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/backoffice/holes")
@@ -111,29 +112,37 @@ public class BackofficeController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     public String addPhase(@PathVariable(value = "id") Integer id,
-                           @RequestParam(value = "phaseDate") Date phaseDate,
-                           @RequestParam(value = "employees", required = false) List<Integer> employeeArray,
+                           @RequestParam(value = "phaseDate") String phaseDate,
+                           @RequestParam(value = "pipe") String pipeDiameter,
                            @RequestParam(value = "nextPhase") PhaseEnum nextPhase,
-                           @RequestParam(value = "pipe") String pipeDiameter){
-        Phase phase = new Phase();
-        phase.setPhaseType(nextPhase);
-        phase.setPhaseDate(phaseDate);
+                           @RequestParam(value = "materialId", required = false) List<String> materialIds,
+                           @RequestParam(value = "material", required = false) List<String> materialsValue,
+                           @RequestParam(value = "employees_SOFER", required = false) List<String> employeesSofer,
+                           @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
+                           @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat){
 
         Hole hole = holeService.getHoleById(id);
+        Phase phase = phaseService.createHolePhase(hole, phaseDate, pipeDiameter, nextPhase);
+
+        hole.getPhases().add(phase);
         hole.setPipe(pipeService.getPipeByDiameter(pipeDiameter));
         holeService.updateHole(hole);
 
-        phase.setHole(hole);
+        List<String> employeesStringArray = employeeService.parseEmployees(employeesSofer, employeesMecanic, employeesNecalificat);
+        if(!employeesStringArray.isEmpty()){
+            Team team = new Team();
+            team.setEmployees(employeeService.getEmployeesById(parseEmployeesStringArray(employeesStringArray)));
+            phase.setTeam(team);
+            teamService.saveTeam(team);
+        }
+        List<Integer> materialsIdsParsed = materialIds.stream().map(Integer::parseInt).collect(Collectors.toList());
+        List<Double> materialsValuesParsed = materialsValue.stream().map(Double::parseDouble).collect(Collectors.toList());
 
-        Team team = new Team();
-        team.setEmployees(employeeService.getEmployeesById(employeeArray));
-        phase.setTeam(team);
+        Set<MaterialNotice> materialNoticeSet = materialNoticeService.getMaterialNoticeSet(phase, materialsIdsParsed, materialsValuesParsed);
+        phase.setMaterialNoticeSet(materialNoticeSet);
 
-        phase.setMaterialNoticeSet(materialNoticeService.calculateMaterialsForPhase(hole, phase));
-
-        teamService.saveTeam(team);
         phaseService.savePhase(phase);
-        materialNoticeService.saveMaterialNotices(phase.getMaterialNoticeSet());
+        materialNoticeService.saveMaterialNotices(materialNoticeSet);
 
         return "redirect:/backoffice/holes/{id}";
     }
@@ -184,18 +193,7 @@ public class BackofficeController {
 
         hole.getPhases().add(phase);
 
-        List<String> employeesStringArray = new ArrayList<>();
-        if (employeesSofer != null && !employeesSofer.isEmpty()) {
-            employeesStringArray.addAll(employeesSofer);
-        }
-
-        if (employeesMecanic != null && !employeesMecanic.isEmpty()) {
-            employeesStringArray.addAll(employeesMecanic);
-        }
-
-        if (employeesNecalificat != null && !employeesNecalificat.isEmpty()) {
-            employeesStringArray.addAll(employeesNecalificat);
-        }
+        List<String> employeesStringArray = employeeService.parseEmployees(employeesSofer, employeesMecanic, employeesNecalificat);
         if(!employeesStringArray.isEmpty()){
             Team team = new Team();
             team.setEmployees(employeeService.getEmployeesById(parseEmployeesStringArray(employeesStringArray)));

@@ -106,4 +106,21 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return sortedEmployees;
     }
+
+    @Override
+    public List<String> parseEmployees(List<String> employeesSofer, List<String> employeesMecanic, List<String> employeesNecalificat) {
+        List<String> employeesStringArray = new ArrayList<>();
+        if (employeesSofer != null && !employeesSofer.isEmpty()) {
+            employeesStringArray.addAll(employeesSofer);
+        }
+
+        if (employeesMecanic != null && !employeesMecanic.isEmpty()) {
+            employeesStringArray.addAll(employeesMecanic);
+        }
+
+        if (employeesNecalificat != null && !employeesNecalificat.isEmpty()) {
+            employeesStringArray.addAll(employeesNecalificat);
+        }
+        return employeesStringArray;
+    }
 }

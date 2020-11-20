@@ -12,7 +12,7 @@ public interface MaterialNoticeService {
 
     void saveMaterialNotices (Set<MaterialNotice> materialNotices);
 
-    Set<MaterialNotice> getMaterialNoticeSet(Phase phase, List<Integer> materialIds, List<Integer> materialsQuantities);
+    Set<MaterialNotice> getMaterialNoticeSet(Phase phase, List<Integer> materialIds, List<Double> materialsQuantities);
 
     Set<MaterialNotice> calculateMaterialsForPhase(Hole hole, Phase phase);
 

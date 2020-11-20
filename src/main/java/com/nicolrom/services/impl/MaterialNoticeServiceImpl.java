@@ -79,7 +79,7 @@ public class MaterialNoticeServiceImpl implements MaterialNoticeService {
     }
 
     @Override
-    public Set<MaterialNotice> getMaterialNoticeSet(Phase phase, List<Integer> materialIds, List<Integer> materialsQuantities) {
+    public Set<MaterialNotice> getMaterialNoticeSet(Phase phase, List<Integer> materialIds, List<Double> materialsQuantities) {
         Set<MaterialNotice> materialNotices = new HashSet<>();
         for (int i = 0; i < materialIds.size(); i++){
             MaterialNotice materialNotice = new MaterialNotice();

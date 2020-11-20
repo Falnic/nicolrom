@@ -4,12 +4,12 @@ import com.nicolrom.dao.PhaseDao;
 import com.nicolrom.entities.Hole;
 import com.nicolrom.entities.Phase;;
 import com.nicolrom.enums.PhaseEnum;
-import com.nicolrom.services.MaterialNoticeService;
-import com.nicolrom.services.PhaseService;
-import com.nicolrom.services.TeamService;
+import com.nicolrom.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -23,6 +23,23 @@ public class PhaseServiceImpl implements PhaseService {
 
     @Autowired
     private MaterialNoticeService materialNoticeService;
+
+    @Override
+    public Phase createHolePhase(Hole hole, String phaseDate, String pipeDiameter, PhaseEnum nextPhase) {
+        Phase phase = new Phase();
+        phase.setPhaseType(nextPhase);
+
+        Date date = null;
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd").parse(phaseDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        phase.setPhaseDate(date);
+        phase.setHole(hole);
+
+        return phase;
+    }
 
     @Override
     public List<Phase> createPhases(Hole hole, List<Phase> holePhases) {
