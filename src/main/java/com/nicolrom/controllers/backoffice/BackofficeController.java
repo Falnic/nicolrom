@@ -213,6 +213,8 @@ public class BackofficeController {
         model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
         model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
         model.addAttribute("areas", areaService.getAllAreas());
+        model.addAttribute("allPipes", pipeService.getAllPipes());
+        model.addAttribute("materials", materialService.getAllMaterials());
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
@@ -234,6 +236,21 @@ public class BackofficeController {
         List<Employee> employeeNecalificat = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.NECALIFICAT);
         if (employeeNecalificat != null && !employeeNecalificat.isEmpty()){
             model.addAttribute("selectedEmployees_NECALIFICAT", prepareHoleEmployeesByPhaseString(employeeNecalificat));
+        }
+//UMPLERE
+        List<Employee> employeeSofer_UMPLERE = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.UMPLERE, EmployeePositionEnum.SOFER);
+        if (employeeSofer != null && !employeeSofer.isEmpty()){
+            model.addAttribute("selectedEmployees_SOFER_UMPLERE", prepareHoleEmployeesByPhaseString(employeeSofer_UMPLERE));
+        }
+
+        List<Employee> employeeMecanic_UMPLERE = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.UMPLERE, EmployeePositionEnum.MECANIC);
+        if (employeeMecanic != null && !employeeMecanic.isEmpty()){
+            model.addAttribute("selectedEmployees_MECANIC_UMPLERE", prepareHoleEmployeesByPhaseString(employeeMecanic_UMPLERE));
+        }
+
+        List<Employee> employeeNecalificat_UMPLERE = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.UMPLERE, EmployeePositionEnum.NECALIFICAT);
+        if (employeeNecalificat != null && !employeeNecalificat.isEmpty()){
+            model.addAttribute("selectedEmployees_NECALIFICAT_UMPLERE", prepareHoleEmployeesByPhaseString(employeeNecalificat_UMPLERE));
         }
 
         return "hole/updateHole";

@@ -1,0 +1,20 @@
+.error h5{
+    color: #ff0000;
+}
+
+form .error {
+    color: #ff0000;
+}
+input {
+    margin: 2%;
+}
+
+fieldset {
+    border: 2px groove threedface;
+    border-image: initial;
+}
+
+legend {
+    padding: 3px 6px;
+    width: auto;
+}
