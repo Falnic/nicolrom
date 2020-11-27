@@ -25,7 +25,7 @@ public class PhaseServiceImpl implements PhaseService {
     private MaterialNoticeService materialNoticeService;
 
     @Override
-    public Phase createHolePhase(Hole hole, String phaseDate, String pipeDiameter, PhaseEnum nextPhase) {
+    public Phase createHolePhase(Hole hole, String phaseDate, PhaseEnum nextPhase) {
         Phase phase = new Phase();
         phase.setPhaseType(nextPhase);
 
@@ -97,6 +97,16 @@ public class PhaseServiceImpl implements PhaseService {
             phaseEnumPhaseMap.putIfAbsent(phaseEnum, null);
         }
         return phaseEnumPhaseMap;
+    }
+
+    @Override
+    public Phase getHolePhaseByPhaseType(Hole hole, PhaseEnum phaseEnum) {
+        for (Phase phase : hole.getPhases()){
+            if (phaseEnum.equals(phase.getPhaseType())){
+                return phase;
+            }
+        }
+        return null;
     }
 
     @Override

@@ -112,9 +112,9 @@
         <fieldset>
             <legend>Sapatura</legend>
             <div class="row">
-                <label class="col-lg-2 col-form-label" for="SAPATURA-datePicker">Data</label>
+                <label class="col-lg-2 col-form-label" for="SAPATURA_datePicker">Data</label>
                 <div class="col-lg-3">
-                    <input type="date" class="form-control" name="SAPATURA-Date" id="SAPATURA-datePicker"
+                    <input type="date" class="form-control" name="SAPATURA_Date" id="SAPATURA_datePicker"
                            placeholder="dd/mm/yyyy" autocomplete="false" max="${currentDate}"
                            value="${hole.date}"/>
                 </div>
@@ -218,15 +218,16 @@
                 </div>
                 <div class="col-lg-4"></div>
             </div>
+            <input type="hidden" name="phaseEnums" value="SAPATURA">
         </fieldset>
         <c:forEach var="phase" items="${hole.phases}">
             <c:if test="${'UMPLERE'.compareTo(phase.phaseType.name()) == 0}">
                 <fieldset>
                     <legend>Umplere</legend>
                     <div class="row">
-                        <label class="col-lg-2 col-form-label" for="UMPLERE-datePicker">Data</label>
+                        <label class="col-lg-2 col-form-label" for="UMPLERE_datePicker">Data</label>
                         <div class="col-lg-3">
-                            <input type="date" class="form-control" name="UMPLERE-Date" id="UMPLERE-datePicker"
+                            <input type="date" class="form-control" name="UMPLERE_Date" id="UMPLERE_datePicker"
                                    placeholder="dd/mm/yyyy" autocomplete="false" max="${currentDate}"
                                    value="${hole.date}"/>
                         </div>
@@ -290,14 +291,14 @@
                                                     <td><label class="control-label" for="material-${materialNotice.material.materialId}">
                                                             ${materialNotice.material.name}</label></td>
                                                     <td><input type="number" step="0.01" min="0" class="form-control" name="material"
-                                                               id="material-${materialNotice.material.materialId}" autocomplete="false"
+                                                               id="material-${materialNotice.material.materialId}" autocomplete="false" max="${hole.holeVolume}"
                                                                value="<fmt:formatNumber type = "number" maxFractionDigits="2" value="${materialNotice.quantity}"/>"/>
                                                     <td>MC</td>
                                                     <td><button type="button" class="btn btn-outline-danger"
                                                                 onclick="removeMaterialTr(${materialNotice.material.materialId},'${materialNotice.material.name}')">
                                                         X</button></td>
                                                 </tr>
-                                                <input type="hidden" name="materialId" value="${materialNotice.material.materialId}">
+                                                <input type="hidden" name="materialId" value="${materialNotice.material.materialId}" id="input_materialId-${materialNotice.material.materialId}">
                                             </c:forEach>
                                         </tbody>
                                     </table>
@@ -358,6 +359,7 @@
                         <div class="col-lg-4"></div>
                     </div>
                 </fieldset>
+                <input type="hidden" name="phaseEnums" value="${phase.phaseType.name()}">
             </c:if>
         </c:forEach>
         <div class="row">
@@ -526,6 +528,7 @@
             text: materialName,
         })).selectpicker('refresh');
         $("#materialTr-" + materialValue).remove();
+        $("#input_materialId-" + materialValue).remove();
     }
 
 </script>

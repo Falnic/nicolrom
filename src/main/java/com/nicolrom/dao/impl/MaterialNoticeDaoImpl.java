@@ -25,6 +25,12 @@ public class MaterialNoticeDaoImpl implements MaterialNoticeDao {
     }
 
     @Override
+    public void updateMaterialNotice(MaterialNotice notice) {
+        Session session = sessionFactory.getCurrentSession();
+        session.update(notice);
+    }
+
+    @Override
     public void deleteMaterialNotice(MaterialNotice notice) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("delete MaterialNotice where id = :id");

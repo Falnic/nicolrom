@@ -8,6 +8,7 @@ import com.nicolrom.enums.OrderOptionsEnum;
 import com.nicolrom.enums.PhaseEnum;
 import com.nicolrom.services.AreaService;
 import com.nicolrom.services.HoleService;
+import com.nicolrom.services.PipeService;
 import com.nicolrom.translators.HoleTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class HoleServiceImpl implements HoleService {
 
     @Autowired
     private HoleTranslator holeTranslator;
+
+    @Autowired
+    private PipeService pipeService;
 
     @Override
     public List<HoleDTO> getAllHoles() {
@@ -135,8 +139,9 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
-    public Hole create(String holeDate, String street, String streetNr, String locality, String county, String district, Integer areaId,
-                       Double holeLenght, Double holeWidth, Double holeDepth, String executor, Integer autoRouteDistance, Integer autoStationaryTime) {
+    public Hole create(String holeDate, String street, String streetNr, String locality, String county, String district,
+                       Integer areaId, Double holeLenght, Double holeWidth, Double holeDepth, String executor,
+                       Integer autoRouteDistance, Integer autoStationaryTime, String pipeDiameter) {
         Hole hole = new Hole();
 
         Date date = null;
@@ -160,6 +165,10 @@ public class HoleServiceImpl implements HoleService {
         hole.setExecutor(executor);
         hole.setAutoRouteDistance(autoRouteDistance);
         hole.setAutoStationaryTime(autoStationaryTime);
+        if (pipeDiameter != null){
+            hole.setPipe(pipeService.getPipeByDiameter(pipeDiameter));
+        }
+
 
         return hole;
     }

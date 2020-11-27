@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface PhaseService {
 
-    Phase createHolePhase(Hole hole, String phaseDate, String pipeDiameter, PhaseEnum nextPhase);
+    Phase createHolePhase(Hole hole, String phaseDate, PhaseEnum nextPhase);
 
     List<Phase> createPhases(Hole hole, List<Phase> holePhases);
 
@@ -22,6 +22,8 @@ public interface PhaseService {
     void deletePhase(List<Phase> phases);
 
     Map<PhaseEnum, Phase> getPhasesByPhaseTypeMap(List<PhaseEnum> phaseEnums, List<Phase> phases);
+
+    Phase getHolePhaseByPhaseType(Hole hole, PhaseEnum phaseEnum);
 
     PhaseEnum getNextPhase(List<Phase> phases);
 }

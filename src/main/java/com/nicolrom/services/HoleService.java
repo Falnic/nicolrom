@@ -37,7 +37,7 @@ public interface HoleService {
 
     Hole create(String date, String street, String streetNr, String locality, String county, String district, Integer areaId,
                 Double holeLenght, Double holeWidth, Double holeDepth, String executor, Integer autoRouteDistance,
-                Integer autoStationaryTime);
+                Integer autoStationaryTime, String pipeDiameter);
 
     String checkHole(Hole hole);
 

@@ -3,6 +3,7 @@ package com.nicolrom.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -43,5 +44,19 @@ public class Material implements Serializable {
 
     public void setMaterialNoticeSet(Set<MaterialNotice> phaseMaterialSet) {
         this.materialNoticeSet = phaseMaterialSet;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Material material = (Material) o;
+        return materialId == material.materialId &&
+                name.equals(material.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(materialId, name);
     }
 }

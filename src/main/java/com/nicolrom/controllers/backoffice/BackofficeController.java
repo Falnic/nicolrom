@@ -122,7 +122,7 @@ public class BackofficeController {
                            @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat){
 
         Hole hole = holeService.getHoleById(id);
-        Phase phase = phaseService.createHolePhase(hole, phaseDate, pipeDiameter, nextPhase);
+        Phase phase = phaseService.createHolePhase(hole, phaseDate, nextPhase);
 
         hole.getPhases().add(phase);
         hole.setPipe(pipeService.getPipeByDiameter(pipeDiameter));
@@ -142,7 +142,7 @@ public class BackofficeController {
         phase.setMaterialNoticeSet(materialNoticeSet);
 
         phaseService.savePhase(phase);
-        materialNoticeService.saveMaterialNotices(materialNoticeSet);
+        materialNoticeService.saveMaterialNotice(materialNoticeSet);
 
         return "redirect:/backoffice/holes/{id}";
     }
@@ -180,7 +180,7 @@ public class BackofficeController {
                           @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) {
 
         Hole hole = holeService.create(holeDate, street, streetNr, locality, county, district, areaId, holeLenght,
-                                        holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime);
+                                        holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime, null);
         String messaje = holeService.checkHole(hole);
         if (messaje != null){
             model.addAttribute("error", messaje);
@@ -214,14 +214,17 @@ public class BackofficeController {
         model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
         model.addAttribute("areas", areaService.getAllAreas());
         model.addAttribute("allPipes", pipeService.getAllPipes());
-        model.addAttribute("materials", materialService.getAllMaterials());
+
+        Hole hole = holeService.getHoleById(Integer.parseInt(id));
+        model.addAttribute("hole", hole);
+
+        List<Material> exceptedMaterials = materialService.getMaterials(materialNoticeService.getMaterialNoticeSet(hole));
+        model.addAttribute("materials", materialService.getAllMaterialsExcept(exceptedMaterials));
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         model.addAttribute("currentDate", dateFormat.format(date));
 
-        Hole hole = holeService.getHoleById(Integer.parseInt(id));
-        model.addAttribute("hole", hole);
 
         List<Employee> employeeSofer = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.SOFER);
         if (employeeSofer != null && !employeeSofer.isEmpty()){
@@ -257,7 +260,6 @@ public class BackofficeController {
     }
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String updateHole(Model model, @RequestParam(value = "id") String id,
-                             @RequestParam(value = "holeDate") String holeDate,
                              @RequestParam(value = "street") String street,
                              @RequestParam(value = "streetNr") String streetNr,
                              @RequestParam(value = "locality") String locality,
@@ -267,15 +269,24 @@ public class BackofficeController {
                              @RequestParam(value = "holeWidth") Double holeWidth,
                              @RequestParam(value = "holeDepth") Double holeDepth,
                              @RequestParam(value = "area") Integer areaId,
+                             @RequestParam(value = "SAPATURA_Date") String phaseDate_SAPATURA,
                              @RequestParam(value = "executor") String executor,
                              @RequestParam(value = "employees_SOFER", required = false) List<String> employeesSofer,
                              @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
                              @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
                              @RequestParam(value = "autoRouteDistance") Integer autoRouteDistance,
-                             @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) {
+                             @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime,
+                             @RequestParam(value = "UMPLERE_Date", required = false) String phaseDate_UMPLERE,
+                             @RequestParam(value = "pipe", required = false) String pipeDiameter,
+                             @RequestParam(value = "employees_SOFER_UMPLERE", required = false) List<String> employeesSofer_UMPLERE,
+                             @RequestParam(value = "employees_MECANIC_UMPLERE", required = false) List<String> employeesMecanic_UMPLERE,
+                             @RequestParam(value = "employees_NECALIFICAT_UMPLERE", required = false) List<String> employeesNecalificat_UMPLERE,
+                             @RequestParam(value = "materialId", required = false) List<String> materialIds,
+                             @RequestParam(value = "material", required = false) List<String> materialsValue,
+                             @RequestParam(value = "phaseEnums") List<String> phases) {
 
-        Hole updatedHole = holeService.create(holeDate, street, streetNr, locality, county, district, areaId, holeLenght,
-                holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime);
+        Hole updatedHole = holeService.create(phaseDate_SAPATURA, street, streetNr, locality, county, district, areaId, holeLenght,
+                holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime, pipeDiameter);
         Hole hole = holeService.getHoleById(Integer.parseInt(id));
         updatedHole.setHoleId(hole.getHoleId());
         String messaje =  holeService.checkHole(hole, updatedHole);
@@ -284,26 +295,48 @@ public class BackofficeController {
             return updateHole(model, id);
         }
 
-        updatedHole.setPhases(phaseService.createPhases(updatedHole, hole.getPhases()));
+        holeService.updateHole(updatedHole);
 
-        Team updatedTeam = teamService.create(employeesSofer, employeesMecanic, employeesNecalificat);
-        if (hole.getPhases().get(0).getTeam() != null){
-            updatedTeam.setIdTeam(hole.getPhases().get(0).getTeam().getIdTeam());
-        }
+        List<PhaseEnum> phaseEnums = parsePhaseEnums(phases);
+        for (PhaseEnum phaseEnum : phaseEnums){
+            Phase updatedPhase = new Phase();
+            Team updatedTeam;
+            switch (phaseEnum){
+                case SAPATURA:
+                    updatedPhase = phaseService.createHolePhase(updatedHole, phaseDate_SAPATURA, PhaseEnum.SAPATURA);
+                    Phase holePhase_SAPATURA = phaseService.getHolePhaseByPhaseType(hole, PhaseEnum.SAPATURA);
+                    updatedPhase.setPhaseId(holePhase_SAPATURA.getPhaseId());
+                    updatedTeam = teamService.create(employeesSofer, employeesMecanic, employeesNecalificat);
+                    if (holePhase_SAPATURA.getTeam() != null){
+                        updatedTeam.setIdTeam(holePhase_SAPATURA.getTeam().getIdTeam());
+                    }
+                    updatedPhase.setTeam(updatedTeam);
+                    teamService.updateTeam(updatedTeam);
+                    break;
 
-        Phase updatedPhase = updatedHole.getPhases().get(0);
-        updatedTeam.getPhases().add(updatedPhase);
+                case UMPLERE:
+                    updatedPhase = phaseService.createHolePhase(updatedHole, phaseDate_UMPLERE, PhaseEnum.UMPLERE);
+                    Phase holePhase_UMPLERE = phaseService.getHolePhaseByPhaseType(hole, PhaseEnum.UMPLERE);
+                    updatedPhase.setPhaseId(holePhase_UMPLERE.getPhaseId());
+                    updatedTeam = teamService.create(employeesSofer_UMPLERE, employeesMecanic_UMPLERE, employeesNecalificat_UMPLERE);
+                    if (holePhase_UMPLERE.getTeam() != null){
+                        updatedTeam.setIdTeam(holePhase_UMPLERE.getTeam().getIdTeam());
+                    }
+                    updatedPhase.setTeam(updatedTeam);
+                    teamService.updateTeam(updatedTeam);
 
-        if ((updatedTeam.getEmployees() != null) && (updatedTeam.getEmployees().size() != 0)){
-            updatedPhase.setTeam(updatedTeam);
-            holeService.updateHole(updatedHole);
-            teamService.updateTeam(updatedTeam);
+                    List<Integer> materialsIdsParsed = materialIds.stream().map(Integer::parseInt).collect(Collectors.toList());
+                    List<Double> materialsValuesParsed = materialsValue.stream().map(Double::parseDouble).collect(Collectors.toList());
+
+                    Set<MaterialNotice> updatedMaterialNoticeSet = materialNoticeService.getMaterialNoticeSet(updatedPhase, materialsIdsParsed, materialsValuesParsed);
+
+                    updatedPhase.setMaterialNoticeSet(updatedMaterialNoticeSet);
+                    materialNoticeService.updateMaterialNotice(holePhase_UMPLERE.getMaterialNoticeSet(), updatedMaterialNoticeSet);
+                    break;
+            }
+            updatedHole.getPhases().add(updatedPhase);
             phaseService.updatePhase(updatedPhase);
-        } else {
-            holeService.updateHole(updatedHole);
-            phaseService.updatePhase(updatedPhase);
-            teamService.deleteTeam(updatedTeam);
-        }
+        };
 
         return "redirect:/backoffice/holes/" + id;
     }
@@ -336,5 +369,16 @@ public class BackofficeController {
             employees.add(Integer.parseInt(employeeId));
         }
         return employees;
+    }
+
+    private List<PhaseEnum> parsePhaseEnums(List<String> phaseEnums){
+        List<PhaseEnum> result = new ArrayList<>();
+        List<PhaseEnum> enums = Arrays.asList(PhaseEnum.values());
+        for (String phaseEnumString : phaseEnums){
+            if (enums.contains(PhaseEnum.valueOf(phaseEnumString))){
+                result.add(PhaseEnum.valueOf(phaseEnumString));
+            }
+        }
+        return result;
     }
 }
