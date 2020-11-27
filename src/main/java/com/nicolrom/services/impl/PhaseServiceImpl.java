@@ -77,10 +77,12 @@ public class PhaseServiceImpl implements PhaseService {
                 case SAPATURA:
                     phaseDao.deletePhase(phase);
                     teamService.deleteTeam(phase.getTeam());
+                    break;
                 case UMPLERE:
                     materialNoticeService.deleteMaterialNotice(phase.getMaterialNoticeSet());
                     phaseDao.deletePhase(phase);
                     teamService.deleteTeam(phase.getTeam());
+                    break;
             }
         }
     }
