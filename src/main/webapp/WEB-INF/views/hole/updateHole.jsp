@@ -225,8 +225,8 @@
                 <fieldset>
                     <legend>Umplere</legend>
                     <div class="row">
-                        <label class="col-lg-2 col-form-label" for="UMPLERE_datePicker">Data</label>
-                        <div class="col-lg-3">
+                        <label class="col-lg-1 col-form-label" for="UMPLERE_datePicker">Data</label>
+                        <div class="col-lg-2">
                             <input type="date" class="form-control" name="UMPLERE_Date" id="UMPLERE_datePicker"
                                    placeholder="dd/mm/yyyy" autocomplete="false" max="${currentDate}"
                                    value="${hole.date}"/>
@@ -363,15 +363,14 @@
             </c:if>
         </c:forEach>
         <div class="row">
-            <div class="col-lg-2"></div>
+            <div class="col-lg-7"></div>
             <div class="col-lg-2">
-                <input type="submit" class="btn btn-warning btn-lg " value="Modifica"/>
+                <input type="submit" class="btn btn-warning btn-lg btn-block" value="Modifica"/>
             </div>
-            <div class="col-lg-4"></div>
+            <div class="col-lg-1"></div>
             <div class="col-lg-2">
-                <a class="btn btn-lg btn-danger" href="<c:url value="/backoffice/holes/${hole.holeId}"/>" role="button">Anuleaza</a>
+                <a class="btn btn-lg btn-danger btn-block" href="<c:url value="/backoffice/holes/${hole.holeId}"/>" role="button">Anuleaza</a>
             </div>
-            <div class="col-lg-2"></div>
         </div>
         <input type="hidden" value="${hole.holeId}">
     </form>

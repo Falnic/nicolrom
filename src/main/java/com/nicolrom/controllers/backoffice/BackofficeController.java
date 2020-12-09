@@ -209,53 +209,61 @@ public class BackofficeController {
 
     @RequestMapping(value = "/update", method = RequestMethod.GET)
     public String updateHole(Model model, @RequestParam(value = "id") String id){
-        model.addAttribute("positionEmployeesMap_SOFER", employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER));
-        model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
-        model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
-        model.addAttribute("areas", areaService.getAllAreas());
-        model.addAttribute("allPipes", pipeService.getAllPipes());
 
         Hole hole = holeService.getHoleById(Integer.parseInt(id));
         model.addAttribute("hole", hole);
 
-        List<Material> exceptedMaterials = materialService.getMaterials(materialNoticeService.getMaterialNoticeSet(hole));
-        model.addAttribute("materials", materialService.getAllMaterialsExcept(exceptedMaterials));
+        for (PhaseEnum phaseEnum : PhaseEnum.values()){
+            if (hole.getPhases().stream().anyMatch(phase -> phase.getPhaseType().equals(phaseEnum))){
+                switch (phaseEnum){
+                    case SAPATURA:
+                        model.addAttribute("positionEmployeesMap_SOFER", employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER));
+                        model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
+                        model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
+                        model.addAttribute("areas", areaService.getAllAreas());
+                        model.addAttribute("allPipes", pipeService.getAllPipes());
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        model.addAttribute("currentDate", dateFormat.format(date));
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        Date date = new Date();
+                        model.addAttribute("currentDate", dateFormat.format(date));
 
+                        List<Employee> employeeSofer = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.SOFER);
+                        if (employeeSofer != null && !employeeSofer.isEmpty()){
+                            model.addAttribute("selectedEmployees_SOFER", prepareHoleEmployeesByPhaseString(employeeSofer));
+                        }
 
-        List<Employee> employeeSofer = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.SOFER);
-        if (employeeSofer != null && !employeeSofer.isEmpty()){
-            model.addAttribute("selectedEmployees_SOFER", prepareHoleEmployeesByPhaseString(employeeSofer));
+                        List<Employee> employeeMecanic = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.MECANIC);
+                        if (employeeMecanic != null && !employeeMecanic.isEmpty()){
+                            model.addAttribute("selectedEmployees_MECANIC", prepareHoleEmployeesByPhaseString(employeeMecanic));
+                        }
+
+                        List<Employee> employeeNecalificat = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.NECALIFICAT);
+                        if (employeeNecalificat != null && !employeeNecalificat.isEmpty()){
+                            model.addAttribute("selectedEmployees_NECALIFICAT", prepareHoleEmployeesByPhaseString(employeeNecalificat));
+                        }
+                        break;
+                    case UMPLERE:
+                        List<Material> exceptedMaterials = materialService.getMaterials(materialNoticeService.getMaterialNoticeSet(hole));
+                        model.addAttribute("materials", materialService.getAllMaterialsExcept(exceptedMaterials));
+
+                        List<Employee> employeeSofer_UMPLERE = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.UMPLERE, EmployeePositionEnum.SOFER);
+                        if (employeeSofer_UMPLERE != null && !employeeSofer_UMPLERE.isEmpty()){
+                            model.addAttribute("selectedEmployees_SOFER_UMPLERE", prepareHoleEmployeesByPhaseString(employeeSofer_UMPLERE));
+                        }
+
+                        List<Employee> employeeMecanic_UMPLERE = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.UMPLERE, EmployeePositionEnum.MECANIC);
+                        if (employeeMecanic_UMPLERE != null && !employeeMecanic_UMPLERE.isEmpty()){
+                            model.addAttribute("selectedEmployees_MECANIC_UMPLERE", prepareHoleEmployeesByPhaseString(employeeMecanic_UMPLERE));
+                        }
+
+                        List<Employee> employeeNecalificat_UMPLERE = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.UMPLERE, EmployeePositionEnum.NECALIFICAT);
+                        if (employeeNecalificat_UMPLERE != null && !employeeNecalificat_UMPLERE.isEmpty()){
+                            model.addAttribute("selectedEmployees_NECALIFICAT_UMPLERE", prepareHoleEmployeesByPhaseString(employeeNecalificat_UMPLERE));
+                        }
+                        break;
+                }
+            }
         }
-
-        List<Employee> employeeMecanic = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.MECANIC);
-        if (employeeMecanic != null && !employeeMecanic.isEmpty()){
-            model.addAttribute("selectedEmployees_MECANIC", prepareHoleEmployeesByPhaseString(employeeMecanic));
-        }
-
-        List<Employee> employeeNecalificat = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.NECALIFICAT);
-        if (employeeNecalificat != null && !employeeNecalificat.isEmpty()){
-            model.addAttribute("selectedEmployees_NECALIFICAT", prepareHoleEmployeesByPhaseString(employeeNecalificat));
-        }
-//UMPLERE
-        List<Employee> employeeSofer_UMPLERE = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.UMPLERE, EmployeePositionEnum.SOFER);
-        if (employeeSofer != null && !employeeSofer.isEmpty()){
-            model.addAttribute("selectedEmployees_SOFER_UMPLERE", prepareHoleEmployeesByPhaseString(employeeSofer_UMPLERE));
-        }
-
-        List<Employee> employeeMecanic_UMPLERE = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.UMPLERE, EmployeePositionEnum.MECANIC);
-        if (employeeMecanic != null && !employeeMecanic.isEmpty()){
-            model.addAttribute("selectedEmployees_MECANIC_UMPLERE", prepareHoleEmployeesByPhaseString(employeeMecanic_UMPLERE));
-        }
-
-        List<Employee> employeeNecalificat_UMPLERE = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.UMPLERE, EmployeePositionEnum.NECALIFICAT);
-        if (employeeNecalificat != null && !employeeNecalificat.isEmpty()){
-            model.addAttribute("selectedEmployees_NECALIFICAT_UMPLERE", prepareHoleEmployeesByPhaseString(employeeNecalificat_UMPLERE));
-        }
-
         return "hole/updateHole";
     }
     @RequestMapping(value = "/update", method = RequestMethod.POST)
