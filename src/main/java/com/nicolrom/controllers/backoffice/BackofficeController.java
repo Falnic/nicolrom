@@ -1,5 +1,7 @@
 package com.nicolrom.controllers.backoffice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicolrom.entities.*;
 import com.nicolrom.entities.dto.HoleDTO;
 import com.nicolrom.enums.EmployeePositionEnum;
@@ -149,10 +151,19 @@ public class BackofficeController {
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addHole(Model model){
-        model.addAttribute("positionEmployeesMap_SOFER", employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER));
+        List<Employee> employees_SOFER = employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER);
+        model.addAttribute("positionEmployeesMap_SOFER", employees_SOFER);
         model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
         model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
         model.addAttribute("areas", areaService.getAllAreas());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String jsonStr = objectMapper.writeValueAsString(employees_SOFER);
+            model.addAttribute("employeesJSON_SOFER", jsonStr);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();

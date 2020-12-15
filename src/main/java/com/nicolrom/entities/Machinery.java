@@ -1,5 +1,6 @@
 package com.nicolrom.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.nicolrom.enums.MachineryEnum;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class Machinery implements Serializable {
 
     @ManyToOne(targetEntity = Employee.class)
     @JoinColumn(name = "employeeId")
+    @JsonBackReference
     private Employee employee;
 
     public int getMachineryId() {

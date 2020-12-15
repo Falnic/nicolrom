@@ -1,5 +1,7 @@
 package com.nicolrom.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.nicolrom.enums.EmployeePositionEnum;
 
 import javax.persistence.*;
@@ -24,10 +26,12 @@ public class Employee implements Serializable {
     private EmployeePositionEnum position;
 
     @ManyToMany(mappedBy = "employees", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JsonBackReference
     private Set<Team> teams = new HashSet<>();
 
     @OneToMany(targetEntity = Machinery.class, mappedBy = "employee", fetch = FetchType.EAGER)
     @Column(nullable = false)
+    @JsonManagedReference
     private Set<Machinery> machines = new HashSet<>();
 
     public int getIdEmployee() {

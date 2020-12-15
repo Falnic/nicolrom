@@ -151,6 +151,8 @@
             </div>
             <div class="col-lg-2"></div>
         </div>
+        <div id="chooseMachine_Div">
+        </div>
         <div class="row" id="newRouteFields" style="display: none">
             <div class="col-lg-2"></div>
                 <div class="form-group col-lg-4">
@@ -186,6 +188,66 @@
     $(function() {
         $('#cancelBtn').click(function() {
             return window.confirm("Sunteti sigur?");
+        });
+        var employeesJSON = ${employeesJSON_SOFER};
+        $("#selectEmployees-SOFER").change(function () {
+            if ($("#chooseMachineHeaderDiv").length == 0){
+                $("#chooseMachine_Div").append(
+                    '<div class="row" id="chooseMachineHeaderDiv">' +
+                        '<div class="col-lg-2"></div>' +
+                        '<div class="col-lg-8">' +
+                            '<h5>Alege masina:</h5>' +
+                        '</div>' +
+                        '<div class="col-lg-2"></div>' +
+                    '</div>');
+            }
+            if ($("#chooseMachine_Div > div").length < ($("#selectEmployees-SOFER option:selected").length + 1)){
+                $("#selectEmployees-SOFER option:selected").each(function () {
+                    var employeeId = $(this).val();
+                    if ($("#machineSelect-employee-" + employeeId).length == 0){
+                        $("#chooseMachine_Div").append(
+                            '<div class="row" id="chooseMachine-employee-' + employeeId + '">' +
+                            '   <div class="col-lg-2"></div>' +
+                            '   <div class="col-lg-2">' +
+                            '       <label class="control-label" for="machineSelect-employee-' + employeeId + '">' + $(this).text() + '</label>' +
+                            '   </div>' +
+                            '   <div class="col-lg-2">' +
+                            '       <select name="machineSelect-employee-' + employeeId + '" id="machineSelect-employee-' + employeeId + '" class="selectpicker">' +
+                            '       </select>' +
+                            '   </div>' +
+                            '   <div class="col-lg-2"></div>' +
+                            '</div>');
+                        for (i in employeesJSON){
+                            if (employeesJSON[i].idEmployee == employeeId){
+                                var employeeMachines = employeesJSON[i].machines;
+                                for (j in employeeMachines){
+                                    var text = employeeMachines[j].licensePlate + " " + employeeMachines[j].capacity + " mc";
+                                    $("#machineSelect-employee-" + employeeId).append(new Option(text, employeeMachines[j].machineryId));
+                                }
+                                $("#machineSelect-employee-" + employeeId).selectpicker("refresh");
+                            }
+                        }
+                    }
+                })
+            } else {
+                var optionsSelected = $("#selectEmployees-SOFER option:selected");
+                $("#chooseMachine_Div > div").each(function () {
+                    var div_id = $(this).attr("id");
+                    var flag = false;
+                    if (optionsSelected.length > 0){
+                        optionsSelected.each(function () {
+                            if (div_id.search($(this).val()) > 0){
+                                flag = true;
+                            }
+                        })
+                    } else {
+                        $(this).remove();
+                    }
+                    if ((flag == false) && ($(this).attr("id") != "chooseMachineHeaderDiv")){
+                        $(this).remove();
+                    }
+                })
+            }
         });
 
         $("form[name='addHoleForm']").validate({
