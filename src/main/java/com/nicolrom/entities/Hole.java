@@ -57,7 +57,7 @@ public class Hole implements Serializable {
     private Area area;
 
     @Column
-    private Integer autoRouteDistance;
+    private Double autoRouteDistance;
 
     @Column
     private Integer autoStationaryTime;
@@ -172,11 +172,11 @@ public class Hole implements Serializable {
         this.area = area;
     }
 
-    public Integer getAutoRouteDistance() {
+    public Double getAutoRouteDistance() {
         return autoRouteDistance;
     }
 
-    public void setAutoRouteDistance(Integer autoRouteDistance) {
+    public void setAutoRouteDistance(Double autoRouteDistance) {
         this.autoRouteDistance = autoRouteDistance;
     }
 

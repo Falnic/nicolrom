@@ -36,7 +36,7 @@ public interface HoleService {
     void deleteHole(Hole hole);
 
     Hole create(String date, String street, String streetNr, String locality, String county, String district, Integer areaId,
-                Double holeLenght, Double holeWidth, Double holeDepth, String executor, Integer autoRouteDistance,
+                Double holeLenght, Double holeWidth, Double holeDepth, String executor, Double autoRouteDistance,
                 Integer autoStationaryTime, String pipeDiameter);
 
     String checkHole(Hole hole);

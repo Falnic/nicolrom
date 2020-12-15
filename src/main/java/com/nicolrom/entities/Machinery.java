@@ -24,8 +24,8 @@ public class Machinery implements Serializable {
     @Enumerated(EnumType.STRING)
     private MachineryEnum machineryType;
 
-    @Column(columnDefinition = "integer default 0")
-    private int capacity;
+    @Column
+    private Integer capacity;
 
     @ManyToOne(targetEntity = Employee.class)
     @JoinColumn(name = "employeeId")

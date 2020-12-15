@@ -168,15 +168,15 @@ public class BackofficeController {
                           @RequestParam(value = "locality") String locality,
                           @RequestParam(value = "county") String county,
                           @RequestParam(value = "district") String district,
+                          @RequestParam(value = "area") Integer areaId,
                           @RequestParam(value = "holeLenght") Double holeLenght,
                           @RequestParam(value = "holeWidth") Double holeWidth,
                           @RequestParam(value = "holeDepth") Double holeDepth,
-                          @RequestParam(value = "area") Integer areaId,
                           @RequestParam(value = "executor") String executor,
                           @RequestParam(value = "employees_SOFER", required = false) List<String> employeesSofer,
                           @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
                           @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
-                          @RequestParam(value = "autoRouteDistance") Integer autoRouteDistance,
+                          @RequestParam(value = "autoRouteDistance") Double autoRouteDistance,
                           @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) {
 
         Hole hole = holeService.create(holeDate, street, streetNr, locality, county, district, areaId, holeLenght,
@@ -282,7 +282,7 @@ public class BackofficeController {
                              @RequestParam(value = "employees_SOFER", required = false) List<String> employeesSofer,
                              @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
                              @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
-                             @RequestParam(value = "autoRouteDistance") Integer autoRouteDistance,
+                             @RequestParam(value = "autoRouteDistance") Double autoRouteDistance,
                              @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime,
                              @RequestParam(value = "UMPLERE_Date", required = false) String phaseDate_UMPLERE,
                              @RequestParam(value = "pipe", required = false) String pipeDiameter,
@@ -293,8 +293,9 @@ public class BackofficeController {
                              @RequestParam(value = "material", required = false) List<String> materialsValue,
                              @RequestParam(value = "phaseEnums") List<String> phases) {
 
-        Hole updatedHole = holeService.create(phaseDate_SAPATURA, street, streetNr, locality, county, district, areaId, holeLenght,
-                holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime, pipeDiameter);
+        Hole updatedHole = holeService.create(phaseDate_SAPATURA, street, streetNr, locality, county, district, areaId,
+                holeLenght, holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime, pipeDiameter);
+
         Hole hole = holeService.getHoleById(Integer.parseInt(id));
         updatedHole.setHoleId(hole.getHoleId());
         String messaje =  holeService.checkHole(hole, updatedHole);
@@ -344,13 +345,13 @@ public class BackofficeController {
             }
             updatedHole.getPhases().add(updatedPhase);
             phaseService.updatePhase(updatedPhase);
-        };
+        }
 
         return "redirect:/backoffice/holes/" + id;
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
-    public String deleteHole(Model model,  @RequestParam(value = "id") String id){
+    public String deleteHole(@RequestParam(value = "id") String id){
         Hole hole = holeService.getHoleById(Integer.parseInt(id));
         phaseService.deletePhase(hole.getPhases());
         holeService.deleteHole(hole);

@@ -155,12 +155,12 @@
             <div class="col-lg-2"></div>
                 <div class="form-group col-lg-4">
                     <label class="control-label" for="autoRouteDistance">Distanta parcursa de bascula</label>
-                    <input type="number" class="form-control" name="autoRouteDistance" id="autoRouteDistance" autocomplete="false"/>
+                    <input type="number" step="0.01" min="0" class="form-control" name="autoRouteDistance" id="autoRouteDistance" autocomplete="false"/>
                     <small id="emailHelp" class="form-text text-muted">Distanta parcursa de bascula de la locul sapaturii pana la groapa de gunoi</small>
                 </div>
                 <div class="form-group col-lg-4">
                     <label class="control-label" for="autoStationaryTime">Ore de stationare bascula</label>
-                    <input type="number" class="form-control" name="autoStationaryTime" id="autoStationaryTime" autocomplete="false"/>
+                    <input type="number" step="1" min="0" class="form-control" name="autoStationaryTime" id="autoStationaryTime" autocomplete="false"/>
                 </div>
             <div class="col-lg-2"></div>
         </div>
@@ -204,6 +204,7 @@
                 },
                 autoStationaryTime: {
                     required: "#executorDelGaz:checked",
+                    digits: true,
                 },
             },
             messages: {
@@ -217,7 +218,10 @@
                 holeWidth: "Introduceti latimea",
                 holeDepth: "Introduceti adancimea",
                 autoRouteDistance: "Introduceti distanta",
-                autoStationaryTime: "Introduceti timpul de stationare",
+                autoStationaryTime: {
+                    required : "Introduceti timpul de stationare",
+                    digits: "Introduceti valoare fara zecimale",
+                }
             },
             submitHandler: function(form) {
                 form.submit();

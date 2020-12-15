@@ -206,7 +206,7 @@
             <div class="row" id="newRouteFields" style="display: none">
                 <div class="form-group col-lg-4">
                     <label class="control-label" for="autoRouteDistance">Distanta parcursa de bascula</label>
-                    <input type="number" class="form-control" name="autoRouteDistance" id="autoRouteDistance"
+                    <input type="number" step="0.01" min="0" class="form-control" name="autoRouteDistance" id="autoRouteDistance"
                            autocomplete="false" value="${hole.autoRouteDistance}"/>
                     <small id="emailHelp" class="form-text text-muted">Distanta parcursa de bascula de la locul sapaturii pana la groapa de gunoi</small>
                 </div>
@@ -214,7 +214,7 @@
                 <div class="form-group col-lg-4">
                     <label class="control-label" for="autoStationaryTime">Ore de stationare bascula</label>
                     <input type="number" class="form-control" name="autoStationaryTime" id="autoStationaryTime"
-                           autocomplete="false" value="${hole.autoStationaryTime}"/>
+                           step="1" min="0" autocomplete="false" value="${hole.autoStationaryTime}"/>
                 </div>
                 <div class="col-lg-4"></div>
             </div>

@@ -43,7 +43,7 @@ public class HoleServiceImpl implements HoleService {
 
         OrderOptionsEnum orderOptionEnum = holeTranslator.translateOrderOption(orderBy);
 
-        List<Hole> pagedResult = new ArrayList<>();
+        List<Hole> pagedResult;
         switch (orderOptionEnum){
             case DATA_DESCRESCATOR:
                 pagedResult = holeDao.getHolesOrderedByDate(pageNo, pageSize);
@@ -58,7 +58,7 @@ public class HoleServiceImpl implements HoleService {
         if (!pagedResult.isEmpty()){
             return populateDTO(pagedResult);
         } else {
-            return new ArrayList<HoleDTO>();
+            return new ArrayList<>();
         }
     }
 
@@ -141,7 +141,7 @@ public class HoleServiceImpl implements HoleService {
     @Override
     public Hole create(String holeDate, String street, String streetNr, String locality, String county, String district,
                        Integer areaId, Double holeLenght, Double holeWidth, Double holeDepth, String executor,
-                       Integer autoRouteDistance, Integer autoStationaryTime, String pipeDiameter) {
+                       Double autoRouteDistance, Integer autoStationaryTime, String pipeDiameter) {
         Hole hole = new Hole();
 
         Date date = null;
@@ -168,7 +168,6 @@ public class HoleServiceImpl implements HoleService {
         if (pipeDiameter != null){
             hole.setPipe(pipeService.getPipeByDiameter(pipeDiameter));
         }
-
 
         return hole;
     }

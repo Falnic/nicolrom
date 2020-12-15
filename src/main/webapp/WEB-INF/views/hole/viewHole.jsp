@@ -185,14 +185,14 @@
                                     <div id="tabs-SAPATURA">
                                         <dl class="row">
                                             <dt class="col-lg-1">Data</dt>
-                                            <dd class="col-lg-2"><fmt:formatDate  value="${phase.phaseDate}" pattern="dd/MM/yyyy"/></dd>
+                                            <dd class="col-lg-1"><fmt:formatDate  value="${phase.phaseDate}" pattern="dd/MM/yyyy"/></dd>
                                             <dt class="col-lg-1">Executant</dt>
-                                            <dd class="col-lg-2">${hole.executor}</dd>
+                                            <dd class="col-lg-1">${hole.executor}</dd>
                                             <c:if test="${hole.autoRouteDistance != null || hole.autoStationaryTime != null}">
-                                                <dt class="col-lg-2">Distanta parcursa</dt>
-                                                <dd class="col-lg-1">${hole.autoRouteDistance}</dd>
-                                                <dt class="col-lg-2">Timp de stationare</dt>
-                                                <dd class="col-lg-1">${hole.autoStationaryTime}</dd>
+                                                <dt class="col-lg-1">Distanta parcursa</dt>
+                                                <dd class="col-lg-1">${hole.autoRouteDistance} km</dd>
+                                                <dt class="col-lg-1">Timp de stationare</dt>
+                                                <dd class="col-lg-1">${hole.autoStationaryTime} ore</dd>
                                             </c:if>
                                         </dl>
                                         <div class="row">

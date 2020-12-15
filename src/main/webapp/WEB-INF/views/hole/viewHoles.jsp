@@ -242,7 +242,6 @@
                 })
                 window.location.assign(url);
             })
-
         });
 
         function redirectToHDP(holeid) {
