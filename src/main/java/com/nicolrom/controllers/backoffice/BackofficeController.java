@@ -35,6 +35,9 @@ public class BackofficeController {
     private TeamService teamService;
 
     @Autowired
+    private MachineryService machineryService;
+
+    @Autowired
     private MaterialNoticeService materialNoticeService;
 
     @Autowired
@@ -100,7 +103,8 @@ public class BackofficeController {
             model.addAttribute("allPipes", pipeService.getAllPipes());
         }
         model.addAttribute("nextPhase", nextPhase);
-        model.addAttribute("positionEmployeesMap_SOFER", employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER));
+        List<Employee> employees_SOFER = employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER);
+        model.addAttribute("positionEmployeesMap_SOFER", employees_SOFER);
         model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
         model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
         model.addAttribute("materials", materialService.getAllMaterials());
@@ -108,6 +112,14 @@ public class BackofficeController {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         model.addAttribute("currentDate", dateFormat.format(date));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String jsonStr = objectMapper.writeValueAsString(employees_SOFER);
+            model.addAttribute("employeesJSON_SOFER", jsonStr);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
 
         return "hole/viewHole";
     }
@@ -121,7 +133,8 @@ public class BackofficeController {
                            @RequestParam(value = "material", required = false) List<String> materialsValue,
                            @RequestParam(value = "employees_SOFER", required = false) List<String> employeesSofer,
                            @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
-                           @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat){
+                           @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
+                           @RequestParam(value = "machineSelect_SOFER", required = false) List<String> machineriesSofer){
 
         Hole hole = holeService.getHoleById(id);
         Phase phase = phaseService.createHolePhase(hole, phaseDate, nextPhase);
@@ -129,21 +142,17 @@ public class BackofficeController {
         hole.getPhases().add(phase);
         hole.setPipe(pipeService.getPipeByDiameter(pipeDiameter));
         holeService.updateHole(hole);
+        phaseService.savePhase(phase);
 
-        List<String> employeesStringArray = employeeService.parseEmployees(employeesSofer, employeesMecanic, employeesNecalificat);
-        if(!employeesStringArray.isEmpty()){
-            Team team = new Team();
-            team.setEmployees(employeeService.getEmployeesById(parseEmployeesStringArray(employeesStringArray)));
-            phase.setTeam(team);
-            teamService.saveTeam(team);
-        }
+        Team team = teamService.create(employeesSofer, employeesMecanic, employeesNecalificat, machineriesSofer);
+        team.setPhase(phase);
+        teamService.saveTeam(team);
+
         List<Integer> materialsIdsParsed = materialIds.stream().map(Integer::parseInt).collect(Collectors.toList());
         List<Double> materialsValuesParsed = materialsValue.stream().map(Double::parseDouble).collect(Collectors.toList());
 
         Set<MaterialNotice> materialNoticeSet = materialNoticeService.getMaterialNoticeSet(phase, materialsIdsParsed, materialsValuesParsed);
-        phase.setMaterialNoticeSet(materialNoticeSet);
 
-        phaseService.savePhase(phase);
         materialNoticeService.saveMaterialNotice(materialNoticeSet);
 
         return "redirect:/backoffice/holes/{id}";
@@ -187,6 +196,7 @@ public class BackofficeController {
                           @RequestParam(value = "employees_SOFER", required = false) List<String> employeesSofer,
                           @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
                           @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
+                          @RequestParam(value = "machineSelect_SOFER", required = false) List<String> machineriesSofer,
                           @RequestParam(value = "autoRouteDistance") Double autoRouteDistance,
                           @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) {
 
@@ -198,22 +208,16 @@ public class BackofficeController {
             return addHole(model);
         }
 
+        holeService.saveHole(hole);
+
         Phase phase = new Phase();
         phase.setHole(hole);
         phase.setPhaseDate(hole.getDate());
-
-        hole.getPhases().add(phase);
-
-        List<String> employeesStringArray = employeeService.parseEmployees(employeesSofer, employeesMecanic, employeesNecalificat);
-        if(!employeesStringArray.isEmpty()){
-            Team team = new Team();
-            team.setEmployees(employeeService.getEmployeesById(parseEmployeesStringArray(employeesStringArray)));
-            phase.setTeam(team);
-            teamService.saveTeam(team);
-        }
-
-        holeService.saveHole(hole);
         phaseService.savePhase(phase);
+
+        Team team = teamService.create(employeesSofer, employeesMecanic, employeesNecalificat, machineriesSofer);
+        team.setPhase(phase);
+        teamService.saveTeam(team);
 
         return "redirect:/backoffice/holes/" + hole.getHoleId();
     }
@@ -224,56 +228,68 @@ public class BackofficeController {
         Hole hole = holeService.getHoleById(Integer.parseInt(id));
         model.addAttribute("hole", hole);
 
-        for (PhaseEnum phaseEnum : PhaseEnum.values()){
-            if (hole.getPhases().stream().anyMatch(phase -> phase.getPhaseType().equals(phaseEnum))){
-                switch (phaseEnum){
+        List<Employee> employees_SOFER = employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER);
+        model.addAttribute("positionEmployeesMap_SOFER", employees_SOFER);
+        model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
+        model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
+        model.addAttribute("areas", areaService.getAllAreas());
+        model.addAttribute("allPipes", pipeService.getAllPipes());
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        model.addAttribute("currentDate", dateFormat.format(date));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String jsonStr = objectMapper.writeValueAsString(employees_SOFER);
+            model.addAttribute("employeesJSON_SOFER", jsonStr);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        for (Phase phase : hole.getPhases()){
+            switch (phase.getPhaseType()){
                     case SAPATURA:
-                        model.addAttribute("positionEmployeesMap_SOFER", employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER));
-                        model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
-                        model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
-                        model.addAttribute("areas", areaService.getAllAreas());
-                        model.addAttribute("allPipes", pipeService.getAllPipes());
 
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                        Date date = new Date();
-                        model.addAttribute("currentDate", dateFormat.format(date));
-
-                        List<Employee> employeeSofer = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.SOFER);
+                        List<Employee> employeeSofer = employeeService.getEmployeesByPositions(phase.getTeam(), EmployeePositionEnum.SOFER);
                         if (employeeSofer != null && !employeeSofer.isEmpty()){
                             model.addAttribute("selectedEmployees_SOFER", prepareHoleEmployeesByPhaseString(employeeSofer));
                         }
 
-                        List<Employee> employeeMecanic = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.MECANIC);
+                        List<Employee> employeeMecanic = employeeService.getEmployeesByPositions(phase.getTeam(), EmployeePositionEnum.MECANIC);
                         if (employeeMecanic != null && !employeeMecanic.isEmpty()){
                             model.addAttribute("selectedEmployees_MECANIC", prepareHoleEmployeesByPhaseString(employeeMecanic));
                         }
 
-                        List<Employee> employeeNecalificat = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.SAPATURA, EmployeePositionEnum.NECALIFICAT);
+                        List<Employee> employeeNecalificat = employeeService.getEmployeesByPositions(phase.getTeam(), EmployeePositionEnum.NECALIFICAT);
                         if (employeeNecalificat != null && !employeeNecalificat.isEmpty()){
                             model.addAttribute("selectedEmployees_NECALIFICAT", prepareHoleEmployeesByPhaseString(employeeNecalificat));
                         }
+
+                        model.addAttribute("teamDeploys_SAPATURA", phase.getTeam().getTeamDeploys());
                         break;
                     case UMPLERE:
                         List<Material> exceptedMaterials = materialService.getMaterials(materialNoticeService.getMaterialNoticeSet(hole));
                         model.addAttribute("materials", materialService.getAllMaterialsExcept(exceptedMaterials));
 
-                        List<Employee> employeeSofer_UMPLERE = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.UMPLERE, EmployeePositionEnum.SOFER);
+                        List<Employee> employeeSofer_UMPLERE = employeeService.getEmployeesByPositions(phase.getTeam(), EmployeePositionEnum.SOFER);
                         if (employeeSofer_UMPLERE != null && !employeeSofer_UMPLERE.isEmpty()){
                             model.addAttribute("selectedEmployees_SOFER_UMPLERE", prepareHoleEmployeesByPhaseString(employeeSofer_UMPLERE));
                         }
 
-                        List<Employee> employeeMecanic_UMPLERE = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.UMPLERE, EmployeePositionEnum.MECANIC);
+                        List<Employee> employeeMecanic_UMPLERE = employeeService.getEmployeesByPositions(phase.getTeam(), EmployeePositionEnum.MECANIC);
                         if (employeeMecanic_UMPLERE != null && !employeeMecanic_UMPLERE.isEmpty()){
                             model.addAttribute("selectedEmployees_MECANIC_UMPLERE", prepareHoleEmployeesByPhaseString(employeeMecanic_UMPLERE));
                         }
 
-                        List<Employee> employeeNecalificat_UMPLERE = employeeService.getHoleEmployeesByPhase(hole, PhaseEnum.UMPLERE, EmployeePositionEnum.NECALIFICAT);
+                        List<Employee> employeeNecalificat_UMPLERE = employeeService.getEmployeesByPositions(phase.getTeam(), EmployeePositionEnum.NECALIFICAT);
                         if (employeeNecalificat_UMPLERE != null && !employeeNecalificat_UMPLERE.isEmpty()){
                             model.addAttribute("selectedEmployees_NECALIFICAT_UMPLERE", prepareHoleEmployeesByPhaseString(employeeNecalificat_UMPLERE));
                         }
+
+                        model.addAttribute("teamDeploys_UMPLERE", phase.getTeam().getTeamDeploys());
                         break;
                 }
-            }
         }
         return "hole/updateHole";
     }
@@ -293,6 +309,7 @@ public class BackofficeController {
                              @RequestParam(value = "employees_SOFER", required = false) List<String> employeesSofer,
                              @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
                              @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
+                             @RequestParam(value = "machineSelectSAPATURA_SOFER", required = false) List<String> machineriesSAPATURASofer,
                              @RequestParam(value = "autoRouteDistance") Double autoRouteDistance,
                              @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime,
                              @RequestParam(value = "UMPLERE_Date", required = false) String phaseDate_UMPLERE,
@@ -300,6 +317,7 @@ public class BackofficeController {
                              @RequestParam(value = "employees_SOFER_UMPLERE", required = false) List<String> employeesSofer_UMPLERE,
                              @RequestParam(value = "employees_MECANIC_UMPLERE", required = false) List<String> employeesMecanic_UMPLERE,
                              @RequestParam(value = "employees_NECALIFICAT_UMPLERE", required = false) List<String> employeesNecalificat_UMPLERE,
+                             @RequestParam(value = "machineSelectUMPLERE_SOFER", required = false) List<String> machineriesUMPLERESofer,
                              @RequestParam(value = "materialId", required = false) List<String> materialIds,
                              @RequestParam(value = "material", required = false) List<String> materialsValue,
                              @RequestParam(value = "phaseEnums") List<String> phases) {
@@ -326,24 +344,27 @@ public class BackofficeController {
                     updatedPhase = phaseService.createHolePhase(updatedHole, phaseDate_SAPATURA, PhaseEnum.SAPATURA);
                     Phase holePhase_SAPATURA = phaseService.getHolePhaseByPhaseType(hole, PhaseEnum.SAPATURA);
                     updatedPhase.setPhaseId(holePhase_SAPATURA.getPhaseId());
-                    updatedTeam = teamService.create(employeesSofer, employeesMecanic, employeesNecalificat);
+                    updatedTeam = teamService.create(employeesSofer, employeesMecanic, employeesNecalificat, machineriesSAPATURASofer);
+                    updatedTeam.setPhase(updatedPhase);
                     if (holePhase_SAPATURA.getTeam() != null){
                         updatedTeam.setIdTeam(holePhase_SAPATURA.getTeam().getIdTeam());
                     }
                     updatedPhase.setTeam(updatedTeam);
-                    teamService.updateTeam(updatedTeam);
+                    teamService.updateTeam(updatedTeam, holePhase_SAPATURA.getTeam());
                     break;
 
                 case UMPLERE:
                     updatedPhase = phaseService.createHolePhase(updatedHole, phaseDate_UMPLERE, PhaseEnum.UMPLERE);
                     Phase holePhase_UMPLERE = phaseService.getHolePhaseByPhaseType(hole, PhaseEnum.UMPLERE);
                     updatedPhase.setPhaseId(holePhase_UMPLERE.getPhaseId());
-                    updatedTeam = teamService.create(employeesSofer_UMPLERE, employeesMecanic_UMPLERE, employeesNecalificat_UMPLERE);
+                    updatedTeam = teamService.create(employeesSofer_UMPLERE, employeesMecanic_UMPLERE,
+                            employeesNecalificat_UMPLERE, machineriesUMPLERESofer);
+                    updatedTeam.setPhase(updatedPhase);
                     if (holePhase_UMPLERE.getTeam() != null){
                         updatedTeam.setIdTeam(holePhase_UMPLERE.getTeam().getIdTeam());
                     }
                     updatedPhase.setTeam(updatedTeam);
-                    teamService.updateTeam(updatedTeam);
+                    teamService.updateTeam(updatedTeam, holePhase_UMPLERE.getTeam());
 
                     List<Integer> materialsIdsParsed = materialIds.stream().map(Integer::parseInt).collect(Collectors.toList());
                     List<Double> materialsValuesParsed = materialsValue.stream().map(Double::parseDouble).collect(Collectors.toList());
@@ -383,12 +404,12 @@ public class BackofficeController {
         }
     }
 
-    private List<Integer> parseEmployeesStringArray(List<String> employeesStringArray){
-        List<Integer> employees = new ArrayList<>();
-        for (String employeeId : employeesStringArray) {
-            employees.add(Integer.parseInt(employeeId));
+    private List<Integer> parseStringArray(List<String> stringArray){
+        List<Integer> intValues = new ArrayList<>();
+        for (String intValue : stringArray) {
+            intValues.add(Integer.parseInt(intValue));
         }
-        return employees;
+        return intValues;
     }
 
     private List<PhaseEnum> parsePhaseEnums(List<String> phaseEnums){

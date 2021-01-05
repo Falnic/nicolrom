@@ -88,21 +88,24 @@
                         <label class="col-lg-3 col-form-label" for="holeLenght">Lungime</label>
                         <div class="col-lg-9">
                             <input type="number" step="0.01" min="0" class="form-control" name="holeLenght"
-                                   id="holeLenght" autocomplete="false" placeholder="m" value="${hole.holeLength}"/>
+                                   id="holeLenght" autocomplete="false" placeholder="m" value="${hole.holeLength}"
+                                   oninput="calculateAutoStationaryTime()"/>
                         </div>
                     </div>
                     <div class="row">
                         <label class="col-lg-3 col-form-label" for="holeWidth">Latime</label>
                         <div class="col-lg-9">
                             <input type="number" step="0.01" min="0" class="form-control" name="holeWidth"
-                                   id="holeWidth" autocomplete="false" placeholder="m" value="${hole.holeWidth}"/>
+                                   id="holeWidth" autocomplete="false" placeholder="m" value="${hole.holeWidth}"
+                                   oninput="calculateAutoStationaryTime()"/>
                         </div>
                     </div>
                     <div class="row">
                         <label class="col-lg-3 col-form-label" for="holeDepth">Adancime</label>
                         <div class="col-lg-9">
                             <input type="number" step="0.01" min="0" class="form-control" name="holeDepth"
-                                   id="holeDepth" autocomplete="false" placeholder="m" value="${hole.holeDepth}"/>
+                                   id="holeDepth" autocomplete="false" placeholder="m" value="${hole.holeDepth}"
+                                   oninput="calculateAutoStationaryTime()"/>
                         </div>
                     </div>
                 </div>
@@ -152,7 +155,7 @@
                 <div class="col-lg-4"></div>
             </div>
             <div class="row">
-                <div class="col-lg-8">
+                <div class="col-lg-12">
                     <div class="row">
                         <div class="col-lg-4" id="soferDiv">
                             <h4><label class="control-label" for="selectEmployees-SOFER">SOFER</label></h4>
@@ -201,7 +204,38 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4"></div>
+            </div>
+            <div id="chooseMachine_Div_SAPATURA">
+                <div class="row" id="chooseMachineHeaderDiv_SAPATURA">
+                    <div class="col-lg-12">
+                        <h5>Alege masina:</h5>
+                    </div>
+                </div>
+                <c:forEach var="teamDeploy" items="${teamDeploys_SAPATURA}">
+                    <c:if test="${teamDeploy.employee.position.name() == 'SOFER'}">
+                        <c:set var="employee" value="${teamDeploy.employee}"/>
+                        <div class="row" id="chooseMachineSAPATURA-employee-${employee.idEmployee}">
+                            <div class="col-lg-2">
+                                <label class="control-label" for="machineSelectSAPATURA-employee-${employee.idEmployee}">${employee.name}</label>
+                            </div>
+                            <div class="col-lg-2">
+                                <select name="machineSelectSAPATURA_SOFER" id="machineSelectSAPATURA-employee-${employee.idEmployee}"
+                                        class="selectpicker">
+                                        <c:forEach var="machinery" items="${employee.machines}">
+                                            <c:choose>
+                                                <c:when test="${teamDeploy.machinery.machineryId == machinery.machineryId}">
+                                                    <option value="${machinery.machineryId}" selected>${machinery.licensePlate} ${machinery.capacity} mc</option>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <option value="${machinery.machineryId}">${machinery.licensePlate} ${machinery.capacity} mc</option>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:forEach>
+                                </select>
+                            </div>
+                        </div>
+                    </c:if>
+                </c:forEach>
             </div>
             <div class="row" id="newRouteFields" style="display: none">
                 <div class="form-group col-lg-4">
@@ -252,63 +286,6 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="row">
-                                <div class="col-lg-12">
-                                    <h4>Materiale</h4>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-1">
-                                    <label class="control-label" for="selectMaterial">Adauga</label>
-                                </div>
-                                <div class="col-lg-3">
-                                    <select name="selectMaterial" id="selectMaterial"
-                                            class="selectpicker" data-live-search="true">
-                                        <option name="materialOption-null" value="${null}" selected>Nothing selected</option>
-                                        <c:forEach var="material" items="${materials}">
-                                            <option name="materialOption-${material.materialId}"
-                                                    value="${material.materialId}">${material.name}</option>
-                                        </c:forEach>
-                                    </select>
-                                </div>
-                                <div class="col-lg-3">
-                                    <button type="button" class="btn btn-secondary" id="calculateMaterialsBtn">Adaugare Automata</button>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-7">
-                                    <table class="table" id="materialsTable">
-                                        <thead>
-                                        <tr>
-                                            <td>Material</td>
-                                            <td>Cantitate</td>
-                                            <td>UM</td>
-                                            <td></td>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            <c:forEach var="materialNotice" items="${phase.materialNoticeSet}">
-                                                <tr id="materialTr-${materialNotice.material.materialId}">
-                                                    <td><label class="control-label" for="material-${materialNotice.material.materialId}">
-                                                            ${materialNotice.material.name}</label></td>
-                                                    <td><input type="number" step="0.01" min="0" class="form-control" name="material"
-                                                               id="material-${materialNotice.material.materialId}" autocomplete="false" max="${hole.holeVolume}"
-                                                               value="<fmt:formatNumber type = "number" maxFractionDigits="2" value="${materialNotice.quantity}"/>"/>
-                                                    <td>MC</td>
-                                                    <td><button type="button" class="btn btn-outline-danger"
-                                                                onclick="removeMaterialTr(${materialNotice.material.materialId},'${materialNotice.material.name}')">
-                                                        X</button></td>
-                                                </tr>
-                                                <input type="hidden" name="materialId" value="${materialNotice.material.materialId}" id="input_materialId-${materialNotice.material.materialId}">
-                                            </c:forEach>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <div class="row">
                                 <div class="col-lg-4" id="soferDiv_UMPLERE">
                                     <h4><label class="control-label" for="selectEmployees-SOFER_UMPLERE">SOFER</label></h4>
                                     <table class="table" id="SOFER-table_UMPLERE">
@@ -356,7 +333,95 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4"></div>
+                    </div>
+                    <div id="chooseMachine_Div_UMPLERE">
+                        <div class="row" id="chooseMachineHeaderDiv_UMPLERE">
+                            <div class="col-lg-12">
+                                <h5>Alege masina:</h5>
+                            </div>
+                        </div>
+                        <c:forEach var="teamDeploy" items="${teamDeploys_UMPLERE}">
+                            <c:if test="${teamDeploy.employee.position.name() == 'SOFER'}">
+                                <c:set var="employee" value="${teamDeploy.employee}"/>
+                                <div class="row" id="chooseMachineUMPLERE-employee-${employee.idEmployee}">
+                                    <div class="col-lg-2">
+                                        <label class="control-label" for="machineSelectUMPLERE-employee-${employee.idEmployee}">${employee.name}</label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <select name="machineSelectUMPLERE_SOFER" id="machineSelectUMPLERE-employee-${employee.idEmployee}"
+                                                class="selectpicker">
+                                            <c:forEach var="machinery" items="${employee.machines}">
+                                                <c:choose>
+                                                    <c:when test="${teamDeploy.machinery.machineryId == machinery.machineryId}">
+                                                        <option value="${machinery.machineryId}" selected>${machinery.licensePlate} ${machinery.capacity} mc</option>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <option value="${machinery.machineryId}">${machinery.licensePlate} ${machinery.capacity} mc</option>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </div>
+                            </c:if>
+                        </c:forEach>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h4>Materiale</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <label class="control-label" for="selectMaterial">Adauga</label>
+                                </div>
+                                <div class="col-lg-3">
+                                    <select name="selectMaterial" id="selectMaterial"
+                                            class="selectpicker" data-live-search="true">
+                                        <option name="materialOption-null" value="${null}" selected>Nothing selected</option>
+                                        <c:forEach var="material" items="${materials}">
+                                            <option name="materialOption-${material.materialId}"
+                                                    value="${material.materialId}">${material.name}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3">
+                                    <button type="button" class="btn btn-secondary" id="calculateMaterialsBtn">Adaugare Automata</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-7">
+                                    <table class="table" id="materialsTable">
+                                        <thead>
+                                        <tr>
+                                            <td>Material</td>
+                                            <td>Cantitate</td>
+                                            <td>UM</td>
+                                            <td></td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <c:forEach var="materialNotice" items="${phase.materialNoticeSet}">
+                                            <tr id="materialTr-${materialNotice.material.materialId}">
+                                                <td><label class="control-label" for="material-${materialNotice.material.materialId}">
+                                                        ${materialNotice.material.name}</label></td>
+                                                <td><input type="number" step="0.01" min="0" class="form-control" name="material"
+                                                           id="material-${materialNotice.material.materialId}" autocomplete="false" max="${hole.holeVolume}"
+                                                           value="<fmt:formatNumber type = "number" maxFractionDigits="2" value="${materialNotice.quantity}"/>"/>
+                                                <td>MC</td>
+                                                <td><button type="button" class="btn btn-outline-danger"
+                                                            onclick="removeMaterialTr(${materialNotice.material.materialId},'${materialNotice.material.name}')">
+                                                    X</button></td>
+                                            </tr>
+                                            <input type="hidden" name="materialId" value="${materialNotice.material.materialId}" id="input_materialId-${materialNotice.material.materialId}">
+                                        </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </fieldset>
                 <input type="hidden" name="phaseEnums" value="${phase.phaseType.name()}">
@@ -397,6 +462,31 @@
         $("#selectEmployees-SOFER_UMPLERE").selectpicker('val', ${selectedEmployees_SOFER_UMPLERE});
         $("#selectEmployees-MECANIC_UMPLERE").selectpicker('val', ${selectedEmployees_MECANIC_UMPLERE});
         $("#selectEmployees-NECALIFICAT_UMPLERE").selectpicker('val', ${selectedEmployees_NECALIFICAT_UMPLERE});
+
+        var employeesJSON = ${employeesJSON_SOFER};
+
+        $("#selectEmployees-SOFER").change(function () {
+            appendChooseMachineHeader_SAPATURA();
+            var optionsSelected = $("#selectEmployees-SOFER option:selected");
+            var chooseMachineDivs = $("#chooseMachine_Div_SAPATURA > div");
+            if (chooseMachineDivs.length < (optionsSelected.length + 1)){
+                appendSelectEmployeeMachine_SAPATURA(optionsSelected, employeesJSON);
+            } else {
+                removeUnselectedOption_SAPATURA(optionsSelected, chooseMachineDivs);
+            }
+        });
+
+        $("#selectEmployees-SOFER_UMPLERE").change(function () {
+            appendChooseMachineHeader_UMPLERE();
+            var optionsSelected = $("#selectEmployees-SOFER_UMPLERE option:selected");
+            var chooseMachineDivs = $("#chooseMachine_Div_UMPLERE > div");
+            if (chooseMachineDivs.length < (optionsSelected.length + 1)){
+                appendSelectEmployeeMachine_UMPLERE(optionsSelected, employeesJSON);
+            } else {
+                removeUnselectedOption_UMPLERE(optionsSelected, chooseMachineDivs);
+            }
+        });
+
 
         $("#selectMaterial").change(function (){
             var value = $(this).val();
@@ -506,6 +596,7 @@
         $("#necalificatDiv").hide("slow");
         $('#selectEmployees-MECANIC').selectpicker("deselectAll", true).selectpicker("refresh");
         $("#selectEmployees-NECALIFICAT").selectpicker("deselectAll", true).selectpicker("refresh");
+        calculateAutoStationaryTime();
     }
 
     function calculateMaterials(){
@@ -528,6 +619,170 @@
         })).selectpicker('refresh');
         $("#materialTr-" + materialValue).remove();
         $("#input_materialId-" + materialValue).remove();
+    }
+
+    function appendChooseMachineHeader_SAPATURA() {
+        if ($("#chooseMachineHeaderDiv_SAPATURA").length === 0){
+            $("#chooseMachine_Div_SAPATURA").append(
+                '<div class="row" id="chooseMachineHeaderDiv_SAPATURA">' +
+                '<div class="col-lg-12">' +
+                '<h5>Alege masina:</h5>' +
+                '</div>' +
+                '</div>');
+        }
+    }
+
+    function appendChooseMachineHeader_UMPLERE() {
+        if ($("#chooseMachineHeaderDiv_UMPLERE").length === 0){
+            $("#chooseMachine_Div_UMPLERE").append(
+                '<div class="row" id="chooseMachineHeaderDiv_UMPLERE">' +
+                '<div class="col-lg-12">' +
+                '<h5>Alege masina:</h5>' +
+                '</div>' +
+                '</div>');
+        }
+    }
+
+    function appendSelectEmployeeMachine_SAPATURA(optionsSelected, employeesJSON){
+        optionsSelected.each(function () {
+            var employeeId = $(this).val();
+            var employeeSelectMachine = $("#machineSelectSAPATURA-employee-" + employeeId);
+            if (employeeSelectMachine.length == 0){
+                $("#chooseMachine_Div_SAPATURA").append(
+                    '<div class="row" id="chooseMachineSAPATURA-employee-' + employeeId + '">' +
+                    '   <div class="col-lg-2">' +
+                    '       <label class="control-label" for="machineSelectSAPATURA-employee-' + employeeId + '">' + $(this).text() + '</label>' +
+                    '   </div>' +
+                    '   <div class="col-lg-2">' +
+                    '       <select name="machineSelectSAPATURA_SOFER" id="machineSelectSAPATURA-employee-' + employeeId + '" class="selectpicker">' +
+                    '       </select>' +
+                    '   </div>' +
+                    '</div>');
+                for (i in employeesJSON){
+                    if (employeesJSON[i].idEmployee == employeeId){
+                        var employeeMachines = employeesJSON[i].machines;
+                        for (j in employeeMachines){
+                            var text = employeeMachines[j].licensePlate + " " + employeeMachines[j].capacity + " mc";
+                            $("#machineSelectSAPATURA-employee-" + employeeId).append(new Option(text, employeeMachines[j].machineryId));
+                        }
+                        $("#machineSelectSAPATURA-employee-" + employeeId).selectpicker("refresh");
+                    }
+                }
+            }
+        })
+    }
+
+    function appendSelectEmployeeMachine_UMPLERE(optionsSelected, employeesJSON){
+        optionsSelected.each(function () {
+            var employeeId = $(this).val();
+            var employeeSelectMachine = $("#machineSelectUMPLERE-employee-" + employeeId);
+            if (employeeSelectMachine.length == 0){
+                $("#chooseMachine_Div_UMPLERE").append(
+                    '<div class="row" id="chooseMachineUMPLERE-employee-' + employeeId + '">' +
+                    '   <div class="col-lg-2">' +
+                    '       <label class="control-label" for="machineSelectUMPLERE-employee-' + employeeId + '">' + $(this).text() + '</label>' +
+                    '   </div>' +
+                    '   <div class="col-lg-2">' +
+                    '       <select name="machineSelectUMPLERE_SOFER" id="machineSelectUMPLERE-employee-' + employeeId + '" class="selectpicker">' +
+                    '       </select>' +
+                    '   </div>' +
+                    '</div>');
+                for (i in employeesJSON){
+                    if (employeesJSON[i].idEmployee == employeeId){
+                        var employeeMachines = employeesJSON[i].machines;
+                        for (j in employeeMachines){
+                            var text = employeeMachines[j].licensePlate + " " + employeeMachines[j].capacity + " mc";
+                            $("#machineSelectUMPLERE-employee-" + employeeId).append(new Option(text, employeeMachines[j].machineryId));
+                        }
+                        $("#machineSelectUMPLERE-employee-" + employeeId).selectpicker("refresh");
+                    }
+                }
+            }
+        })
+    }
+    function removeUnselectedOption_SAPATURA(optionsSelected, chooseMachineDivs){
+        chooseMachineDivs.each(function () {
+            var div_id = $(this).attr("id");
+            var flag = false;
+            if (optionsSelected.length > 0){
+                optionsSelected.each(function () {
+                    if ((div_id !== undefined) && (div_id.search($(this).val()) > 0)){
+                        flag = true;
+                    }
+                })
+            } else {
+                $(this).remove();
+            }
+            if ((flag === false) && ($(this).attr("id") !== "chooseMachineHeaderDiv_SAPATURA")){
+                $(this).remove();
+            }
+        })
+    }
+
+    function removeUnselectedOption_UMPLERE(optionsSelected, chooseMachineDivs){
+        chooseMachineDivs.each(function () {
+            var div_id = $(this).attr("id");
+            var flag = false;
+            if (optionsSelected.length > 0){
+                optionsSelected.each(function () {
+                    if (div_id.search($(this).val()) > 0){
+                        flag = true;
+                    }
+                })
+            } else {
+                $(this).remove();
+            }
+            if ((flag === false) && ($(this).attr("id") !== "chooseMachineHeaderDiv_UMPLERE")){
+                $(this).remove();
+            }
+        })
+    }
+
+    function calculateAutoStationaryTime() {
+        if ($("#executorDelGaz:checked").length != 0){
+            var holeLength = $("#holeLenght").val();
+            var holeWidth = $("#holeWidth").val();
+            var holeDepth = $("#holeDepth").val();
+            var volume = holeLength * holeWidth * holeDepth;
+            var autoStationaryTime = 0;
+
+            switch (true) {
+                case (volume < 5.6):
+                    autoStationaryTime = 1;
+                    break;
+                case (volume < 10.0) :
+                    autoStationaryTime = 2;
+                    break;
+                case (volume < 16.8):
+                    autoStationaryTime = 3;
+                    break;
+                case (volume < 22.4):
+                    autoStationaryTime = 4;
+                    break;
+                case (volume < 28.4):
+                    autoStationaryTime = 5;
+                    break;
+                case (volume < 33.6):
+                    autoStationaryTime = 6;
+                    break;
+                case (volume < 39.2):
+                    autoStationaryTime = 7;
+                    break;
+                case (volume < 44.8):
+                    autoStationaryTime = 8;
+                    break;
+                case (volume < 50.4):
+                    autoStationaryTime = 9;
+                    break;
+                case (volume < 56.0):
+                    autoStationaryTime = 10;
+                    break;
+                default:
+                    autoStationaryTime = Math.round(volume / 5.5);
+                    break;
+            }
+            $("#autoStationaryTime").val(autoStationaryTime);
+        }
     }
 
 </script>

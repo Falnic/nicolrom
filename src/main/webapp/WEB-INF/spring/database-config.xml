@@ -15,6 +15,7 @@
                 <value>com.nicolrom.entities.Material</value>
                 <value>com.nicolrom.entities.Phase</value>
                 <value>com.nicolrom.entities.MaterialNotice</value>
+                <value>com.nicolrom.entities.TeamDeploy</value>
                 <value>com.nicolrom.entities.Team</value>
                 <value>com.nicolrom.entities.Authority</value>
                 <value>com.nicolrom.entities.Pipe</value>

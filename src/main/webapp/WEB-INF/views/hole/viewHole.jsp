@@ -114,6 +114,15 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-lg-12">
+                                                        <tag:addPhaseEmployees positionEmployeesMap_SOFER="${positionEmployeesMap_SOFER}"
+                                                                               positionEmployeesMap_MECANIC="${positionEmployeesMap_MECANIC}"
+                                                                               positionEmployeesMap_NECALIFICAT="${positionEmployeesMap_NECALIFICAT}"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div id="chooseMachine_Div"></div>
+                                                <div class="row">
+                                                    <div class="col-lg-12">
                                                         <div class="row">
                                                             <div class="col-lg-12">
                                                                 <h4>Materiale</h4>
@@ -156,14 +165,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-lg-8">
-                                                        <tag:addPhaseEmployees positionEmployeesMap_SOFER="${positionEmployeesMap_SOFER}"
-                                                                               positionEmployeesMap_MECANIC="${positionEmployeesMap_MECANIC}"
-                                                                               positionEmployeesMap_NECALIFICAT="${positionEmployeesMap_NECALIFICAT}"
-                                                        />
-                                                    </div>
-                                                </div>
                                                 <div class="row form-group">
                                                     <input type="hidden" name="nextPhase" value="${nextPhase}">
                                                     <input type="submit" class="btn btn-lg btn-primary" value="Adauga Etapa">
@@ -187,17 +188,17 @@
                                             <dt class="col-lg-1">Data</dt>
                                             <dd class="col-lg-1"><fmt:formatDate  value="${phase.phaseDate}" pattern="dd/MM/yyyy"/></dd>
                                             <dt class="col-lg-1">Executant</dt>
-                                            <dd class="col-lg-1">${hole.executor}</dd>
+                                            <dd class="col-lg-2">${hole.executor}</dd>
                                             <c:if test="${hole.autoRouteDistance != null || hole.autoStationaryTime != null}">
-                                                <dt class="col-lg-1">Distanta parcursa</dt>
+                                                <dt class="col-lg-2">Distanta parcursa</dt>
                                                 <dd class="col-lg-1">${hole.autoRouteDistance} km</dd>
-                                                <dt class="col-lg-1">Timp de stationare</dt>
+                                                <dt class="col-lg-2">Timp de stationare</dt>
                                                 <dd class="col-lg-1">${hole.autoStationaryTime} ore</dd>
                                             </c:if>
                                         </dl>
                                         <div class="row">
-                                            <div class="col-lg-8">
-                                                <tag:viewPhaseEmployees phase="${phase}"/>
+                                            <div class="col-lg-12">
+                                                <tag:viewPhaseTeam team="${phase.team}"/>
                                             </div>
                                         </div>
                                     </div>
@@ -206,14 +207,16 @@
                                     <div id="tabs-UMPLERE">
                                         <dl class="row">
                                             <dt class="col-lg-1">Data</dt>
-                                            <dd class="col-lg-2"><fmt:formatDate  value="${phase.phaseDate}" pattern="dd/MM/yyyy"/></dd>
+                                            <dd class="col-lg-1"><fmt:formatDate  value="${phase.phaseDate}" pattern="dd/MM/yyyy"/></dd>
                                             <dt class="col-lg-1">Conducta</dt>
                                             <dd class="col-lg-2">&straightphi; ${hole.pipe.diameter}</dd>
                                         </dl>
                                         <div class="row">
-                                            <div class="col-lg-8">
-                                                <tag:viewPhaseEmployees phase="${phase}"/>
+                                            <div class="col-lg-12">
+                                                <tag:viewPhaseTeam team="${phase.team}"/>
                                             </div>
+                                        </div>
+                                        <div class="row">
                                             <div class="col-lg-4">
                                                 <tag:viewHoleMaterials phase="${phase}"/>
                                             </div>
@@ -298,7 +301,19 @@
                     '                                                               <input type="hidden" name="materialId" value="2" '+
                     '                                                                    </tr>');
             }
-        })
+        });
+
+        var employeesJSON = ${employeesJSON_SOFER};
+        $("#selectEmployees-SOFER").change(function () {
+            appendChooseMachineHeader();
+            var optionsSelected = $("#selectEmployees-SOFER option:selected");
+            var chooseMachineDivs = $("#chooseMachine_Div > div");
+            if (chooseMachineDivs.length < (optionsSelected.length + 1)){
+                appendSelectEmployeeMachine(optionsSelected, employeesJSON);
+            } else {
+                removeUnselectedOption(optionsSelected, chooseMachineDivs);
+            }
+        });
 
         $("form[name='addPhase-UMPLERE']").validate({
             rules: {
@@ -335,4 +350,63 @@
         })).selectpicker('refresh');
         $("#materialTr-" + materialValue).remove();
     }
+    function appendChooseMachineHeader() {
+        if ($("#chooseMachineHeaderDiv").length === 0){
+            $("#chooseMachine_Div").append(
+                '<div class="row" id="chooseMachineHeaderDiv">' +
+                '<div class="col-lg-4">' +
+                '<h5>Alege masina:</h5>' +
+                '</div>' +
+                '</div>');
+        }
+    }
+
+    function appendSelectEmployeeMachine(optionsSelected, employeesJSON){
+        optionsSelected.each(function () {
+            var employeeId = $(this).val();
+            var employeeSelectMachine = $("#machineSelect-employee-" + employeeId);
+            if (employeeSelectMachine.length == 0){
+                $("#chooseMachine_Div").append(
+                    '<div class="row" id="chooseMachine-employee-' + employeeId + '">' +
+                    '   <div class="col-lg-2">' +
+                    '       <label class="control-label" for="machineSelect-employee-' + employeeId + '">' + $(this).text() + '</label>' +
+                    '   </div>' +
+                    '   <div class="col-lg-2">' +
+                    '       <select name="machineSelect_SOFER" id="machineSelect-employee-' + employeeId + '" class="selectpicker">' +
+                    '       </select>' +
+                    '   </div>' +
+                    '</div>');
+                for (i in employeesJSON){
+                    if (employeesJSON[i].idEmployee == employeeId){
+                        var employeeMachines = employeesJSON[i].machines;
+                        for (j in employeeMachines){
+                            var text = employeeMachines[j].licensePlate + " " + employeeMachines[j].capacity + " mc";
+                            $("#machineSelect-employee-" + employeeId).append(new Option(text, employeeMachines[j].machineryId));
+                        }
+                        $("#machineSelect-employee-" + employeeId).selectpicker("refresh");
+                    }
+                }
+            }
+        })
+    }
+
+    function removeUnselectedOption(optionsSelected, chooseMachineDivs){
+        chooseMachineDivs.each(function () {
+            var div_id = $(this).attr("id");
+            var flag = false;
+            if (optionsSelected.length > 0){
+                optionsSelected.each(function () {
+                    if (div_id.search($(this).val()) > 0){
+                        flag = true;
+                    }
+                })
+            } else {
+                $(this).remove();
+            }
+            if ((flag === false) && ($(this).attr("id") !== "chooseMachineHeaderDiv")){
+                $(this).remove();
+            }
+        })
+    }
+
 </script>

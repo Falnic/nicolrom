@@ -65,17 +65,17 @@
                     <tr>
                         <td><label class="control-label" for="holeLenght">Lungime</label></td>
                         <td><input type="number" step="0.01" min="0" class="form-control" name="holeLenght"
-                                   id="holeLenght" autocomplete="false" placeholder="m"/>
+                                   id="holeLenght" autocomplete="false" placeholder="m" oninput="calculateAutoStationaryTime()"/>
                     </tr>
                     <tr>
                         <td><label class="control-label" for="holeWidth">Latime</label></td>
                         <td><input type="number" step="0.01" min="0" class="form-control" name="holeWidth"
-                                   id="holeWidth" autocomplete="false" placeholder="m"/>
+                                   id="holeWidth" autocomplete="false" placeholder="m" oninput="calculateAutoStationaryTime()"/>
                     </tr>
                     <tr>
                         <td><label class="control-label" for="holeDepth">Adancime</label></td>
                         <td><input type="number" step="0.01" min="0" class="form-control" name="holeDepth"
-                                   id="holeDepth" autocomplete="false" placeholder="m"/>
+                                   id="holeDepth" autocomplete="false" placeholder="m" oninput="calculateAutoStationaryTime()"/>
                     </tr>
                 </table>
             </div>
@@ -181,7 +181,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
-<!-- Latest compiled and minified JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
 <script>
@@ -191,62 +190,13 @@
         });
         var employeesJSON = ${employeesJSON_SOFER};
         $("#selectEmployees-SOFER").change(function () {
-            if ($("#chooseMachineHeaderDiv").length == 0){
-                $("#chooseMachine_Div").append(
-                    '<div class="row" id="chooseMachineHeaderDiv">' +
-                        '<div class="col-lg-2"></div>' +
-                        '<div class="col-lg-8">' +
-                            '<h5>Alege masina:</h5>' +
-                        '</div>' +
-                        '<div class="col-lg-2"></div>' +
-                    '</div>');
-            }
-            if ($("#chooseMachine_Div > div").length < ($("#selectEmployees-SOFER option:selected").length + 1)){
-                $("#selectEmployees-SOFER option:selected").each(function () {
-                    var employeeId = $(this).val();
-                    if ($("#machineSelect-employee-" + employeeId).length == 0){
-                        $("#chooseMachine_Div").append(
-                            '<div class="row" id="chooseMachine-employee-' + employeeId + '">' +
-                            '   <div class="col-lg-2"></div>' +
-                            '   <div class="col-lg-2">' +
-                            '       <label class="control-label" for="machineSelect-employee-' + employeeId + '">' + $(this).text() + '</label>' +
-                            '   </div>' +
-                            '   <div class="col-lg-2">' +
-                            '       <select name="machineSelect-employee-' + employeeId + '" id="machineSelect-employee-' + employeeId + '" class="selectpicker">' +
-                            '       </select>' +
-                            '   </div>' +
-                            '   <div class="col-lg-2"></div>' +
-                            '</div>');
-                        for (i in employeesJSON){
-                            if (employeesJSON[i].idEmployee == employeeId){
-                                var employeeMachines = employeesJSON[i].machines;
-                                for (j in employeeMachines){
-                                    var text = employeeMachines[j].licensePlate + " " + employeeMachines[j].capacity + " mc";
-                                    $("#machineSelect-employee-" + employeeId).append(new Option(text, employeeMachines[j].machineryId));
-                                }
-                                $("#machineSelect-employee-" + employeeId).selectpicker("refresh");
-                            }
-                        }
-                    }
-                })
+            appendChooseMachineHeader();
+            var optionsSelected = $("#selectEmployees-SOFER option:selected");
+            var chooseMachineDivs = $("#chooseMachine_Div > div");
+            if (chooseMachineDivs.length < (optionsSelected.length + 1)){
+                appendSelectEmployeeMachine(optionsSelected, employeesJSON);
             } else {
-                var optionsSelected = $("#selectEmployees-SOFER option:selected");
-                $("#chooseMachine_Div > div").each(function () {
-                    var div_id = $(this).attr("id");
-                    var flag = false;
-                    if (optionsSelected.length > 0){
-                        optionsSelected.each(function () {
-                            if (div_id.search($(this).val()) > 0){
-                                flag = true;
-                            }
-                        })
-                    } else {
-                        $(this).remove();
-                    }
-                    if ((flag == false) && ($(this).attr("id") != "chooseMachineHeaderDiv")){
-                        $(this).remove();
-                    }
-                })
+                removeUnselectedOption(optionsSelected, chooseMachineDivs);
             }
         });
 
@@ -305,5 +255,116 @@
         $("#necalificatDiv").hide("slow");
         $('#selectEmployees-MECANIC').selectpicker("deselectAll", true).selectpicker("refresh");
         $("#selectEmployees-NECALIFICAT").selectpicker("deselectAll", true).selectpicker("refresh");
+        calculateAutoStationaryTime();
+    }
+
+    function appendChooseMachineHeader() {
+        if ($("#chooseMachineHeaderDiv").length === 0){
+            $("#chooseMachine_Div").append(
+                '<div class="row" id="chooseMachineHeaderDiv">' +
+                '<div class="col-lg-2"></div>' +
+                '<div class="col-lg-8">' +
+                '<h5>Alege masina:</h5>' +
+                '</div>' +
+                '<div class="col-lg-2"></div>' +
+                '</div>');
+        }
+    }
+
+    function appendSelectEmployeeMachine(optionsSelected, employeesJSON){
+        optionsSelected.each(function () {
+            var employeeId = $(this).val();
+            var employeeSelectMachine = $("#machineSelect-employee-" + employeeId);
+            if (employeeSelectMachine.length == 0){
+                $("#chooseMachine_Div").append(
+                    '<div class="row" id="chooseMachine-employee-' + employeeId + '">' +
+                    '   <div class="col-lg-2"></div>' +
+                    '   <div class="col-lg-2">' +
+                    '       <label class="control-label" for="machineSelect-employee-' + employeeId + '">' + $(this).text() + '</label>' +
+                    '   </div>' +
+                    '   <div class="col-lg-2">' +
+                    '       <select name="machineSelect_SOFER" id="machineSelect-employee-' + employeeId + '" class="selectpicker">' +
+                    '       </select>' +
+                    '   </div>' +
+                    '   <div class="col-lg-2"></div>' +
+                    '</div>');
+                for (i in employeesJSON){
+                    if (employeesJSON[i].idEmployee == employeeId){
+                        var employeeMachines = employeesJSON[i].machines;
+                        for (j in employeeMachines){
+                            var text = employeeMachines[j].licensePlate + " " + employeeMachines[j].capacity + " mc";
+                            $("#machineSelect-employee-" + employeeId).append(new Option(text, employeeMachines[j].machineryId));
+                        }
+                        $("#machineSelect-employee-" + employeeId).selectpicker("refresh");
+                    }
+                }
+            }
+        })
+    }
+
+    function removeUnselectedOption(optionsSelected, chooseMachineDivs){
+        chooseMachineDivs.each(function () {
+            var div_id = $(this).attr("id");
+            var flag = false;
+            if (optionsSelected.length > 0){
+                optionsSelected.each(function () {
+                    if (div_id.search($(this).val()) > 0){
+                        flag = true;
+                    }
+                })
+            } else {
+                $(this).remove();
+            }
+            if ((flag === false) && ($(this).attr("id") !== "chooseMachineHeaderDiv")){
+                $(this).remove();
+            }
+        })
+    }
+
+    function calculateAutoStationaryTime() {
+        if ($("#executorDelGaz:checked").length != 0){
+            var holeLength = $("#holeLenght").val();
+            var holeWidth = $("#holeWidth").val();
+            var holeDepth = $("#holeDepth").val();
+            var volume = holeLength * holeWidth * holeDepth;
+            var autoStationaryTime = 0;
+
+            switch (true) {
+                case (volume < 5.6):
+                    autoStationaryTime = 1;
+                    break;
+                case (volume < 10.0) :
+                    autoStationaryTime = 2;
+                    break;
+                case (volume < 16.8):
+                    autoStationaryTime = 3;
+                    break;
+                case (volume < 22.4):
+                    autoStationaryTime = 4;
+                    break;
+                case (volume < 28.4):
+                    autoStationaryTime = 5;
+                    break;
+                case (volume < 33.6):
+                    autoStationaryTime = 6;
+                    break;
+                case (volume < 39.2):
+                    autoStationaryTime = 7;
+                    break;
+                case (volume < 44.8):
+                    autoStationaryTime = 8;
+                    break;
+                case (volume < 50.4):
+                    autoStationaryTime = 9;
+                    break;
+                case (volume < 56.0):
+                    autoStationaryTime = 10;
+                    break;
+                default:
+                    autoStationaryTime = Math.round(volume / 5.5);
+                    break;
+            }
+            $("#autoStationaryTime").val(autoStationaryTime);
+        }
     }
 </script>

@@ -2,7 +2,9 @@ package com.nicolrom.services.impl;
 
 import com.nicolrom.dao.TeamDao;
 import com.nicolrom.entities.Team;
+import com.nicolrom.entities.TeamDeploy;
 import com.nicolrom.services.EmployeeService;
+import com.nicolrom.services.TeamDeployService;
 import com.nicolrom.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,9 @@ public class TeamServiceImpl implements TeamService {
     @Autowired
     private EmployeeService employeeService;
 
+    @Autowired
+    private TeamDeployService teamDeployService;
+
     @Override
     public Team create(List<String> employeesSofer, List<String> employeesMecanic, List<String> employeesNecalificat) {
         Team updatedTeam = new Team();
@@ -34,8 +39,38 @@ public class TeamServiceImpl implements TeamService {
             employeesStringArray.addAll(employeesNecalificat);
         }
 
-        updatedTeam.setEmployees(employeeService.getEmployeesById(parseEmployeesStringArray(employeesStringArray)));
+//        updatedTeam.setEmployees(employeeService.getEmployeesById(parseEmployeesStringArray(employeesStringArray)));
         return updatedTeam;
+    }
+
+    @Override
+    public Team create(List<String> employeesSofer, List<String> employeesMecanic, List<String> employeesNecalificat, List<String> machinariesSofer) {
+        Team team = new Team();
+        // Create team deploy for drivers
+        if (employeesSofer != null){
+            for (int i = 0; i < employeesSofer.size(); i++){
+                TeamDeploy teamDeploy = teamDeployService.create(team,
+                        Integer.parseInt(employeesSofer.get(i)),
+                        Integer.parseInt(machinariesSofer.get(i)));
+                team.getTeamDeploys().add(teamDeploy);
+            }
+        }
+
+        if (employeesMecanic != null){
+            for (String stringEmployee : employeesMecanic){
+                TeamDeploy teamDeploy = teamDeployService.create(team, Integer.parseInt(stringEmployee), null);
+                team.getTeamDeploys().add(teamDeploy);
+            }
+        }
+
+        if (employeesNecalificat != null){
+            for (String stringEmployee : employeesNecalificat){
+                TeamDeploy teamDeploy = teamDeployService.create(team, Integer.parseInt(stringEmployee), null);
+                team.getTeamDeploys().add(teamDeploy);
+            }
+        }
+
+        return team;
     }
 
     @Override
@@ -46,16 +81,56 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public void saveTeam(Team team) {
         teamDao.saveTeam(team);
+        for (TeamDeploy teamDeploy : team.getTeamDeploys()){
+            teamDeployService.saveTeamDeploy(teamDeploy);
+        }
     }
 
     @Override
-    public void updateTeam(Team team) {
-        teamDao.updateTeam(team);
+    public void updateTeam(Team updatedTeam, Team team) {
+        //Remove
+        for (TeamDeploy teamDeploy : team.getTeamDeploys()){
+            boolean flag = false;
+            for (TeamDeploy updatedTeamDeploy : updatedTeam.getTeamDeploys()){
+                if ((updatedTeamDeploy.getEmployee().getIdEmployee() == teamDeploy.getEmployee().getIdEmployee())){
+                    if ((updatedTeamDeploy.getMachinery() != null) && (teamDeploy.getMachinery() != null)
+                            && (updatedTeamDeploy.getMachinery().getMachineryId() != teamDeploy.getMachinery().getMachineryId())){
+                        updatedTeamDeploy.setId(teamDeploy.getId());
+                        teamDeploy.setMachinery(updatedTeamDeploy.getMachinery());
+                        teamDeployService.updateTeamDeploy(teamDeploy);
+                        flag = true;
+                    } else {
+                        updatedTeamDeploy.setId(teamDeploy.getId());
+                        teamDeployService.updateTeamDeploy(teamDeploy);
+                        flag = true;
+                    }
+                }
+            }
+            if (!flag){
+                teamDeployService.deleteTeamDeploy(teamDeploy);
+            }
+        }
+        //Put
+        for (TeamDeploy updatedTeamDeploy : updatedTeam.getTeamDeploys()){
+            boolean flag = true;
+            for (TeamDeploy teamDeploy : team.getTeamDeploys()){
+                if (teamDeploy.getEmployee().getIdEmployee() == updatedTeamDeploy.getEmployee().getIdEmployee()){
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag){
+                teamDeployService.saveTeamDeploy(updatedTeamDeploy);
+            }
+        }
     }
 
     @Override
     public void deleteTeam(Team team) {
         if (team != null){
+            for (TeamDeploy teamDeploy : team.getTeamDeploys()){
+                teamDeployService.deleteTeamDeploy(teamDeploy);
+            }
             teamDao.deleteTeam(team);
         }
     }

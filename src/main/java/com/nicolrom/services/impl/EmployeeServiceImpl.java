@@ -1,9 +1,7 @@
 package com.nicolrom.services.impl;
 
 import com.nicolrom.dao.EmployeeDao;
-import com.nicolrom.entities.Employee;
-import com.nicolrom.entities.Hole;
-import com.nicolrom.entities.Phase;
+import com.nicolrom.entities.*;
 import com.nicolrom.enums.EmployeePositionEnum;
 import com.nicolrom.enums.PhaseEnum;
 import com.nicolrom.services.EmployeeService;
@@ -69,41 +67,52 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public List<Employee> getEmployeesByPositions(Team team, EmployeePositionEnum positionEnum) {
+        List<Employee> employees = new ArrayList<>();
+        for (TeamDeploy teamDeploy : team.getTeamDeploys()){
+            if (teamDeploy.getEmployee().getPosition().equals(positionEnum)){
+                employees.add(teamDeploy.getEmployee());
+            }
+        }
+        return employees;
+    }
+
+    @Override
     public Map<Phase, List<EmployeePositionEnum>> getEmployeePositionsByPhases(List<Phase> phases) {
         Map<Phase, List<EmployeePositionEnum>> employeePositionsByPhase = new HashMap<>();
 
-        for (Phase phase : phases){
-            List<EmployeePositionEnum> positions = new ArrayList<>();
-            for (Employee employee : phase.getTeam().getEmployees()){
-                if (!positions.contains(employee.getPosition())){
-                    positions.add(employee.getPosition());
-                }
-            }
-            employeePositionsByPhase.put(phase, positions);
-        }
+//        for (Phase phase : phases){
+//            List<EmployeePositionEnum> positions = new ArrayList<>();
+//            for (Employee employee : phase.getTeam().getEmployees()){
+//                if (!positions.contains(employee.getPosition())){
+//                    positions.add(employee.getPosition());
+//                }
+//            }
+//            employeePositionsByPhase.put(phase, positions);
+//        }
 
         return employeePositionsByPhase;
     }
 
     @Override
     public List<Employee> getHoleEmployeesByPhase(Hole hole, PhaseEnum phaseEnum) {
-        for(Phase phase : hole.getPhases()){
-            if ((phase.getPhaseType() == phaseEnum) && (phase.getTeam() != null)){
-                return new ArrayList<>(phase.getTeam().getEmployees());
-            }
-        }
+//        for(Phase phase : hole.getPhases()){
+//            if ((phase.getPhaseType() == phaseEnum) && (phase.getTeam() != null)){
+//                return new ArrayList<>(phase.getTeam().getEmployees());
+//            }
+//        }
         return new ArrayList<Employee>();
     }
 
     @Override
     public List<Employee> getHoleEmployeesByPhase(Hole hole, PhaseEnum phaseEnum, EmployeePositionEnum positionEnum) {
         List<Employee> sortedEmployees = new ArrayList<>();
-        List<Employee> employees = getHoleEmployeesByPhase(hole, phaseEnum);
-        for (Employee employee : employees){
-            if (employee.getPosition().equals(positionEnum)){
-                sortedEmployees.add(employee);
-            }
-        }
+//        List<Employee> employees = getHoleEmployeesByPhase(hole, phaseEnum);
+//        for (Employee employee : employees){
+//            if (employee.getPosition().equals(positionEnum)){
+//                sortedEmployees.add(employee);
+//            }
+//        }
         return sortedEmployees;
     }
 

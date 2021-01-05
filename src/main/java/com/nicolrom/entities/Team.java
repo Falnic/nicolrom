@@ -14,17 +14,13 @@ public class Team implements Serializable {
     @Column(nullable = false)
     private int idTeam;
 
-    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "Team_Employee",
-            joinColumns = {@JoinColumn(name = "idTeam")},
-            inverseJoinColumns = { @JoinColumn(name = "idEmployee")}
-    )
-    private Set<Employee> employees = new HashSet<>();
-
-    @OneToMany(targetEntity = Phase.class, mappedBy = "team")
+    @OneToMany(targetEntity = TeamDeploy.class, mappedBy = "team", fetch = FetchType.EAGER)
     @Column(nullable = false)
-    private Set<Phase> phases = new HashSet<>();
+    private Set<TeamDeploy> teamDeploys = new HashSet<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "phaseId", referencedColumnName = "phaseId")
+    private Phase phase;
 
     public int getIdTeam() {
         return idTeam;
@@ -34,19 +30,19 @@ public class Team implements Serializable {
         this.idTeam = teamId;
     }
 
-    public Set<Phase> getPhases() {
-        return phases;
+    public Set<TeamDeploy> getTeamDeploys() {
+        return teamDeploys;
     }
 
-    public void setPhases(Set<Phase> phases) {
-        this.phases = phases;
+    public void setTeamDeploys(Set<TeamDeploy> teamDeploys) {
+        this.teamDeploys = teamDeploys;
     }
 
-    public Set<Employee> getEmployees() {
-        return employees;
+    public Phase getPhase() {
+        return phase;
     }
 
-    public void setEmployees(Set<Employee> employees) {
-        this.employees = employees;
+    public void setPhase(Phase phase) {
+        this.phase = phase;
     }
 }

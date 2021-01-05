@@ -25,9 +25,10 @@ public class Employee implements Serializable {
     @Enumerated(EnumType.STRING)
     private EmployeePositionEnum position;
 
-    @ManyToMany(mappedBy = "employees", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = TeamDeploy.class, mappedBy = "employee")
+    @Column(nullable = false)
     @JsonBackReference
-    private Set<Team> teams = new HashSet<>();
+    private Set<TeamDeploy> teamDeploys = new HashSet<>();
 
     @OneToMany(targetEntity = Machinery.class, mappedBy = "employee", fetch = FetchType.EAGER)
     @Column(nullable = false)
@@ -58,14 +59,6 @@ public class Employee implements Serializable {
         this.position = positionEnum;
     }
 
-    public Set<Team> getTeams() {
-        return teams;
-    }
-
-    public void setTeams(Set<Team> teams) {
-        this.teams = teams;
-    }
-
     public Set<Machinery> getMachines() {
         return machines;
     }
@@ -74,5 +67,11 @@ public class Employee implements Serializable {
         this.machines = machines;
     }
 
+    public Set<TeamDeploy> getTeamDeploys() {
+        return teamDeploys;
+    }
 
+    public void setTeamDeploys(Set<TeamDeploy> teamDeploys) {
+        this.teamDeploys = teamDeploys;
+    }
 }
