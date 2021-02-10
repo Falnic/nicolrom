@@ -1,6 +1,8 @@
 package com.nicolrom.services.impl;
 
 import com.nicolrom.dao.TeamDeployDao;
+import com.nicolrom.entities.Employee;
+import com.nicolrom.entities.Machinery;
 import com.nicolrom.entities.Team;
 import com.nicolrom.entities.TeamDeploy;
 import com.nicolrom.services.EmployeeService;
@@ -28,6 +30,17 @@ public class TeamDeployServiceImpl implements TeamDeployService {
         teamDeploy.setTeam(team);
         teamDeploy.setEmployee(employeeService.getEmployeeById(idEmployee));
         teamDeploy.setMachinery((idMachinery != null) ?  machineryService.getMachineryById(idMachinery) : null);
+
+        return teamDeploy;
+    }
+
+    @Override
+    public TeamDeploy create(Team team, Employee employee, Machinery machinery) {
+        TeamDeploy teamDeploy = new TeamDeploy();
+
+        teamDeploy.setTeam(team);
+        teamDeploy.setEmployee(employee);
+        teamDeploy.setMachinery(machinery);
 
         return teamDeploy;
     }

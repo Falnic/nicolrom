@@ -1,6 +1,8 @@
 package com.nicolrom.services.impl;
 
 import com.nicolrom.dao.TeamDao;
+import com.nicolrom.entities.Employee;
+import com.nicolrom.entities.Machinery;
 import com.nicolrom.entities.Team;
 import com.nicolrom.entities.TeamDeploy;
 import com.nicolrom.services.EmployeeService;
@@ -39,20 +41,21 @@ public class TeamServiceImpl implements TeamService {
             employeesStringArray.addAll(employeesNecalificat);
         }
 
-//        updatedTeam.setEmployees(employeeService.getEmployeesById(parseEmployeesStringArray(employeesStringArray)));
         return updatedTeam;
     }
 
     @Override
     public Team create(List<String> employeesSofer, List<String> employeesMecanic, List<String> employeesNecalificat, List<String> machinariesSofer) {
         Team team = new Team();
-        // Create team deploy for drivers
         if (employeesSofer != null){
-            for (int i = 0; i < employeesSofer.size(); i++){
-                TeamDeploy teamDeploy = teamDeployService.create(team,
-                        Integer.parseInt(employeesSofer.get(i)),
-                        Integer.parseInt(machinariesSofer.get(i)));
-                team.getTeamDeploys().add(teamDeploy);
+            for (String employeeString : employeesSofer) {
+                Employee employee = employeeService.getEmployeeById(Integer.parseInt(employeeString));
+                for (Machinery machinery : employee.getMachines()) {
+                    if (machinariesSofer.contains(Integer.toString(machinery.getMachineryId()))) {
+                        TeamDeploy teamDeploy = teamDeployService.create(team, employee, machinery);
+                        team.getTeamDeploys().add(teamDeploy);
+                    }
+                }
             }
         }
 
