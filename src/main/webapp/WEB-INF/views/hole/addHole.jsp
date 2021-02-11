@@ -57,7 +57,14 @@
                             <select name="area" id="selectArea"
                                     class="browser-default custom-select">
                                 <c:forEach var="area" items="${areas}">
-                                    <option value="${area.areaId}">${area.type}</option>
+                                    <c:choose>
+                                        <c:when test="${'Asfalt'.equals(area.type)}">
+                                            <option value="${area.areaId}" selected>${area.type}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option value="${area.areaId}">${area.type}</option>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </c:forEach>
                             </select>
                         </td>
