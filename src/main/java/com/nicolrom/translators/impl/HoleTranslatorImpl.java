@@ -16,13 +16,13 @@ public class HoleTranslatorImpl implements HoleTranslator {
         for (OrderOptionsEnum orderOptionEnum : OrderOptionsEnum.values()){
             switch (orderOptionEnum){
                 case ID:
-                    orderOptionsTranslated.add("Ordinea Adaugarii");
+                    orderOptionsTranslated.add("Implicit");
                     break;
                 case ADRESA_ALFABETIC:
-                    orderOptionsTranslated.add("Adresa alfabetic");
+                    orderOptionsTranslated.add("Alfabetic");
                     break;
                 case DATA_DESCRESCATOR:
-                    orderOptionsTranslated.add("Data invers cronologic");
+                    orderOptionsTranslated.add("Invers Cronologic");
                     break;
                 default:
                     orderOptionsTranslated.add(orderOptionEnum.name());
@@ -36,11 +36,11 @@ public class HoleTranslatorImpl implements HoleTranslator {
     @Override
     public OrderOptionsEnum translateOrderOption(String orderOption) {
         switch (orderOption){
-            case "Ordinea Adaugarii":
+            case "Implicit":
                 return OrderOptionsEnum.ID;
-            case "Adresa alfabetic" :
+            case "Alfabetic" :
                 return OrderOptionsEnum.ADRESA_ALFABETIC;
-            case "Data invers cronologic":
+            case "Invers Cronologic":
                 return OrderOptionsEnum.DATA_DESCRESCATOR;
             default:
                 return null;

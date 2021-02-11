@@ -55,7 +55,7 @@ public class BackofficeController {
     @RequestMapping(method = RequestMethod.GET)
     public String getHoles(Model model, @RequestParam(name = "pgNr", defaultValue = "0") Integer pgNr,
                            @RequestParam(name = "pgSize", defaultValue = "13") Integer pgSize,
-                           @RequestParam(name = "orderBy", defaultValue = "Ordinea Adaugarii") String orderBy,
+                           @RequestParam(name = "orderBy", defaultValue = "Implicit") String orderBy,
                            @RequestParam(value = "searchValue", required = false) String searchValue,
                            @RequestParam(value = "district", required = false) String[] districts){
 
