@@ -266,6 +266,7 @@
         $('#calculateMaterialsBtn').click(function () {
             var values = calculateMaterials();
             var sandQuantity = values[0]; var balast = values[1];
+            $("#materialsTable").find("tr:gt(0)").remove();
 
             if (typeof ($("#material-1").val()) === "undefined"){
                 $("#selectMaterial option[name = 'materialOption-1']").remove();
