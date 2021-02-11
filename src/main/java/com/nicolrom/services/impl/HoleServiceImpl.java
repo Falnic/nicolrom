@@ -235,7 +235,6 @@ public class HoleServiceImpl implements HoleService {
         holeDTO.setLocality(hole.getLocality());
         holeDTO.setCounty(hole.getCounty());
         holeDTO.setDistrict(hole.getDistrict());
-        holeDTO.setHoleNrAtSameAddress(hole.getHoleNrAtSameAddress());
         setHoleDtoPhase(holeDTO, hole);
         holeDTO.setHoleLength(hole.getHoleLength());
         holeDTO.setHoleWidth(hole.getHoleWidth());
@@ -257,19 +256,5 @@ public class HoleServiceImpl implements HoleService {
             }
         }
         holeDTO.setPhase(phaseEnum.name());
-    }
-
-    private void checkHoleForSameAddress(List<Hole> duplicates, Hole hole){
-        if (duplicates != null && duplicates.size() > 0) {
-            if (duplicates.size() == 1){
-                Hole duplicate = duplicates.get(0);
-                duplicate.setHoleNrAtSameAddress(1);
-                updateHole(duplicate);
-
-                hole.setHoleNrAtSameAddress(duplicates.size() + 1);
-            } else {
-                hole.setHoleNrAtSameAddress(duplicates.size() + 1);
-            }
-        }
     }
 }

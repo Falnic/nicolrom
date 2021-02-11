@@ -65,9 +65,6 @@ public class Hole implements Serializable {
     @Column(nullable = false)
     private String executor;
 
-    @Column(columnDefinition = "integer default 0")
-    private Integer holeNrAtSameAddress = 0;
-
     public int getHoleId() {
         return holeId;
     }
@@ -194,14 +191,6 @@ public class Hole implements Serializable {
 
     public void setExecutor(String executor) {
         this.executor = executor;
-    }
-
-    public Integer getHoleNrAtSameAddress() {
-        return holeNrAtSameAddress;
-    }
-
-    public void setHoleNrAtSameAddress(Integer holeNrAtSameAddress) {
-        this.holeNrAtSameAddress = holeNrAtSameAddress;
     }
 
     public String getDistrict() {

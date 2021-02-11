@@ -15,20 +15,10 @@
     <div class="row">
         <div class="col-lg-6">
             <table class="table table-striped">
-                <c:choose>
-                    <c:when test="${hole.holeNrAtSameAddress != null && hole.holeNrAtSameAddress != 0}">
-                        <tr>
-                            <td>Adresa</td>
-                            <td>Strada ${hole.street} nr ${hole.streetNr} Groapa ${hole.holeNrAtSameAddress}</td>
-                        </tr>
-                    </c:when>
-                    <c:otherwise>
-                        <tr>
-                            <td>Adresa</td>
-                            <td>Strada ${hole.street} nr ${hole.streetNr}</td>
-                        </tr>
-                    </c:otherwise>
-                </c:choose>
+                <tr>
+                    <td>Adresa</td>
+                    <td>Strada ${hole.street} nr ${hole.streetNr}</td>
+                </tr>
                 <tr>
                     <td>Localitate</td>
                     <td>${hole.locality}</td>
