@@ -22,7 +22,7 @@ public class HoleTranslatorImpl implements HoleTranslator {
                     orderOptionsTranslated.add("Alfabetic");
                     break;
                 case DATA_DESCRESCATOR:
-                    orderOptionsTranslated.add("Invers Cronologic");
+                    orderOptionsTranslated.add("Cronologic");
                     break;
                 default:
                     orderOptionsTranslated.add(orderOptionEnum.name());
@@ -40,7 +40,7 @@ public class HoleTranslatorImpl implements HoleTranslator {
                 return OrderOptionsEnum.ID;
             case "Alfabetic" :
                 return OrderOptionsEnum.ADRESA_ALFABETIC;
-            case "Invers Cronologic":
+            case "Cronologic":
                 return OrderOptionsEnum.DATA_DESCRESCATOR;
             default:
                 return null;

@@ -1,5 +1,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
 <jsp:include page="../bootstrapImports.jsp"/>
 <jsp:include page="../backofficeHeader.jsp"/>
@@ -25,27 +26,43 @@
                 <table>
                     <tr>
                         <td><label class="control-label" for="holeDatePicker">Data</label></td>
-                        <td><input type="date" class="form-control" name="holeDate" id="holeDatePicker" placeholder="dd/mm/yyyy" autocomplete="false" max="${currentDate}"/>
+                        <td><input type="date" class="form-control" name="holeDate" id="holeDatePicker"
+                                   autocomplete="false" max="${currentDate}"/>
                     </tr>
-                    <tr>
-                        <td><label class="control-label" for="street">Strada</label></td>
-                        <td><input type="text" class="form-control" name="street" id="street" autocomplete="false"/>
+                    <tr id="countyTr">
+                        <td><label class="control-label" for="county">Judet</label></td>
+                        <td><input type="text" class="form-control" name="county" id="county" readonly value="CLUJ"/>
+                    </tr>
+                    <tr id="localityTr">
+                        <td><label for="localitySelectId">Localitate</label></td>
+                        <td>
+                            <select name="locality" id="localitySelectId" class="selectpicker"
+                                    data-live-search="true" title="Alege Localitatea">
+                                <c:forEach var="locality" items="${localities}">
+                                    <option value="${locality}">${locality}</option>
+                                </c:forEach>
+                            </select>
+                        </td>
+<%--                        <td><label class="control-label" for="locality">Localitate</label></td>--%>
+<%--                        <td><input type="text" class="form-control" name="locality" id="locality" autocomplete="false"/>--%>
+                    </tr>
+                    <tr id="streetTr">
+                        <td><label for="streetSelectId">Strada</label></td>
+                        <td>
+                            <select name="street" id="streetSelectId" class="selectpicker" title="Alege Strada"
+                                    data-live-search="true" disabled>
+                            </select>
+                        </td>
+<%--                        <td><label class="control-label" for="street">Strada</label></td>--%>
+<%--                        <td><input type="text" class="form-control" name="street" id="street" autocomplete="false"/>--%>
                     </tr>
                     <tr>
                         <td><label class="control-label" for="streetNr">Numar</label></td>
                         <td><input type="text" class="form-control" name="streetNr" id="streetNr" autocomplete="false"/>
                     </tr>
-                    <tr>
-                        <td><label class="control-label" for="locality">Localitate</label></td>
-                        <td><input type="text" class="form-control" name="locality" id="locality" autocomplete="false"/>
-                    </tr>
-                    <tr>
-                        <td><label class="control-label" for="county">Judet</label></td>
-                        <td><input type="text" class="form-control" name="county" id="county" autocomplete="false"/>
-                    </tr>
-                    <tr>
+                    <tr id="districtTr">
                         <td><label class="control-label" for="district">District</label></td>
-                        <td><input type="text" class="form-control" name="district" id="district" autocomplete="false"/>
+                        <td><input type="text" class="form-control" name="district" id="district" readonly/>
                     </tr>
                 </table>
             </div>
@@ -87,6 +104,19 @@
                 </table>
             </div>
             <div class="col-lg-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="form-check col-lg-3">
+                <label class="form-check-label" for="noStreetCheck">
+                    <small class="form-text text-muted">
+                        Click aici pentru adaugarea unei strazi care nu exista in sistem
+                    </small>
+                </label>
+            </div>
+            <div class="col-lg-1">
+                <input type="checkbox" class="form-check-input" id="noStreetCheck">
+            </div>
         </div>
         <div class="row">
             <div class="col-lg-2"></div>
@@ -192,6 +222,48 @@
 
 <script>
     $(function() {
+        $("#localitySelectId").change(function () {
+            var locality = $("#localitySelectId option:selected").val();
+            var url = "http://localhost:8081/NicolRom/backoffice/holes/add-getStreets";
+            $.ajax({
+                url : url,
+                type : 'GET',
+                data : {
+                    'locality' : locality
+                },
+                success : function(data) {
+                    prepareStreetSelect(data);
+                },
+                error : function(request,error)
+                {
+                    alert("Request: "+JSON.stringify(request));
+                }
+            });
+        });
+
+        $("#streetSelectId").change(function () {
+            var street = $("#streetSelectId option:selected").val();
+            var url = "http://localhost:8081/NicolRom/backoffice/holes/add-getDistrict";
+            $.ajax({
+                url : url,
+                type : 'GET',
+                data : {
+                    'street' : street
+                },
+                success : function(data) {
+                    showDistrict(data);
+                },
+                error : function(request,error)
+                {
+                    alert("Request: "+JSON.stringify(request));
+                }
+            });
+        });
+
+        // $("#noStreetCheck").click(function () {
+        //
+        // })
+
         $('#cancelBtn').click(function() {
             return window.confirm("Sunteti sigur?");
         });
@@ -247,6 +319,21 @@
             }
         });
     } );
+
+    function prepareStreetSelect(localitiesList) {
+        $("#streetSelectId option").remove();
+        var arrayLength = localitiesList.length;
+        $("#streetSelectId").prop("disabled", false);
+        for (var i = 0; i < arrayLength; i++) {
+            $("#streetSelectId").append(new Option(localitiesList[i], localitiesList[i]));
+        }
+        $("#streetSelectId").selectpicker("refresh");
+    }
+
+    function showDistrict(district) {
+        $("#district").val(district);
+        $("#district").attr("readonly", true);
+    }
 
     function removeAutoFields() {
         $("#newRouteFields").hide("slow");

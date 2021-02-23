@@ -17,20 +17,8 @@ public class Hole implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date date;
 
-    @Column(nullable = false)
-    private String street;
-
-    @Column(nullable = false)
-    private String streetNr;
-
-    @Column(nullable = false)
-    private String locality;
-
-    @Column(nullable = false)
-    private String county;
-
-    @Column(nullable = false)
-    private String district;
+    @OneToOne(mappedBy = "hole", fetch = FetchType.EAGER)
+    private HoleAddress holeAddress;
 
     @Column(nullable = false)
     @OneToMany(targetEntity = Phase.class, mappedBy = "hole", fetch = FetchType.EAGER)
@@ -71,38 +59,6 @@ public class Hole implements Serializable {
 
     public void setHoleId(int holeId) {
         this.holeId = holeId;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getStreetNr() {
-        return streetNr;
-    }
-
-    public void setStreetNr(String streetNr) {
-        this.streetNr = streetNr;
-    }
-
-    public String getLocality() {
-        return locality;
-    }
-
-    public void setLocality(String locality) {
-        this.locality = locality;
-    }
-
-    public String getCounty() {
-        return county;
-    }
-
-    public void setCounty(String district) {
-        this.county = district;
     }
 
     public List<Phase> getPhases() {
@@ -193,11 +149,11 @@ public class Hole implements Serializable {
         this.executor = executor;
     }
 
-    public String getDistrict() {
-        return district;
+    public HoleAddress getHoleAddress() {
+        return holeAddress;
     }
 
-    public void setDistrict(String district) {
-        this.district = district;
+    public void setHoleAddress(HoleAddress holeAddress) {
+        this.holeAddress = holeAddress;
     }
 }

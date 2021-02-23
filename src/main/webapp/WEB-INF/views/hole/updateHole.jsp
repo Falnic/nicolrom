@@ -89,7 +89,7 @@
                         <div class="col-lg-9">
                             <input type="number" step="0.01" min="0" class="form-control" name="holeLenght"
                                    id="holeLenght" autocomplete="false" placeholder="m" value="${hole.holeLength}"
-                                   oninput="calculateAutoStationaryTime()"/>
+                                   oninput="calculate()"/>
                         </div>
                     </div>
                     <div class="row">
@@ -97,7 +97,7 @@
                         <div class="col-lg-9">
                             <input type="number" step="0.01" min="0" class="form-control" name="holeWidth"
                                    id="holeWidth" autocomplete="false" placeholder="m" value="${hole.holeWidth}"
-                                   oninput="calculateAutoStationaryTime()"/>
+                                   oninput="calculate()"/>
                         </div>
                     </div>
                     <div class="row">
@@ -105,7 +105,7 @@
                         <div class="col-lg-9">
                             <input type="number" step="0.01" min="0" class="form-control" name="holeDepth"
                                    id="holeDepth" autocomplete="false" placeholder="m" value="${hole.holeDepth}"
-                                   oninput="calculateAutoStationaryTime()"/>
+                                   oninput="calculate()"/>
                         </div>
                     </div>
                 </div>
@@ -738,6 +738,11 @@
         })
     }
 
+    function calculate(){
+        calculateAutoStationaryTime();
+        calculateMaterialMaxValue();
+    }
+
     function calculateAutoStationaryTime() {
         if ($("#executorDelGaz:checked").length != 0){
             var holeLength = $("#holeLenght").val();
@@ -783,6 +788,14 @@
             }
             $("#autoStationaryTime").val(autoStationaryTime);
         }
+    }
+
+    function calculateMaterialMaxValue(){
+        var L = $("#holeLenght").val();
+        var l = $("#holeWidth").val();
+        var h = $("#holeDepth").val();
+
+        return L * l * h;
     }
 
 </script>

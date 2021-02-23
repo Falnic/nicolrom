@@ -21,7 +21,7 @@ public class PipeDaoImpl implements PipeDao {
     @Override
     public List<Pipe> getAllPipes() {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("FROM Pipe as P").list();
+        return session.createQuery("SELECT p FROM Pipe p", Pipe.class).list();
     }
 
     @Override

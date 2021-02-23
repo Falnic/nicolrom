@@ -98,7 +98,7 @@
                                     <c:forEach var="hole" items="${allHoles}">
                                         <tr ondblclick="redirectToHDP(${hole.holeId})">
                                             <td><fmt:formatDate pattern = "dd-MM-yyyy" value = "${hole.date}"/></td>
-                                            <td>${hole.street} ${hole.streetNr} ${hole.locality} ${hole.county}</td>
+                                            <td>Strada ${hole.street} nr ${hole.streetNr} ${hole.locality}</td>
                                             <td style="text-align: center">${hole.district}</td>
                                             <c:choose>
                                                 <c:when test="${hole.phase == 'SAPATURA'}">
@@ -188,9 +188,9 @@
                 var val = $("#orderHoles option:selected").text();
 
                 if (${pgNr != 0}){
-                    window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes?pgNr=${pgNr}&orderBy=" + val;
+                    window.location.href = "http://localhost:8081/NicolRom/backoffice/holes?pgNr=${pgNr}&orderBy=" + val;
                 } else {
-                    window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes?orderBy=" + val;
+                    window.location.href = "http://localhost:8081/NicolRom/backoffice/holes?orderBy=" + val;
                 }
             });
 
@@ -199,9 +199,9 @@
                 var keycode = (event.keyCode ? event.keyCode : event.which);
                 if (keycode == '13'){
                     if(searchValue && searchValue !== ""){
-                        window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes?searchValue=" + searchValue;
+                        window.location.href = "http://localhost:8081/NicolRom/backoffice/holes?searchValue=" + searchValue;
                     } else {
-                        window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes";
+                        window.location.href = "http://localhost:8081/NicolRom/backoffice/holes";
                     }
                 }
             });
@@ -209,9 +209,9 @@
             $("#searchButton").click(function (){
                 var searchValue = $('#searchByAddress').val();
                 if (searchValue && searchValue !== ""){
-                    window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes?searchValue=" + searchValue;
+                    window.location.href = "http://localhost:8081/NicolRom/backoffice/holes?searchValue=" + searchValue;
                 } else {
-                    window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes";
+                    window.location.href = "http://localhost:8081/NicolRom/backoffice/holes";
                 }
             });
 
@@ -221,7 +221,7 @@
                     districts.push(this.value);
                 })
                 var pageUrl = window.location.href;
-                var url = "http://localhost:8080/Myapp1_war/backoffice/holes";
+                var url = "http://localhost:8081/NicolRom/backoffice/holes";
                 var searchValue = $("#searchByAddress").val();
                 if ((searchValue != null) || (districts.length > 0)){
                     url = url + "?";
@@ -238,7 +238,7 @@
         });
 
         function redirectToHDP(holeid) {
-            window.location.href = "http://localhost:8080/Myapp1_war/backoffice/holes/" + holeid;
+            window.location.href = "http://localhost:8081/NicolRom/backoffice/holes/" + holeid;
         }
     </script>
     </body>

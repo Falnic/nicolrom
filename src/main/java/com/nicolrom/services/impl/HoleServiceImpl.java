@@ -1,14 +1,14 @@
 package com.nicolrom.services.impl;
 
 import com.nicolrom.dao.HoleDao;
+import com.nicolrom.entities.Address;
 import com.nicolrom.entities.Hole;
+import com.nicolrom.entities.HoleAddress;
 import com.nicolrom.entities.Phase;
 import com.nicolrom.entities.dto.HoleDTO;
 import com.nicolrom.enums.OrderOptionsEnum;
 import com.nicolrom.enums.PhaseEnum;
-import com.nicolrom.services.AreaService;
-import com.nicolrom.services.HoleService;
-import com.nicolrom.services.PipeService;
+import com.nicolrom.services.*;
 import com.nicolrom.translators.HoleTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +32,12 @@ public class HoleServiceImpl implements HoleService {
 
     @Autowired
     private PipeService pipeService;
+
+    @Autowired
+    private AddressService addressService;
+
+    @Autowired
+    private HoleAddressService holeAddressService;
 
     @Override
     public List<HoleDTO> getAllHoles() {
@@ -126,6 +132,7 @@ public class HoleServiceImpl implements HoleService {
     @Override
     public void saveHole(Hole hole) {
         holeDao.saveHole(hole);
+        holeAddressService.save(hole.getHoleAddress());
     }
 
     @Override
@@ -152,11 +159,11 @@ public class HoleServiceImpl implements HoleService {
         }
 
         hole.setDate(date);
-        hole.setStreet(street);
-        hole.setStreetNr(streetNr);
-        hole.setLocality(locality);
-        hole.setCounty(county);
-        hole.setDistrict(district);
+
+        Address address = addressService.getAddressByStreet(street);
+        HoleAddress holeAddress = holeAddressService.create(hole, address, streetNr);
+        hole.setHoleAddress(holeAddress);
+
         hole.setArea(areaService.getArea(areaId));
         hole.setHoleLength(holeLenght);
         hole.setHoleWidth(holeWidth);
@@ -174,8 +181,9 @@ public class HoleServiceImpl implements HoleService {
 
     @Override
     public String checkHole(Hole hole){
-        List<Hole> duplicates = holeDao.getHolesAtSameAddres(hole);
-        return checkHoleForSameDate(duplicates, hole);
+//        List<Hole> duplicates = holeDao.getHolesAtSameAddres(hole);
+//        return checkHoleForSameDate(duplicates, hole);
+        return null;
     }
 
     private String checkHoleForSameDate(List<Hole> duplicates, Hole hole){
@@ -190,9 +198,9 @@ public class HoleServiceImpl implements HoleService {
 
     @Override
     public String checkHole(Hole hole, Hole updatedHole) {
-        List<Hole> holeDuplicates = holeDao.getHolesAtSameAddres(updatedHole);
-        return checkHoleForSameDate(holeDuplicates, updatedHole);
-
+//        List<Hole> holeDuplicates = holeDao.getHolesAtSameAddres(updatedHole);
+//        return checkHoleForSameDate(holeDuplicates, updatedHole);
+        return null;
         // TODO: Create the algorithm for duplicate Holes in order to set HoleNrAtSameAddress
     }
 
@@ -206,9 +214,9 @@ public class HoleServiceImpl implements HoleService {
      *          arguments as updatedHole.
      */
     private boolean compareHoles(Hole hole, Hole updatedHole){
-        if (hole.getDate().compareTo(updatedHole.getDate()) != 0) return false;
-        if (hole.getStreet().compareToIgnoreCase(updatedHole.getStreet()) != 0) return false;
-        if (hole.getStreetNr().compareToIgnoreCase(updatedHole.getStreetNr()) != 0) return false;
+//        if (hole.getDate().compareTo(updatedHole.getDate()) != 0) return false;
+//        if (hole.getStreet().compareToIgnoreCase(updatedHole.getStreet()) != 0) return false;
+//        if (hole.getStreetNr().compareToIgnoreCase(updatedHole.getStreetNr()) != 0) return false;
 
         return true;
     }
@@ -227,14 +235,17 @@ public class HoleServiceImpl implements HoleService {
         HoleDTO holeDTO = new HoleDTO();
 
         holeDTO.setHoleId(hole.getHoleId());
-
         holeDTO.setDate(hole.getDate());
 
-        holeDTO.setStreet(hole.getStreet());
-        holeDTO.setStreetNr(hole.getStreetNr());
-        holeDTO.setLocality(hole.getLocality());
-        holeDTO.setCounty(hole.getCounty());
-        holeDTO.setDistrict(hole.getDistrict());
+        HoleAddress holeAddress = hole.getHoleAddress();
+        Address address = holeAddress.getAddress();
+
+        holeDTO.setStreet(address.getStreet());
+        holeDTO.setStreetNr(holeAddress.getStreetNr());
+        holeDTO.setLocality(address.getLocality());
+        holeDTO.setCounty(address.getCounty());
+        holeDTO.setDistrict(address.getDistrict());
+
         setHoleDtoPhase(holeDTO, hole);
         holeDTO.setHoleLength(hole.getHoleLength());
         holeDTO.setHoleWidth(hole.getHoleWidth());

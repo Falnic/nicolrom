@@ -14,22 +14,23 @@
     </div>
     <div class="row">
         <div class="col-lg-6">
+            <c:set var="holeAddress" value="${hole.holeAddress}"/>
             <table class="table table-striped">
                 <tr>
                     <td>Adresa</td>
-                    <td>Strada ${hole.street} nr ${hole.streetNr}</td>
+                    <td>Strada ${holeAddress.address.street} nr ${holeAddress.streetNr}</td>
                 </tr>
                 <tr>
                     <td>Localitate</td>
-                    <td>${hole.locality}</td>
+                    <td>${holeAddress.address.locality}</td>
                 </tr>
                 <tr>
                     <td>Judet</td>
-                    <td>${hole.county}</td>
+                    <td>${holeAddress.address.county}</td>
                 </tr>
                 <tr>
                     <td>District</td>
-                    <td>${hole.district}</td>
+                    <td>${holeAddress.address.district}</td>
                 </tr>
                 <c:if test="${hole.area != null && hole.area != ''}">
                 <tr>

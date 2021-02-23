@@ -20,6 +20,8 @@
                 <value>com.nicolrom.entities.Authority</value>
                 <value>com.nicolrom.entities.Pipe</value>
                 <value>com.nicolrom.entities.Area</value>
+                <value>com.nicolrom.entities.Address</value>
+                <value>com.nicolrom.entities.HoleAddress</value>
             </list>
         </property>
 

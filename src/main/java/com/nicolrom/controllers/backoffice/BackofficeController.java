@@ -35,9 +35,6 @@ public class BackofficeController {
     private TeamService teamService;
 
     @Autowired
-    private MachineryService machineryService;
-
-    @Autowired
     private MaterialNoticeService materialNoticeService;
 
     @Autowired
@@ -48,6 +45,9 @@ public class BackofficeController {
 
     @Autowired
     private AreaService areaService;
+
+    @Autowired
+    private AddressService addressService;
 
     @Autowired
     private HoleTranslator holeTranslator;
@@ -89,6 +89,84 @@ public class BackofficeController {
         model.addAttribute("districts", holeService.getHoleDistricts());
 
         return "hole/viewHoles";
+    }
+
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    public String addHole(Model model){
+        List<Employee> employees_SOFER = employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER);
+        model.addAttribute("positionEmployeesMap_SOFER", employees_SOFER);
+        model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
+        model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
+        model.addAttribute("areas", areaService.getAllAreas());
+        model.addAttribute("localities", addressService.getAllLocalities());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String jsonStr = objectMapper.writeValueAsString(employees_SOFER);
+            model.addAttribute("employeesJSON_SOFER", jsonStr);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        model.addAttribute("currentDate", dateFormat.format(date));
+
+        return "hole/addHole";
+    }
+
+    @RequestMapping(value = "/add-getStreets", method = RequestMethod.GET)
+    @ResponseBody
+    public List<String> getStreetsList(@RequestParam(name = "locality") String locality){
+        return addressService.getStreetsByLocality(locality);
+    }
+
+    @RequestMapping(value = "/add-getDistrict", method = RequestMethod.GET)
+    @ResponseBody
+    public String getStreetDistrict(@RequestParam(name = "street") String street){
+        return addressService.getDistrictByStreet(street);
+    }
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public String addHole(Model model, @RequestParam(value = "holeDate") String holeDate,
+                          @RequestParam(value = "street") String street,
+                          @RequestParam(value = "streetNr") String streetNr,
+                          @RequestParam(value = "locality") String locality,
+                          @RequestParam(value = "county") String county,
+                          @RequestParam(value = "district") String district,
+                          @RequestParam(value = "area") Integer areaId,
+                          @RequestParam(value = "holeLenght") Double holeLenght,
+                          @RequestParam(value = "holeWidth") Double holeWidth,
+                          @RequestParam(value = "holeDepth") Double holeDepth,
+                          @RequestParam(value = "executor") String executor,
+                          @RequestParam(value = "employees_SOFER", required = false) List<String> employeesSofer,
+                          @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
+                          @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
+                          @RequestParam(value = "machineSelect_SOFER", required = false) List<String> machineriesSofer,
+                          @RequestParam(value = "autoRouteDistance") Double autoRouteDistance,
+                          @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) {
+
+        Hole hole = holeService.create(holeDate, street, streetNr, locality, county, district, areaId, holeLenght,
+                                        holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime, null);
+        // TODO: Check Same Holes
+//        String messaje = holeService.checkHole(hole);
+//        if (messaje != null){
+//            model.addAttribute("error", messaje);
+//            return addHole(model);
+//        }
+
+        holeService.saveHole(hole);
+
+        Phase phase = new Phase();
+        phase.setHole(hole);
+        phase.setPhaseDate(hole.getDate());
+        phaseService.savePhase(phase);
+
+        Team team = teamService.create(employeesSofer, employeesMecanic, employeesNecalificat, machineriesSofer);
+        team.setPhase(phase);
+        teamService.saveTeam(team);
+
+        return "redirect:/backoffice/holes/" + hole.getHoleId();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -156,70 +234,6 @@ public class BackofficeController {
         materialNoticeService.saveMaterialNotice(materialNoticeSet);
 
         return "redirect:/backoffice/holes/{id}";
-    }
-
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String addHole(Model model){
-        List<Employee> employees_SOFER = employeeService.getEmployeesByPosition(EmployeePositionEnum.SOFER);
-        model.addAttribute("positionEmployeesMap_SOFER", employees_SOFER);
-        model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
-        model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
-        model.addAttribute("areas", areaService.getAllAreas());
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            String jsonStr = objectMapper.writeValueAsString(employees_SOFER);
-            model.addAttribute("employeesJSON_SOFER", jsonStr);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        model.addAttribute("currentDate", dateFormat.format(date));
-
-        return "hole/addHole";
-    }
-
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addHole(Model model, @RequestParam(value = "holeDate") String holeDate,
-                          @RequestParam(value = "street") String street,
-                          @RequestParam(value = "streetNr") String streetNr,
-                          @RequestParam(value = "locality") String locality,
-                          @RequestParam(value = "county") String county,
-                          @RequestParam(value = "district") String district,
-                          @RequestParam(value = "area") Integer areaId,
-                          @RequestParam(value = "holeLenght") Double holeLenght,
-                          @RequestParam(value = "holeWidth") Double holeWidth,
-                          @RequestParam(value = "holeDepth") Double holeDepth,
-                          @RequestParam(value = "executor") String executor,
-                          @RequestParam(value = "employees_SOFER", required = false) List<String> employeesSofer,
-                          @RequestParam(value = "employees_MECANIC", required = false) List<String> employeesMecanic,
-                          @RequestParam(value = "employees_NECALIFICAT", required = false) List<String> employeesNecalificat,
-                          @RequestParam(value = "machineSelect_SOFER", required = false) List<String> machineriesSofer,
-                          @RequestParam(value = "autoRouteDistance") Double autoRouteDistance,
-                          @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) {
-
-        Hole hole = holeService.create(holeDate, street, streetNr, locality, county, district, areaId, holeLenght,
-                                        holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime, null);
-        String messaje = holeService.checkHole(hole);
-        if (messaje != null){
-            model.addAttribute("error", messaje);
-            return addHole(model);
-        }
-
-        holeService.saveHole(hole);
-
-        Phase phase = new Phase();
-        phase.setHole(hole);
-        phase.setPhaseDate(hole.getDate());
-        phaseService.savePhase(phase);
-
-        Team team = teamService.create(employeesSofer, employeesMecanic, employeesNecalificat, machineriesSofer);
-        team.setPhase(phase);
-        teamService.saveTeam(team);
-
-        return "redirect:/backoffice/holes/" + hole.getHoleId();
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.GET)
@@ -327,11 +341,11 @@ public class BackofficeController {
 
         Hole hole = holeService.getHoleById(Integer.parseInt(id));
         updatedHole.setHoleId(hole.getHoleId());
-        String messaje =  holeService.checkHole(hole, updatedHole);
-        if (messaje != null){
-            model.addAttribute("error", messaje);
-            return updateHole(model, id);
-        }
+//        String messaje =  holeService.checkHole(hole, updatedHole);
+//        if (messaje != null){
+//            model.addAttribute("error", messaje);
+//            return updateHole(model, id);
+//        }
 
         holeService.updateHole(updatedHole);
 
