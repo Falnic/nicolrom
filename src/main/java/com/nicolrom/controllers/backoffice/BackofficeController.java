@@ -8,6 +8,7 @@ import com.nicolrom.enums.EmployeePositionEnum;
 import com.nicolrom.enums.PhaseEnum;
 import com.nicolrom.services.*;
 import com.nicolrom.translators.HoleTranslator;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,6 +52,9 @@ public class BackofficeController {
 
     @Autowired
     private HoleTranslator holeTranslator;
+
+    @Autowired
+    private HoleAddressService holeAddressService;
 
     @RequestMapping(method = RequestMethod.GET)
     public String getHoles(Model model, @RequestParam(name = "pgNr", defaultValue = "0") Integer pgNr,
@@ -123,16 +127,22 @@ public class BackofficeController {
 
     @RequestMapping(value = "/add-getDistrict", method = RequestMethod.GET)
     @ResponseBody
-    public String getStreetDistrict(@RequestParam(name = "street") String street){
-        return addressService.getDistrictByStreet(street);
+    public String getStreetDistrict(@RequestParam(name = "street") String street,
+                                    @RequestParam(name = "locality") String locality,
+                                    @RequestParam(name = "county") String county){
+        Address address = addressService.getAddress(street, locality, county);
+        return address.getDistrict();
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addHole(Model model, @RequestParam(value = "holeDate") String holeDate,
-                          @RequestParam(value = "street") String street,
+                          @RequestParam(value = "street", required = false) String street,
+                          @RequestParam(value = "newStreet", required = false) String newStreet,
                           @RequestParam(value = "streetNr") String streetNr,
-                          @RequestParam(value = "locality") String locality,
-                          @RequestParam(value = "county") String county,
+                          @RequestParam(value = "locality", required = false) String locality,
+                          @RequestParam(value = "newLocality", required = false) String newLocality,
+                          @RequestParam(value = "county", required = false) String county,
+                          @RequestParam(value = "newCounty", required = false) String newCounty,
                           @RequestParam(value = "district") String district,
                           @RequestParam(value = "area") Integer areaId,
                           @RequestParam(value = "holeLenght") Double holeLenght,
@@ -146,15 +156,26 @@ public class BackofficeController {
                           @RequestParam(value = "autoRouteDistance") Double autoRouteDistance,
                           @RequestParam(value = "autoStationaryTime") Integer autoStationaryTime) {
 
-        Hole hole = holeService.create(holeDate, street, streetNr, locality, county, district, areaId, holeLenght,
-                                        holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime, null);
-        // TODO: Check Same Holes
-//        String messaje = holeService.checkHole(hole);
-//        if (messaje != null){
-//            model.addAttribute("error", messaje);
-//            return addHole(model);
-//        }
 
+        Hole hole = new Hole();
+        if (StringUtils.isNotEmpty(newStreet) && StringUtils.isNotEmpty(newLocality) &&
+                StringUtils.isNotEmpty(newCounty) && StringUtils.isNotEmpty(district)){
+            addressService.saveAddress(addressService.createAddress(newStreet, newLocality, newCounty, district));
+            hole = holeService.create(holeDate, newStreet, streetNr, newLocality, newCounty, district, areaId, holeLenght,
+                    holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime, null);
+        } else {
+            if (StringUtils.isNotEmpty(street) && StringUtils.isNotEmpty(streetNr) &&
+                    StringUtils.isNotEmpty(locality) && StringUtils.isNotEmpty(county)) {
+                hole = holeService.create(holeDate, street, streetNr, locality, county, district, areaId, holeLenght,
+                        holeWidth, holeDepth, executor, autoRouteDistance, autoStationaryTime, null);
+            }
+        }
+
+        String messaje = holeService.checkHole(hole);
+        if (messaje != null){
+            model.addAttribute("error", messaje);
+            return addHole(model);
+        }
         holeService.saveHole(hole);
 
         Phase phase = new Phase();
@@ -247,6 +268,8 @@ public class BackofficeController {
         model.addAttribute("positionEmployeesMap_MECANIC", employeeService.getEmployeesByPosition(EmployeePositionEnum.MECANIC));
         model.addAttribute("positionEmployeesMap_NECALIFICAT", employeeService.getEmployeesByPosition(EmployeePositionEnum.NECALIFICAT));
         model.addAttribute("areas", areaService.getAllAreas());
+        model.addAttribute("localities", addressService.getAllLocalities());
+        model.addAttribute("streetsByLocality", addressService.getStreetsByLocality(hole.getHoleAddress().getAddress().getLocality()));
         model.addAttribute("allPipes", pipeService.getAllPipes());
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -341,12 +364,12 @@ public class BackofficeController {
 
         Hole hole = holeService.getHoleById(Integer.parseInt(id));
         updatedHole.setHoleId(hole.getHoleId());
-//        String messaje =  holeService.checkHole(hole, updatedHole);
-//        if (messaje != null){
-//            model.addAttribute("error", messaje);
-//            return updateHole(model, id);
-//        }
-
+        String messaje =  holeService.checkHole(hole, updatedHole);
+        if (messaje != null){
+            model.addAttribute("error", messaje);
+            return updateHole(model, id);
+        }
+        updatedHole.getHoleAddress().setId(hole.getHoleAddress().getId());
         holeService.updateHole(updatedHole);
 
         List<PhaseEnum> phaseEnums = parsePhaseEnums(phases);

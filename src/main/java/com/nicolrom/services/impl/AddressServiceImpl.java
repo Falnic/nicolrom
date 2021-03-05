@@ -20,8 +20,25 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Address getAddressByStreet(String street) {
-        return addressDao.getAddressByStreet(street);
+    public Address createAddress(String newStreet, String newLocality, String newCounty, String district) {
+        Address address = new Address();
+
+        address.setStreet(newStreet);
+        address.setLocality(newLocality);
+        address.setCounty(newCounty);
+        address.setDistrict(district);
+
+        return address;
+    }
+
+    @Override
+    public void saveAddress(Address address) {
+        addressDao.save(address);
+    }
+
+    @Override
+    public Address getAddress(String street, String locality, String county) {
+        return addressDao.getAddress(street, locality, county);
     }
 
     @Override

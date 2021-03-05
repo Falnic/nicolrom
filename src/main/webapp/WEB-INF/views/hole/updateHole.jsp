@@ -30,39 +30,91 @@
             <legend>Date Generale</legend>
             <div class="row">
                 <div class="col-lg-4">
-                    <div class="row">
-                        <label class="col-lg-3 col-form-label" for="street">Strada</label>
+                    <div class="row addAddress">
+                        <label class="col-lg-3 col-form-label" for="county">Judet</label>
                         <div class="col-lg-9">
-                            <input type="text" class="form-control" name="street" id="street" autocomplete="false"
-                                   value="${hole.street}"/>
+                            <input type="text" class="form-control" name="county" id="county" readonly
+                                   value="${hole.holeAddress.address.county}"/>
                         </div>
                     </div>
+                    <div class="row addNewAddress" style="display: none">
+                        <label class="col-lg-3 col-form-label" for="newCounty">Judet</label>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control" name="newCounty" id="newCounty"/>
+                        </div>
+                    </div>
+                    <div class="row addAddress">
+                        <label class="col-lg-3 col-form-label" for="localitySelect">Localitate</label>
+                        <div class="col-lg-9">
+                            <select name="locality" id="localitySelect" class="selectpicker"
+                                    data-live-search="true" title="Alege Localitatea">
+                                <c:forEach var="locality" items="${localities}">
+                                    <c:choose>
+                                        <c:when test="${locality.equalsIgnoreCase(hole.holeAddress.address.locality)}">
+                                            <option value="${locality}" selected>${locality}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option value="${locality}">${locality}</option>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row addNewAddress" style="display: none">
+                        <label class="col-lg-3 col-form-label" for="newLocality">Localitate</label>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control" name="newLocality" id="newLocality"/>
+                        </div>
+                    </div>
+
+                    <div class="row addAddress">
+                        <label class="col-lg-3 col-form-label" for="streetSelect">Strada</label>
+                        <div class="col-lg-9">
+                            <select name="street" id="streetSelect" class="selectpicker" title="Alege Strada"
+                                    data-live-search="true">
+                                <c:forEach var="street" items="${streetsByLocality}">
+                                    <c:choose>
+                                        <c:when test="${street.equalsIgnoreCase(hole.holeAddress.address.street)}">
+                                            <option value="${street}" selected>${street}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option value="${street}">${street}</option>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row addNewAddress" style="display: none">
+                        <label class="col-lg-3 col-form-label" for="newStreet">Strada</label>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control" name="newStreet" id="newStreet"/>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <label class="col-lg-3 col-form-label" for="streetNr">Numar</label>
                         <div class="col-lg-9">
                             <input type="text" class="form-control" name="streetNr" id="streetNr" autocomplete="false"
-                                   value="${hole.streetNr}"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label class="col-lg-3 col-form-label" for="locality">Localitate</label>
-                        <div class="col-lg-9">
-                            <input type="text" class="form-control" name="locality" id="locality" autocomplete="false"
-                                   value="${hole.locality}"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label class="col-lg-3 col-form-label" for="county">Judet</label>
-                        <div class="col-lg-9">
-                            <input type="text" class="form-control" name="county" id="county" autocomplete="false"
-                                   value="${hole.county}"/>
+                                   value="${hole.holeAddress.streetNr}"/>
                         </div>
                     </div>
                     <div class="row">
                         <label class="col-lg-3 col-form-label" for="district">District</label>
                         <div class="col-lg-9">
                             <input type="text" class="form-control" name="district" id="district" autocomplete="false"
-                                   value="${hole.district}"/>
+                                   value="${hole.holeAddress.address.district}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-lg-10 form-check-label" for="noStreetCheck">
+                            <small class="form-text text-muted">
+                                Click aici pentru adaugarea unei strazi care nu exista in sistem
+                            </small>
+                        </label>
+                        <div class="col-lg-2">
+                            <input type="checkbox" class="form-check-input" id="noStreetCheck">
                         </div>
                     </div>
                 </div>
@@ -448,6 +500,60 @@
 
 <script>
     $(function() {
+        $("#localitySelect").change(function () {
+            var locality = $("#localitySelect option:selected").val();
+            var url = "http://localhost:8081/NicolRom/backoffice/holes/add-getStreets";
+            $.ajax({
+                url : url,
+                type : 'GET',
+                data : {
+                    'locality' : locality
+                },
+                success : function(data) {
+                    prepareStreetSelect(data);
+                },
+                error : function(request,error)
+                {
+                    alert("Request: "+JSON.stringify(request));
+                }
+            });
+        });
+
+        $("#streetSelect").change(function () {
+            var street = $("#streetSelect option:selected").val();
+            var locality = $("#localitySelect option:selected").val();
+            var county = $('#county').val();
+            var url = "http://localhost:8081/NicolRom/backoffice/holes/add-getDistrict";
+            $.ajax({
+                url : url,
+                type : 'GET',
+                data : {
+                    'street' : street,
+                    'locality': locality,
+                    'county': county
+                },
+                success : function(data) {
+                    showDistrict(data);
+                },
+                error : function(request,error)
+                {
+                    console.log("Eroare")
+                }
+            });
+        });
+        $("#noStreetCheck").change(function () {
+            if(this.checked){
+                $(".addAddress").hide();
+                $(".addNewAddress").show();
+                $("#streetNr").val("");
+                $("#district").attr("readonly", false);
+                $("#district").val("");
+            } else {
+                $(".addNewAddress").hide();
+                $(".addAddress").show();
+                $("#district").attr("readonly", true);
+            }
+        })
 
         if ("Nicol Rom" > "${hole.executor}"){
             $("#selectEmployees-SOFER").selectpicker('val', ${selectedEmployees_SOFER});
@@ -549,9 +655,18 @@
             rules: {
                 holeDate:"required",
                 street: "required",
+                newStreet : {
+                    required : "#noStreetCheck:checked",
+                },
                 streetNr: "required",
                 locality: "required",
+                newLocality : {
+                    required : "#noStreetCheck:checked",
+                },
                 county: "required",
+                newCounty : {
+                    required : "#noStreetCheck:checked",
+                },
                 district: "required",
                 holeLenght: "required",
                 holeWidth: "required",
@@ -566,9 +681,12 @@
             messages: {
                 holeDate: "Selectati data",
                 street: "Introduceti strada",
+                newStreet : "Introduceti strada",
                 streetNr: "Introduceti numarul strazii",
                 locality: "Introduceti localitatea",
+                newLocality : "Introduceti localitatea",
                 county: "Introduceti judetul",
+                newCounty : "Introduceti judetul",
                 district: "Introduceti districtul",
                 holeLenght: "Introduceti lungimea",
                 holeWidth: "Introduceti latimea",
@@ -581,6 +699,21 @@
             }
         });
     } );
+
+    function prepareStreetSelect(localitiesList) {
+        $("#streetSelect option").remove();
+        var arrayLength = localitiesList.length;
+        $("#streetSelect").prop("disabled", false);
+        for (var i = 0; i < arrayLength; i++) {
+            $("#streetSelect").append(new Option(localitiesList[i], localitiesList[i]));
+        }
+        $("#streetSelect").selectpicker("refresh");
+    }
+
+    function showDistrict(district) {
+        $("#district").val(district);
+        $("#district").attr("readonly", true);
+    }
 
     function removeAutoFields() {
         $("#newRouteFields").hide("slow");

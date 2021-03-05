@@ -9,4 +9,8 @@ public interface HoleAddressService {
     HoleAddress create(Hole hole, Address address, String streetNr);
 
     void save(HoleAddress holeAddress);
+
+    void update(HoleAddress holeAddress);
+
+    void delete(HoleAddress holeAddress);
 }

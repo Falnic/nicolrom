@@ -22,4 +22,16 @@ public class HoleAddressDaoImpl implements HoleAddressDao {
         Session session = sessionFactory.getCurrentSession();
         session.save(holeAddress);
     }
+
+    @Override
+    public void update(HoleAddress holeAddress) {
+        Session session = sessionFactory.getCurrentSession();
+        session.update(holeAddress);
+    }
+
+    @Override
+    public void delete(HoleAddress holeAddress) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(holeAddress);
+    }
 }

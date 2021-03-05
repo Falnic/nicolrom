@@ -8,7 +8,9 @@ public interface AddressDao {
 
     List<Address> getAllAddresses();
 
-    Address getAddressByStreet(String street);
+    void save(Address address);
+
+    Address getAddress(String street, String locality, String county);
 
     List<String> getStreetsByLocality(String locality);
 

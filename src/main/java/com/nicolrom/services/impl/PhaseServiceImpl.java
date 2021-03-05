@@ -75,13 +75,13 @@ public class PhaseServiceImpl implements PhaseService {
         for (Phase phase : phases){
             switch (phase.getPhaseType()){
                 case SAPATURA:
-                    phaseDao.deletePhase(phase);
                     teamService.deleteTeam(phase.getTeam());
+                    phaseDao.deletePhase(phase);
                     break;
                 case UMPLERE:
                     materialNoticeService.deleteMaterialNotice(phase.getMaterialNoticeSet());
-                    phaseDao.deletePhase(phase);
                     teamService.deleteTeam(phase.getTeam());
+                    phaseDao.deletePhase(phase);
                     break;
             }
         }

@@ -119,13 +119,14 @@ public class HoleDaoImpl implements HoleDao {
 
     @Override
     public List<Hole> getHolesAtSameAddres(Hole hole) {
-        //TODO: REMOVE
-//        Session session = sessionFactory.getCurrentSession();
-//        Query query = session.createQuery("FROM Address as A where A.street = :street" +
-//                " and lower(H.streetNr) = lower(:streetNr)");
-//        query.setParameter("street", hole.getStreet());
-//        query.setParameter("streetNr", hole.getStreetNr());
-        return null;
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("SELECT h FROM Hole h JOIN h.holeAddress ha JOIN ha.address a where " +
+                "a.street = :street and a.locality = :locality and a.county = :county and ha.streetNr = :streetNr");
+        query.setParameter("street", hole.getHoleAddress().getAddress().getStreet());
+        query.setParameter("streetNr", hole.getHoleAddress().getStreetNr());
+        query.setParameter("locality", hole.getHoleAddress().getAddress().getLocality());
+        query.setParameter("county", hole.getHoleAddress().getAddress().getCounty());
+        return query.getResultList();
     }
 
     @Override

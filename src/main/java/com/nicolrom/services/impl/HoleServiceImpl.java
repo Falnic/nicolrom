@@ -137,11 +137,13 @@ public class HoleServiceImpl implements HoleService {
 
     @Override
     public void updateHole(Hole hole) {
+        holeAddressService.update(hole.getHoleAddress());
         holeDao.updateHole(hole);
     }
 
     @Override
     public void deleteHole(Hole hole) {
+        holeAddressService.delete(hole.getHoleAddress());
         holeDao.deleteHole(hole);
     }
 
@@ -160,7 +162,7 @@ public class HoleServiceImpl implements HoleService {
 
         hole.setDate(date);
 
-        Address address = addressService.getAddressByStreet(street);
+        Address address = addressService.getAddress(street, locality, county);
         HoleAddress holeAddress = holeAddressService.create(hole, address, streetNr);
         hole.setHoleAddress(holeAddress);
 
@@ -181,13 +183,12 @@ public class HoleServiceImpl implements HoleService {
 
     @Override
     public String checkHole(Hole hole){
-//        List<Hole> duplicates = holeDao.getHolesAtSameAddres(hole);
-//        return checkHoleForSameDate(duplicates, hole);
-        return null;
+        List<Hole> duplicates = holeDao.getHolesAtSameAddres(hole);
+        return checkHoleForSameDate(duplicates, hole);
     }
 
     private String checkHoleForSameDate(List<Hole> duplicates, Hole hole){
-        String messaje = "Nu se poate adauga aceeasi sapatura in aceeasi zi";
+        String messaje = "Nu se poate adauga aceeasi sapatura pentru aceeasi zi";
         for (Hole duplicate : duplicates){
             if ((hole.getHoleId() != duplicate.getHoleId()) && (hole.getDate().compareTo(duplicate.getDate()) == 0)){
                 return messaje;
@@ -198,10 +199,8 @@ public class HoleServiceImpl implements HoleService {
 
     @Override
     public String checkHole(Hole hole, Hole updatedHole) {
-//        List<Hole> holeDuplicates = holeDao.getHolesAtSameAddres(updatedHole);
-//        return checkHoleForSameDate(holeDuplicates, updatedHole);
-        return null;
-        // TODO: Create the algorithm for duplicate Holes in order to set HoleNrAtSameAddress
+        List<Hole> holeDuplicates = holeDao.getHolesAtSameAddres(updatedHole);
+        return checkHoleForSameDate(holeDuplicates, updatedHole);
     }
 
     /**

@@ -27,4 +27,14 @@ public class HoleAddressServiceImpl implements HoleAddressService {
     public void save(HoleAddress holeAddress) {
         holeAddressDao.save(holeAddress);
     }
+
+    @Override
+    public void update(HoleAddress holeAddress) {
+        holeAddressDao.update(holeAddress);
+    }
+
+    @Override
+    public void delete(HoleAddress holeAddress) {
+        holeAddressDao.delete(holeAddress);
+    }
 }

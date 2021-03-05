@@ -29,11 +29,15 @@
                         <td><input type="date" class="form-control" name="holeDate" id="holeDatePicker"
                                    autocomplete="false" max="${currentDate}"/>
                     </tr>
-                    <tr id="countyTr">
+                    <tr id="countyTr" class="addAddress">
                         <td><label class="control-label" for="county">Judet</label></td>
-                        <td><input type="text" class="form-control" name="county" id="county" readonly value="CLUJ"/>
+                        <td><input type="text" class="form-control" name="county" id="county" readonly value="CLUJ"/></td>
                     </tr>
-                    <tr id="localityTr">
+                    <tr class="addNewAddress" style="display: none">
+                        <td><label class="control-label" for="addCounty">Judet</label></td>
+                        <td><input type="text" class="form-control" name="newCounty" id="addCounty"/>
+                    </tr>
+                    <tr id="localityTr" class="addAddress">
                         <td><label for="localitySelectId">Localitate</label></td>
                         <td>
                             <select name="locality" id="localitySelectId" class="selectpicker"
@@ -43,18 +47,22 @@
                                 </c:forEach>
                             </select>
                         </td>
-<%--                        <td><label class="control-label" for="locality">Localitate</label></td>--%>
-<%--                        <td><input type="text" class="form-control" name="locality" id="locality" autocomplete="false"/>--%>
                     </tr>
-                    <tr id="streetTr">
+                    <tr class="addNewAddress" style="display: none">
+                        <td><label class="control-label" for="locality">Localitate</label></td>
+                        <td><input type="text" class="form-control" name="newLocality" id="locality" autocomplete="false"/>
+                    </tr>
+                    <tr id="streetTr" class="addAddress">
                         <td><label for="streetSelectId">Strada</label></td>
                         <td>
                             <select name="street" id="streetSelectId" class="selectpicker" title="Alege Strada"
                                     data-live-search="true" disabled>
                             </select>
                         </td>
-<%--                        <td><label class="control-label" for="street">Strada</label></td>--%>
-<%--                        <td><input type="text" class="form-control" name="street" id="street" autocomplete="false"/>--%>
+                    </tr>
+                    <tr class="addNewAddress" style="display: none">
+                        <td><label class="control-label" for="street">Strada</label></td>
+                        <td><input type="text" class="form-control" name="newStreet" id="street" autocomplete="false"/>
                     </tr>
                     <tr>
                         <td><label class="control-label" for="streetNr">Numar</label></td>
@@ -243,26 +251,38 @@
 
         $("#streetSelectId").change(function () {
             var street = $("#streetSelectId option:selected").val();
+            var locality = $("#localitySelectId option:selected").val();
+            var county = $('#county').val();
             var url = "http://localhost:8081/NicolRom/backoffice/holes/add-getDistrict";
             $.ajax({
                 url : url,
                 type : 'GET',
                 data : {
-                    'street' : street
+                    'street' : street,
+                    'locality': locality,
+                    'county': county
                 },
                 success : function(data) {
                     showDistrict(data);
                 },
                 error : function(request,error)
                 {
-                    alert("Request: "+JSON.stringify(request));
+                    console.log("Eroare")
                 }
             });
         });
 
-        // $("#noStreetCheck").click(function () {
-        //
-        // })
+        $("#noStreetCheck").change(function () {
+            if(this.checked){
+                $(".addAddress").hide();
+                $(".addNewAddress").show("slow");
+                $("#district").attr("readonly", false);
+            } else {
+                $(".addNewAddress").hide();
+                $(".addAddress").show("slow");
+                $("#district").attr("readonly", true);
+            }
+        })
 
         $('#cancelBtn').click(function() {
             return window.confirm("Sunteti sigur?");

@@ -25,10 +25,19 @@ public class AddressDaoImpl implements AddressDao {
     }
 
     @Override
-    public Address getAddressByStreet(String street) {
+    public void save(Address address) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM Address as A where A.street = :street");
+        session.save(address);
+    }
+
+    @Override
+    public Address getAddress(String street, String locality, String county) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("FROM Address as A where A.street = :street and " +
+                "A.locality = :locality and A.county = :county");
         query.setParameter("street", street);
+        query.setParameter("locality", locality);
+        query.setParameter("county", county);
         return (Address) query.getSingleResult();
     }
 
