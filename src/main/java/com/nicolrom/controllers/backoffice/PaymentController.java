@@ -17,7 +17,7 @@ public class PaymentController {
     @RequestMapping(value = "/backoffice/volumes", method = RequestMethod.GET)
     public String getVolumes(Model model){
 
-        return "";
+        return "payment/viewVolumes";
     }
 
     @RequestMapping(value = "/backoffice/contracts/1", method = RequestMethod.GET)

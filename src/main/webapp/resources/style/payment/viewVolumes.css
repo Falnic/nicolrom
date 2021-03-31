@@ -1,0 +1,11 @@
+.viewVolumesCard {
+    margin-top: 1.5%;
+}
+
+.viewVolumesCard:hover {
+    background-color: #dee2e6;
+}
+
+#addVolumeBtn {
+    margin-top: 1.5%;
+}
