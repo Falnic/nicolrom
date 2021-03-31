@@ -14,10 +14,14 @@ public class PaymentController {
         return "payment/viewContracts";
     }
 
-
     @RequestMapping(value = "/backoffice/volumes", method = RequestMethod.GET)
     public String getVolumes(Model model){
 
         return "";
+    }
+
+    @RequestMapping(value = "/backoffice/contracts/1", method = RequestMethod.GET)
+    public String getContract(){
+        return "payment/viewContract";
     }
 }
