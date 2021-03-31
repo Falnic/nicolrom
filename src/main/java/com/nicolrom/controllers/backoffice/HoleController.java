@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/backoffice/holes")
-public class BackofficeController {
+public class HoleController {
 
     @Autowired
     private HoleService holeService;
@@ -52,9 +52,6 @@ public class BackofficeController {
 
     @Autowired
     private HoleTranslator holeTranslator;
-
-    @Autowired
-    private HoleAddressService holeAddressService;
 
     @RequestMapping(method = RequestMethod.GET)
     public String getHoles(Model model, @RequestParam(name = "pgNr", defaultValue = "0") Integer pgNr,
