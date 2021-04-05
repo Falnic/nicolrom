@@ -32,7 +32,7 @@
     </div>
     <div class="row">
         <div class="col-lg-2">
-            <a class="btn btn-lg btn-block btn-primary" id="addVolumeBtn" href="#" role="button">Adauga</a>
+            <a class="btn btn-lg btn-block btn-primary" id="addVolumeBtn" href="<c:url value="/backoffice/volumes/add"/>" role="button">Adauga</a>
         </div>
         <div class="col-lg-10">
             <div class="col-lg-12">
