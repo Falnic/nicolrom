@@ -7,4 +7,6 @@ import java.util.List;
 public interface ContractDao {
 
     List<Contract> getAllContracts();
+
+    Contract getContractById(Integer id);
 }

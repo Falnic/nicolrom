@@ -1,5 +1,7 @@
 package com.nicolrom.entities;
 
+import com.nicolrom.enums.ArticleEnum;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -24,6 +26,10 @@ public class Article implements Serializable {
     @ManyToOne(targetEntity = Contract.class)
     @JoinColumn(name = "idcontract", nullable = false)
     private Contract contract;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ArticleEnum type;
 
     @Column(nullable = false)
     private Double price;
@@ -74,5 +80,13 @@ public class Article implements Serializable {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public ArticleEnum getType() {
+        return type;
+    }
+
+    public void setType(ArticleEnum type) {
+        this.type = type;
     }
 }

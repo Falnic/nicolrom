@@ -19,4 +19,9 @@ public class ContractServiceImpl implements ContractService {
     public List<Contract> getAllContracts() {
         return contractDao.getAllContracts();
     }
+
+    @Override
+    public Contract getContractById(Integer id) {
+        return contractDao.getContractById(id);
+    }
 }

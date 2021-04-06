@@ -21,7 +21,7 @@ public class Contract implements Serializable {
     @Column(nullable = false)
     private Date date;
 
-    @OneToMany(targetEntity = Article.class, mappedBy = "contract")
+    @OneToMany(targetEntity = Article.class, mappedBy = "contract", fetch = FetchType.EAGER)
     @Column(nullable = false)
     private List<Article> articles = new ArrayList<>();
 
