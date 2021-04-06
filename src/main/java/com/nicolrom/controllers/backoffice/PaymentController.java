@@ -33,4 +33,9 @@ public class PaymentController {
     public String getVolume(Model model){
         return "payment/viewVolume";
     }
+
+    @RequestMapping(value = "/backoffice/volumes/1/update", method = RequestMethod.GET)
+    public String updateVolume(Model model){
+        return "payment/updateVolume";
+    }
 }

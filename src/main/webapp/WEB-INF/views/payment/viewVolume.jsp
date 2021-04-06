@@ -125,9 +125,9 @@
         <div class="col-lg-2">
             <a class="btn btn-success" href="#" role="button">Genereaza Raport</a>
         </div>
-        <div class="col-lg-7"></div>
-        <div class="col-lg-3">
-            <a class="btn btn-warning left" href="#" role="button">Modifica</a>
+        <div class="col-lg-8"></div>
+        <div class="col-lg-2">
+            <a class="btn btn-warning left" href="<c:url value="/backoffice/volumes/1/update"/>" role="button">Modifica</a>
             <a class="btn btn-danger right" id="deleteBtn" href="#" role="button">Sterge</a>
         </div>
     </div>

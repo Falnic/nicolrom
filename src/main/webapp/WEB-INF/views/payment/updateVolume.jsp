@@ -7,16 +7,16 @@
     <jsp:include page="../bootstrapImports.jsp"/>
     <jsp:include page="../backofficeHeader.jsp"/>
 
-    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/style/payment/addVolume.css"/>">
+<%--    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/style/payment/addVolume.css"/>">--%>
 
-    <title>Adauga Volum</title>
+    <title>Modifica Volum</title>
 </head>
 <body>
 
 <div class="container">
     <div class="row">
         <div class="col-lg-12 text-center">
-            <h1>Adauga Volum</h1>
+            <h1>Modifica Volum</h1>
         </div>
     </div>
     <form method="post" name="addVolumeForm">
@@ -114,7 +114,7 @@
         <div class="row">
             <div class="col-lg-8"></div>
             <div class="col-lg-2">
-                <input type="submit" class="btn btn-primary btn-lg " value="Salveaza"/>
+                <input type="submit" class="btn btn-warning btn-lg " value="Modifica"/>
             </div>
             <div class="col-lg-2">
                 <a class="btn btn-lg btn-danger" id="cancelBtn" href="<c:url value="/backoffice/volumes"/>" role="button">Anuleaza</a>
