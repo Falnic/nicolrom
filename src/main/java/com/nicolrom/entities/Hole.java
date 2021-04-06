@@ -53,6 +53,10 @@ public class Hole implements Serializable {
     @Column(nullable = false)
     private String executor;
 
+    @ManyToOne(targetEntity = Volume.class)
+    @JoinColumn(name = "volumeId", nullable = false)
+    private Volume volume;
+
     public int getHoleId() {
         return holeId;
     }
@@ -155,5 +159,13 @@ public class Hole implements Serializable {
 
     public void setHoleAddress(HoleAddress holeAddress) {
         this.holeAddress = holeAddress;
+    }
+
+    public Volume getVolume() {
+        return volume;
+    }
+
+    public void setVolume(Volume volume) {
+        this.volume = volume;
     }
 }

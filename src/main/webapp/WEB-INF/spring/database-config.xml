@@ -22,6 +22,9 @@
                 <value>com.nicolrom.entities.Area</value>
                 <value>com.nicolrom.entities.Address</value>
                 <value>com.nicolrom.entities.HoleAddress</value>
+                <value>com.nicolrom.entities.Article</value>
+                <value>com.nicolrom.entities.Contract</value>
+                <value>com.nicolrom.entities.Volume</value>
             </list>
         </property>
 
