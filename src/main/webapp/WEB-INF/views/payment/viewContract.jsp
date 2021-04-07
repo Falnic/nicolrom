@@ -13,7 +13,14 @@
     <title>Contract Nr ${contract.nr} / <fmt:formatDate pattern = "dd-MM-yyyy" value = "${contract.date}"/> </title>
 </head>
 <body>
-
+<c:if test="${succes}">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Modificarea s-a efectuat cu succes!</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</c:if>
 <div class="container">
     <div class="row viewContractDiv">
         <div class="col-lg-12 text-center">
