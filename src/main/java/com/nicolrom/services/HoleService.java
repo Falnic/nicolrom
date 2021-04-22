@@ -4,6 +4,7 @@ import com.nicolrom.entities.Hole;
 import com.nicolrom.entities.dto.HoleDTO;
 import com.nicolrom.entities.dto.VPHoleDTO;
 
+import java.util.Date;
 import java.util.List;
 
 public interface HoleService {
@@ -23,6 +24,10 @@ public interface HoleService {
     List<VPHoleDTO> getHolesWithoutVolume();
 
     List<VPHoleDTO> getHolesWithoutVolume(String district);
+
+    List<VPHoleDTO> getHolesWithoutVolume(Date startDate, Date endDate);
+
+    List<VPHoleDTO> getHolesWithoutVolume(Date startDate, Date endDate, String district);
 
     List<String> getHoleDistricts();
 

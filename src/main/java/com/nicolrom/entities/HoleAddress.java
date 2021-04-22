@@ -58,7 +58,7 @@ public class HoleAddress implements Serializable {
     @Override
     public String toString() {
         return "Strada " + address.getStreet() +
-                " nr" + streetNr +
+                " nr " + streetNr +
                 " " + address.getCounty() +
                 " " + address.getLocality();
     }

@@ -3,6 +3,7 @@ package com.nicolrom.dao;
 import com.nicolrom.entities.Hole;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -21,6 +22,10 @@ public interface HoleDao {
     List<Hole> getHolesWithoutVolume();
 
     List<Hole> getHolesWithoutVolume(String district);
+
+    List<Hole> getHolesWithoutVolume(Date startDate, Date endDate);
+
+    List<Hole> getHolesWithoutVolume(Date startDate, Date endDate, String district);
 
     List<String> getHoleDistricts();
 

@@ -118,6 +118,16 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
+    public List<VPHoleDTO> getHolesWithoutVolume(Date startDate, Date endDate) {
+        return populate(holeDao.getHolesWithoutVolume(startDate, endDate));
+    }
+
+    @Override
+    public List<VPHoleDTO> getHolesWithoutVolume(Date startDate, Date endDate, String district) {
+        return populate(holeDao.getHolesWithoutVolume(startDate, endDate, district));
+    }
+
+    @Override
     public double getLastPageNr(Integer pageSize) {
         double holesNr = holeDao.countHoles();
         return Math.ceil(holesNr / pageSize);

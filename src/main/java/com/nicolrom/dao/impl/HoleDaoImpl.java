@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 @Repository("holeDao")
@@ -115,6 +116,28 @@ public class HoleDaoImpl implements HoleDao {
         query.setParameter("district", district);
         return query.getResultList();
 
+    }
+
+    @Override
+    public List<Hole> getHolesWithoutVolume(Date startDate, Date endDate) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("select h from Hole h where h.volume is null " +
+                "and h.date >= :startDate and h.date <= :endDate", Hole.class);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Hole> getHolesWithoutVolume(Date startDate, Date endDate, String district) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("select h from Hole h JOIN h.holeAddress ha JOIN ha.address a " +
+                "where h.volume is null and a.district = :district and h.date >= :startDate " +
+                "and h.date <= :endDate", Hole.class);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        query.setParameter("district", district);
+        return query.getResultList();
     }
 
     @Override

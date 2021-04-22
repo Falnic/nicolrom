@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,6 +76,21 @@ public class PaymentController {
         return new ObjectMapper().writeValueAsString(holeService.getHolesWithoutVolume(district));
     }
 
+    @RequestMapping(value = "/backoffice/volumes/add-getHolesByDatePeriod")
+    @ResponseBody
+    public String getHolesByDatePeriod(@RequestParam(name = "startDate") String startDate,
+                                       @RequestParam(name = "endDate") String endDate) throws JsonProcessingException, ParseException {
+        return new ObjectMapper().writeValueAsString(holeService.getHolesWithoutVolume(parseDate(startDate), parseDate(endDate)));
+    }
+
+    @RequestMapping(value = "/backoffice/volumes/add-getHolesByDatePeriodAndDistrict")
+    @ResponseBody
+    public String getHolesByDatePeriodAndDistrict(@RequestParam(name = "startDate") String startDate,
+                                                  @RequestParam(name = "endDate") String endDate,
+                                                  @RequestParam(name = "district") String district) throws JsonProcessingException, ParseException {
+        return new ObjectMapper().writeValueAsString(holeService.getHolesWithoutVolume(parseDate(startDate), parseDate(endDate), district));
+    }
+
     @RequestMapping(value = "/backoffice/volumes/1", method = RequestMethod.GET)
     public String getVolume(Model model){
         return "payment/viewVolume";
@@ -105,5 +121,9 @@ public class PaymentController {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         return dateFormat.format(date);
+    }
+
+    private Date parseDate(String date) throws ParseException {
+        return new SimpleDateFormat("yyyy-MM-dd").parse(date);
     }
 }
