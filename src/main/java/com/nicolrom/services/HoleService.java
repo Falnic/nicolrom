@@ -2,6 +2,7 @@ package com.nicolrom.services;
 
 import com.nicolrom.entities.Hole;
 import com.nicolrom.entities.dto.HoleDTO;
+import com.nicolrom.entities.dto.VPHoleDTO;
 
 import java.util.List;
 
@@ -18,6 +19,10 @@ public interface HoleService {
     List<HoleDTO> filterHolesByDistricts(List<HoleDTO> holes, List<String> districts);
 
     List<HoleDTO> getHolesOrdered(List<HoleDTO> holes, String orderBy);
+
+    List<VPHoleDTO> getHolesWithoutVolume();
+
+    List<VPHoleDTO> getHolesWithoutVolume(String district);
 
     List<String> getHoleDistricts();
 

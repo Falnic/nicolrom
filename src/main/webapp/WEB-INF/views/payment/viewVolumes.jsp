@@ -36,7 +36,7 @@
         </div>
         <div class="col-lg-10">
             <div class="col-lg-12">
-                <div class="card viewVolumesCard">
+                <div class="card viewVolumesCard" onclick="redirectToVolume(1)">
                     <div class="card-body">
                         <h5 class="card-title">D2 - Vol 15 22 iulie - 17 august</h5>
                     </div>
@@ -52,6 +52,6 @@
         </div>
     </div>
 </div>
-
+<script src="<c:url value="/resources/js/payment/viewVolumes.js"/>"></script>
 </body>
 </html>

@@ -103,6 +103,21 @@ public class HoleDaoImpl implements HoleDao {
     }
 
     @Override
+    public List<Hole> getHolesWithoutVolume() {
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery("select h from Hole h where h.volume is null", Hole.class).getResultList();
+    }
+
+    @Override
+    public List<Hole> getHolesWithoutVolume(String district) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("select h from Hole h JOIN h.holeAddress ha JOIN ha.address a where h.volume is null and a.district = :district", Hole.class);
+        query.setParameter("district", district);
+        return query.getResultList();
+
+    }
+
+    @Override
     public List<String> getHoleDistricts() {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("SELECT distinct a.district FROM Hole h JOIN h.holeAddress ha JOIN ha.address a", String.class);

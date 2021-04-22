@@ -6,6 +6,7 @@ import com.nicolrom.entities.Hole;
 import com.nicolrom.entities.HoleAddress;
 import com.nicolrom.entities.Phase;
 import com.nicolrom.entities.dto.HoleDTO;
+import com.nicolrom.entities.dto.VPHoleDTO;
 import com.nicolrom.enums.OrderOptionsEnum;
 import com.nicolrom.enums.PhaseEnum;
 import com.nicolrom.services.*;
@@ -104,6 +105,16 @@ public class HoleServiceImpl implements HoleService {
             default:
                 return holes;
         }
+    }
+
+    @Override
+    public List<VPHoleDTO> getHolesWithoutVolume() {
+        return populate(holeDao.getHolesWithoutVolume());
+    }
+
+    @Override
+    public List<VPHoleDTO> getHolesWithoutVolume(String district) {
+        return populate(holeDao.getHolesWithoutVolume(district));
     }
 
     @Override
@@ -266,5 +277,23 @@ public class HoleServiceImpl implements HoleService {
             }
         }
         holeDTO.setPhase(phaseEnum.name());
+    }
+
+    private List<VPHoleDTO> populate(List<Hole> holes){
+        List<VPHoleDTO> vpHoleDTOS = new ArrayList<>();
+        for (Hole hole : holes){
+            VPHoleDTO vpHoleDTO = populate(hole);
+            vpHoleDTOS.add(vpHoleDTO);
+        }
+        return vpHoleDTOS;
+    }
+
+    private VPHoleDTO populate(Hole hole){
+        VPHoleDTO vpHoleDTO = new VPHoleDTO();
+        vpHoleDTO.setId(hole.getHoleId());
+        vpHoleDTO.setDate(hole.getDate());
+        vpHoleDTO.setAddress(hole.getHoleAddress().toString());
+        vpHoleDTO.setDistrict(hole.getHoleAddress().getAddress().getDistrict());
+        return vpHoleDTO;
     }
 }

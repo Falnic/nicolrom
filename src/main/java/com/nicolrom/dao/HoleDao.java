@@ -18,6 +18,10 @@ public interface HoleDao {
 
     List<Hole> getHolesByDistricts(String[] districts);
 
+    List<Hole> getHolesWithoutVolume();
+
+    List<Hole> getHolesWithoutVolume(String district);
+
     List<String> getHoleDistricts();
 
     Hole getHoleById(Integer id);
