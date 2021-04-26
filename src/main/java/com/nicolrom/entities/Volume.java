@@ -38,6 +38,10 @@ public class Volume implements Serializable {
     @Column(nullable = false)
     private List<Hole> holes = new ArrayList<>();
 
+    @OneToMany(targetEntity = VolumeArticle.class, mappedBy = "volume")
+    @Column(nullable = false)
+    private List<VolumeArticle> volumeArticles;
+
     @Column(nullable = false)
     private Double total;
 
@@ -111,5 +115,13 @@ public class Volume implements Serializable {
 
     public void setTotal(Double total) {
         this.total = total;
+    }
+
+    public List<VolumeArticle> getVolumeArticles() {
+        return volumeArticles;
+    }
+
+    public void setVolumeArticles(List<VolumeArticle> volumeArticles) {
+        this.volumeArticles = volumeArticles;
     }
 }

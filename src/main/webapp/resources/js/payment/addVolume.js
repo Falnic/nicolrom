@@ -61,6 +61,20 @@ $("#select-all").click(function () {
     });
 })
 
+$("form[name='addVolumeForm']").validate({
+    rules: {
+        volumeNr:"required",
+        contractNr : "required"
+    },
+    messages: {
+        volumeNr: "Introduceti numarul de volum",
+        material: "Introduceti numarul contractului"
+    },
+    submitHandler: function(form) {
+        form.submit();
+    }
+});
+
 function getHolesByDatePeriod(startDate, endDate){
     var url = "http://localhost:8081/NicolRom/backoffice/volumes/add-getHolesByDatePeriod";
     $.ajax({
@@ -111,7 +125,7 @@ function populate(holes){
         var year = date.getFullYear();
         var hole = "                                <tr>\n" +
             "                                    <td>\n" +
-            "                                        <input type=\"checkbox\" id=\"select-Hole-\"" + holes[i].id + " name=\"holes\">\n" +
+            "                                        <input type=\"checkbox\" value='" + holes[i].id + "' id=\"select-Hole-\"" + holes[i].id + " name=\"holes\">\n" +
             "                                    </td>\n" +
             "                                    <td>" + day + "-" + month + "-" + year + "</td>\n" +
             "                                    <td>" + holes[i].address + "</td>\n" +

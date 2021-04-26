@@ -4,6 +4,7 @@ import com.nicolrom.enums.ArticleEnum;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "article")
@@ -26,6 +27,10 @@ public class Article implements Serializable {
     @ManyToOne(targetEntity = Contract.class)
     @JoinColumn(name = "idcontract", nullable = false)
     private Contract contract;
+
+    @OneToMany(targetEntity = VolumeArticle.class ,mappedBy = "article")
+    @Column(nullable = false)
+    private List<VolumeArticle> volumeArticles;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -88,5 +93,13 @@ public class Article implements Serializable {
 
     public void setType(ArticleEnum type) {
         this.type = type;
+    }
+
+    public List<VolumeArticle> getVolumeArticles() {
+        return volumeArticles;
+    }
+
+    public void setVolumeArticles(List<VolumeArticle> volumeArticles) {
+        this.volumeArticles = volumeArticles;
     }
 }

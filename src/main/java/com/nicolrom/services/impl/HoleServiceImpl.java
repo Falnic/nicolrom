@@ -151,6 +151,15 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
+    public List<Hole> getHolesById(List<Integer> holesId) {
+        List<Hole> holes = new ArrayList<>();
+        for (Integer id : holesId){
+            holes.add(getHoleById(id));
+        }
+        return holes;
+    }
+
+    @Override
     public void saveHole(Hole hole) {
         holeDao.saveHole(hole);
         holeAddressService.save(hole.getHoleAddress());

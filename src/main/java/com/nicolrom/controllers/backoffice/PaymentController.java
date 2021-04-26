@@ -2,10 +2,10 @@ package com.nicolrom.controllers.backoffice;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nicolrom.services.AddressService;
-import com.nicolrom.services.ArticleService;
-import com.nicolrom.services.ContractService;
-import com.nicolrom.services.HoleService;
+import com.nicolrom.entities.Contract;
+import com.nicolrom.entities.Hole;
+import com.nicolrom.entities.Volume;
+import com.nicolrom.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +32,9 @@ public class PaymentController {
 
     @Autowired
     private HoleService holeService;
+
+    @Autowired
+    private VolumeService volumeService;
 
     @RequestMapping(value = "/backoffice/contracts", method = RequestMethod.GET)
     public String getContracts(Model model){
@@ -89,6 +92,21 @@ public class PaymentController {
                                                   @RequestParam(name = "endDate") String endDate,
                                                   @RequestParam(name = "district") String district) throws JsonProcessingException, ParseException {
         return new ObjectMapper().writeValueAsString(holeService.getHolesWithoutVolume(parseDate(startDate), parseDate(endDate), district));
+    }
+
+    @RequestMapping(value = "/backoffice/volumes/add", method = RequestMethod.POST)
+    public String addVolume(Model model, @RequestParam(name = "volumeNr") String volumeNr,
+                            @RequestParam(name = "contract") String contractId,
+                            @RequestParam(name = "regNr") String regNr,
+                            @RequestParam(name = "district") String district,
+                            @RequestParam(name = "startDate") String startDate,
+                            @RequestParam(name = "endDate") String endDate,
+                            @RequestParam(name = "holes") List<String> holesId) throws ParseException {
+        Contract contract = contractService.getContractById(Integer.parseInt(contractId));
+        List<Hole> holes = holeService.getHolesById(parseIntegerList(holesId));
+        Volume volume = volumeService.createVolume(contract, regNr, district, parseDate(startDate), parseDate(endDate), holes);
+
+        return "payment/viewVolume";
     }
 
     @RequestMapping(value = "/backoffice/volumes/1", method = RequestMethod.GET)

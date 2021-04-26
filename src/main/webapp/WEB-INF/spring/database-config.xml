@@ -25,6 +25,7 @@
                 <value>com.nicolrom.entities.Article</value>
                 <value>com.nicolrom.entities.Contract</value>
                 <value>com.nicolrom.entities.Volume</value>
+                <value>com.nicolrom.entities.VolumeArticle</value>
             </list>
         </property>
 

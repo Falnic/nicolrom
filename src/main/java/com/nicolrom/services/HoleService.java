@@ -39,6 +39,8 @@ public interface HoleService {
 
     Hole getHoleById(Integer id);
 
+    List<Hole> getHolesById(List<Integer> holesId);
+
     void saveHole(Hole hole);
 
     void updateHole(Hole hole);
