@@ -38,9 +38,9 @@ public class Volume implements Serializable {
     @Column(nullable = false)
     private List<Hole> holes = new ArrayList<>();
 
-    @OneToMany(targetEntity = VolumeArticle.class, mappedBy = "volume")
+    @OneToMany(targetEntity = PaymentSituation.class, mappedBy = "volume")
     @Column(nullable = false)
-    private List<VolumeArticle> volumeArticles;
+    private List<PaymentSituation> paymentSituations;
 
     @Column(nullable = false)
     private Double total;
@@ -117,11 +117,11 @@ public class Volume implements Serializable {
         this.total = total;
     }
 
-    public List<VolumeArticle> getVolumeArticles() {
-        return volumeArticles;
+    public List<PaymentSituation> getVolumeArticles() {
+        return paymentSituations;
     }
 
-    public void setVolumeArticles(List<VolumeArticle> volumeArticles) {
-        this.volumeArticles = volumeArticles;
+    public void setVolumeArticles(List<PaymentSituation> paymentSituations) {
+        this.paymentSituations = paymentSituations;
     }
 }

@@ -9,5 +9,7 @@ import java.util.List;
 
 public interface VolumeService {
 
-    Volume createVolume(Contract contract, String regNr, String district, Date startDate, Date endDate, List<Hole> holes);
+    Volume createVolume(String volumeNr, Contract contract, String regNr, String district, Date startDate, Date endDate, List<Hole> holes);
+
+    void save(Volume volume);
 }

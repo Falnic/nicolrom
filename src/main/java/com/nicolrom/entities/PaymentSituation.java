@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "VolumeArticle")
-public class VolumeArticle implements Serializable {
+@Table(name = "paymentSituation")
+public class PaymentSituation implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +19,10 @@ public class VolumeArticle implements Serializable {
     @ManyToOne(targetEntity = Article.class)
     @JoinColumn(name = "articleId", nullable = false)
     private Article article;
+
+    @ManyToOne(targetEntity = Hole.class)
+    @JoinColumn(name = "hole_Id", nullable = false)
+    private Hole hole;
 
     @Column(nullable = false)
     private double price;
@@ -53,5 +57,13 @@ public class VolumeArticle implements Serializable {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public Hole getHole() {
+        return hole;
+    }
+
+    public void setHole(Hole hole) {
+        this.hole = hole;
     }
 }

@@ -120,7 +120,7 @@
         <div class="row">
             <div class="col-lg-8"></div>
             <div class="col-lg-2">
-                <input type="submit" class="btn btn-primary btn-lg " value="Salveaza"/>
+                <input type="submit" class="btn btn-primary btn-lg " value="Next"/>
             </div>
             <div class="col-lg-2">
                 <a class="btn btn-lg btn-danger" id="cancelBtn" href="<c:url value="/backoffice/volumes"/>" role="button">Anuleaza</a>

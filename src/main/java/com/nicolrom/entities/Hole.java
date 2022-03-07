@@ -57,6 +57,10 @@ public class Hole implements Serializable {
     @JoinColumn(name = "volumeId", nullable = false)
     private Volume volume;
 
+    @Column(nullable = false)
+    @OneToMany(targetEntity = PaymentSituation.class, mappedBy = "hole", fetch = FetchType.LAZY)
+    private List<PaymentSituation> paymentSituations = new ArrayList<>();
+
     public int getHoleId() {
         return holeId;
     }
@@ -167,5 +171,13 @@ public class Hole implements Serializable {
 
     public void setVolume(Volume volume) {
         this.volume = volume;
+    }
+
+    public List<PaymentSituation> getPaymentSituations() {
+        return paymentSituations;
+    }
+
+    public void setPaymentSituations(List<PaymentSituation> paymentSituations) {
+        this.paymentSituations = paymentSituations;
     }
 }

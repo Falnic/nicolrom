@@ -36,6 +36,9 @@ public class PaymentController {
     @Autowired
     private VolumeService volumeService;
 
+    @Autowired
+    private PaymentSituationService paymentSituationService;
+
     @RequestMapping(value = "/backoffice/contracts", method = RequestMethod.GET)
     public String getContracts(Model model){
         model.addAttribute("contracts", contractService.getAllContracts());
@@ -104,7 +107,10 @@ public class PaymentController {
                             @RequestParam(name = "holes") List<String> holesId) throws ParseException {
         Contract contract = contractService.getContractById(Integer.parseInt(contractId));
         List<Hole> holes = holeService.getHolesById(parseIntegerList(holesId));
-        Volume volume = volumeService.createVolume(contract, regNr, district, parseDate(startDate), parseDate(endDate), holes);
+        Volume volume = volumeService.createVolume(volumeNr, contract, regNr, district, parseDate(startDate), parseDate(endDate), holes);
+
+        volumeService.save(volume);
+        paymentSituationService.calculate(volume, contract.getArticles());
 
         return "payment/viewVolume";
     }

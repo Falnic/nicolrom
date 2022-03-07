@@ -28,9 +28,9 @@ public class Article implements Serializable {
     @JoinColumn(name = "idcontract", nullable = false)
     private Contract contract;
 
-    @OneToMany(targetEntity = VolumeArticle.class ,mappedBy = "article")
+    @OneToMany(targetEntity = PaymentSituation.class ,mappedBy = "article")
     @Column(nullable = false)
-    private List<VolumeArticle> volumeArticles;
+    private List<PaymentSituation> paymentSituations;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -95,11 +95,11 @@ public class Article implements Serializable {
         this.type = type;
     }
 
-    public List<VolumeArticle> getVolumeArticles() {
-        return volumeArticles;
+    public List<PaymentSituation> getVolumeArticles() {
+        return paymentSituations;
     }
 
-    public void setVolumeArticles(List<VolumeArticle> volumeArticles) {
-        this.volumeArticles = volumeArticles;
+    public void setVolumeArticles(List<PaymentSituation> paymentSituations) {
+        this.paymentSituations = paymentSituations;
     }
 }
