@@ -5,15 +5,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicolrom.entities.Contract;
 import com.nicolrom.entities.Hole;
 import com.nicolrom.entities.Volume;
+import com.nicolrom.entities.dto.VolumeDTO;
 import com.nicolrom.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,13 +44,13 @@ public class PaymentController {
     private PaymentSituationService paymentSituationService;
 
     @RequestMapping(value = "/backoffice/contracts", method = RequestMethod.GET)
-    public String getContracts(Model model){
+    public String getContracts(Model model) {
         model.addAttribute("contracts", contractService.getAllContracts());
         return "payment/viewContracts";
     }
 
     @RequestMapping(value = "/backoffice/contracts/{id}", method = RequestMethod.GET)
-    public String getContract(Model model, @PathVariable(value = "id") Integer id){
+    public String getContract(Model model, @PathVariable(value = "id") Integer id) {
         model.addAttribute("contract", contractService.getContractById(id));
         return "payment/viewContract";
     }
@@ -54,7 +58,7 @@ public class PaymentController {
     @RequestMapping(value = "/backoffice/contracts/{id}", method = RequestMethod.POST)
     public String modifyContractPrices(Model model, @PathVariable(value = "id") Integer id,
                                        @RequestParam(value = "articleId") List<String> articlesId,
-                                       @RequestParam(value = "articlePrice") List<String> articlesPrice){
+                                       @RequestParam(value = "articlePrice") List<String> articlesPrice) {
 
         articleService.updateArticles(articleService.getArticlesById(parseIntegerList(articlesId)), parseDoubleList(articlesPrice));
         model.addAttribute("contract", contractService.getContractById(id));
@@ -63,12 +67,40 @@ public class PaymentController {
     }
 
     @RequestMapping(value = "/backoffice/volumes", method = RequestMethod.GET)
-    public String getVolumes(Model model){
+    public String getVolumes(HttpServletRequest request, @RequestParam(name = "pgNr", defaultValue = "0") Integer pgNr,
+                             @RequestParam(name = "pgSize", defaultValue = "6") Integer pgSize, Model model) {
+        String startDateRequestParam = request.getParameter("startDate");
+        String endDateRequestParam = request.getParameter("endDate");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = null;
+        LocalDate endDate = null;
+        List<VolumeDTO> volumes;
+        if (startDateRequestParam != null) {
+            startDate = LocalDate.parse(startDateRequestParam, f);
+        }
+        if (endDateRequestParam != null) {
+            endDate = LocalDate.parse(endDateRequestParam, f);
+        }
+        if (startDate == null && endDate == null) {
+            volumes = volumeService.getLastVolumes(5);
+            model.addAttribute("lastPg", 0);
+
+        } else {
+            volumes = volumeService.getVolumesInDateRange(startDate, endDate, pgNr, pgSize);
+            model.addAttribute("lastPg", volumeService.getLastPageNr(startDate, endDate, pgSize));
+
+        }
+        model.addAttribute("pgNr", pgNr);
+        model.addAttribute("volumes", volumes);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("currentDate", LocalDate.now());
+
         return "payment/viewVolumes";
     }
 
     @RequestMapping(value = "/backoffice/volumes/add", method = RequestMethod.GET)
-    public String addVolume(Model model){
+    public String addVolume(Model model) {
         model.addAttribute("contracts", contractService.getAllContracts());
         model.addAttribute("districts", addressService.getAllDistricts());
         model.addAttribute("currentDate", getCurrentDate());
@@ -116,32 +148,32 @@ public class PaymentController {
     }
 
     @RequestMapping(value = "/backoffice/volumes/1", method = RequestMethod.GET)
-    public String getVolume(Model model){
+    public String getVolume(Model model) {
         return "payment/viewVolume";
     }
 
     @RequestMapping(value = "/backoffice/volumes/1/update", method = RequestMethod.GET)
-    public String updateVolume(Model model){
+    public String updateVolume(Model model) {
         return "payment/updateVolume";
     }
 
-    private List<Double> parseDoubleList(List<String> stringList){
+    private List<Double> parseDoubleList(List<String> stringList) {
         List<Double> doubles = new ArrayList<>();
-        for (String s : stringList){
+        for (String s : stringList) {
             doubles.add(Double.parseDouble(s));
         }
         return doubles;
     }
 
-    private List<Integer> parseIntegerList(List<String> stringList){
+    private List<Integer> parseIntegerList(List<String> stringList) {
         List<Integer> integers = new ArrayList<>();
-        for (String s : stringList){
+        for (String s : stringList) {
             integers.add(Integer.parseInt(s));
         }
         return integers;
     }
 
-    private String getCurrentDate(){
+    private String getCurrentDate() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         return dateFormat.format(date);
